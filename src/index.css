@@ -7,3 +7,17 @@
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
 }
+
+/* Ensure the app fills the viewport and respects safe areas when
+   installed as a standalone PWA (no browser chrome). */
+@media (display-mode: standalone) {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    overscroll-behavior-y: none;
+  }
+}

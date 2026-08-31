@@ -9,19 +9,57 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      manifest: false,
+      includeAssets: ['favicon.svg', 'icons.svg'],
+      manifest: {
+        name: 'Tablee',
+        short_name: 'Tablee',
+        description:
+          'Plan meals, store recipes, and build collaborative shopping lists — your kitchen companion.',
+        theme_color: '#4F46E5',
+        background_color: '#F9FAFB',
+        display: 'standalone',
+        orientation: 'portrait',
+        start_url: '/',
+        scope: '/',
+        lang: 'en',
+        categories: ['food', 'lifestyle', 'productivity'],
+        icons: [
+          {
+            src: '/icons/icon-192.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          {
+            src: '/icons/icon-512.png',
+            sizes: '512x512',
+            type: 'image/png',
+          },
+          {
+            src: '/icons/icon-maskable-512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable',
+          },
+        ],
+      },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
+        // Precache the app shell (HTML/JS/CSS) and static assets.
+        // Navigation requests fall back to the cached app shell so the
+        // app renders offline. Supabase API calls are intentionally NOT
+        // cached — they require a network connection.
+        navigateFallback: '/index.html',
         runtimeCaching: [
           {
-            urlPattern: ({ url }) => url.pathname.startsWith('/rest/v1/'),
-            handler: 'NetworkFirst',
+            // Cache-first for static images and fonts.
+            urlPattern: ({ request }) =>
+              request.destination === 'image' || request.destination === 'font',
+            handler: 'CacheFirst',
             options: {
-              cacheName: 'supabase-api',
-              networkTimeoutSeconds: 10,
+              cacheName: 'static-assets',
               expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24,
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24 * 30,
               },
               cacheableResponse: {
                 statuses: [0, 200],
@@ -29,6 +67,10 @@ export default defineConfig({
             },
           },
         ],
+      },
+      devOptions: {
+        enabled: true,
+        type: 'module',
       },
     }),
   ],
