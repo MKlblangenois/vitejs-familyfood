@@ -10,6 +10,7 @@ import RecipeDetailPage from './features/recipes/pages/RecipeDetailPage'
 import RecipeCreatePage from './features/recipes/pages/RecipeCreatePage'
 import RecipeEditPage from './features/recipes/pages/RecipeEditPage'
 import ShoppingListsPage from './features/shopping-lists/pages/ShoppingListsPage'
+import ShoppingListDetailPage from './features/shopping-lists/pages/ShoppingListDetailPage'
 import ProfilePage from './features/profile/pages/ProfilePage'
 import AppShell from './shared/components/AppShell'
 
@@ -76,6 +77,16 @@ function App() {
           <AuthGuard>
             <AppShell>
               <ShoppingListsPage />
+            </AppShell>
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/shopping-lists/:id"
+        element={
+          <AuthGuard>
+            <AppShell>
+              <ShoppingListDetailPage />
             </AppShell>
           </AuthGuard>
         }

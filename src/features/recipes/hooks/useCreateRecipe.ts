@@ -16,7 +16,16 @@ import { recipeKeys } from './queryKeys'
  * cleanup may fail — in which case an orphaned recipe row may persist.
  */
 const createRecipe = async (input: CreateRecipeInput): Promise<Recipe> => {
-  // 1. Insert the recipe row (user_id and timestamps set by the DB).
+  // 0. Get the current authenticated user.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    throw new Error('You must be logged in to create a recipe.')
+  }
+
+  // 1. Insert the recipe row with the user foreign key.
   const { data: recipe, error: recipeError } = await supabase
     .from('recipes')
     .insert({
@@ -26,6 +35,7 @@ const createRecipe = async (input: CreateRecipeInput): Promise<Recipe> => {
       servings: input.servings ?? 4,
       prep_time_minutes: input.prep_time_minutes ?? null,
       cook_time_minutes: input.cook_time_minutes ?? null,
+      user_id: user.id,
     })
     .select()
     .single()

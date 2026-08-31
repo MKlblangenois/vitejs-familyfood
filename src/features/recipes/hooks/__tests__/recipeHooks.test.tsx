@@ -13,10 +13,14 @@ import type { Recipe } from '../../types'
 
 const mocks = vi.hoisted(() => ({
   from: vi.fn(),
+  getUser: vi.fn(),
 }))
 
 vi.mock('../../../../shared/lib/supabase', () => ({
-  supabase: { from: mocks.from },
+  supabase: {
+    from: mocks.from,
+    auth: { getUser: mocks.getUser },
+  },
 }))
 
 // ---------------------------------------------------------------------------
@@ -57,6 +61,10 @@ const recipe: Recipe = {
 
 beforeEach(() => {
   vi.clearAllMocks()
+  mocks.getUser.mockResolvedValue({
+    data: { user: { id: 'u1' } },
+    error: null,
+  })
 })
 
 // ===========================================================================
@@ -121,6 +129,7 @@ describe('useCreateRecipe', () => {
       servings: 4,
       prep_time_minutes: null,
       cook_time_minutes: null,
+      user_id: 'u1',
     })
     expect(chain('recipes').select).toHaveBeenCalled()
     expect(chain('recipes').single).toHaveBeenCalled()
