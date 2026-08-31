@@ -14,6 +14,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
 import { useRecipe, useDeleteRecipe } from '../hooks'
+import { deleteRecipeImage, extractStoragePath } from '../lib/imageUpload'
 import {
   getScaleFactor,
   scaleQuantity,
@@ -237,6 +238,7 @@ const RecipeDetailPage = () => {
 
   const [targetServings, setTargetServings] = useState<number | null>(null)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+  const [imageFailed, setImageFailed] = useState(false)
 
   const originalServings = recipe?.servings ?? 1
   const currentServings = targetServings ?? originalServings
@@ -257,13 +259,25 @@ const RecipeDetailPage = () => {
 
   const handleDelete = useCallback(() => {
     if (!id) return
+
+    // Best-effort delete the recipe image from storage (ignore failures).
+    if (recipe?.image_url) {
+      const imagePath = extractStoragePath(recipe.image_url)
+      if (imagePath) {
+        void deleteRecipeImage(imagePath).catch(() => {
+          // Best-effort: log and continue.
+          console.error('[Tablee] Failed to delete recipe image', imagePath)
+        })
+      }
+    }
+
     deleteMutation.mutate(id, {
       onSuccess: () => {
         setIsDeleteOpen(false)
         void navigate('/recipes')
       },
     })
-  }, [id, deleteMutation, navigate])
+  }, [id, recipe, deleteMutation, navigate])
 
   const totalMinutes = useMemo(() => {
     if (!recipe) return null
@@ -290,12 +304,13 @@ const RecipeDetailPage = () => {
       </Link>
 
       {/* Hero image */}
-      {recipe.image_url && (
+      {recipe.image_url && !imageFailed && (
         <div className="mb-6 overflow-hidden rounded-xl">
           <img
             src={recipe.image_url}
             alt=""
             aria-hidden="true"
+            onError={() => setImageFailed(true)}
             className="aspect-[16/9] w-full object-cover"
           />
         </div>

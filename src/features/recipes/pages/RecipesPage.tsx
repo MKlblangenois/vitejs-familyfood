@@ -36,6 +36,7 @@ function totalTime(recipe: Recipe): string | null {
 
 function RecipeCard({ recipe }: { recipe: Recipe }) {
   const time = totalTime(recipe)
+  const [imageFailed, setImageFailed] = useState(false)
 
   return (
     <Link
@@ -44,11 +45,12 @@ function RecipeCard({ recipe }: { recipe: Recipe }) {
     >
       {/* Image */}
       <div className="relative aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-700">
-        {recipe.image_url ? (
+        {recipe.image_url && !imageFailed ? (
           <img
             src={recipe.image_url}
             alt=""
             aria-hidden="true"
+            onError={() => setImageFailed(true)}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (

@@ -10,6 +10,8 @@ import {
 } from '@heroicons/react/24/outline'
 import { TextInput } from '../../../shared/components/TextInput'
 import { useRecipe, useUpdateRecipe } from '../hooks'
+import RecipeImageUpload from '../components/RecipeImageUpload'
+import { deleteRecipeImage, extractStoragePath } from '../lib/imageUpload'
 import type { RecipeWithRelations, UpdateRecipeInput } from '../types'
 
 // ============================================================
@@ -563,6 +565,8 @@ const RecipeEditPage = () => {
     handleSubmit,
     reset,
     setError,
+    setValue,
+    watch,
     formState: { errors: formErrors },
   } = useForm<RecipeFormValues>({
     defaultValues: {
@@ -704,12 +708,25 @@ const RecipeEditPage = () => {
                 />
               </div>
 
-              <TextInput
-                id="recipe-image-url"
-                label="Image URL"
-                placeholder="https://example.com/photo.jpg"
+              <RecipeImageUpload
+                value={watch('image_url') ?? ''}
+                onChange={(url) => {
+                  // If replacing an existing image, best-effort delete the old
+                  // one from storage (ignore failures — the new URL is what matters).
+                  const previousUrl = watch('image_url')
+                  if (previousUrl && previousUrl !== url) {
+                    const oldPath = extractStoragePath(previousUrl)
+                    if (oldPath) {
+                      void deleteRecipeImage(oldPath).catch(() => {
+                        // Best-effort: log and continue.
+                        console.error('[Tablee] Failed to delete old image', oldPath)
+                      })
+                    }
+                  }
+                  setValue('image_url', url)
+                }}
+                recipeId={id}
                 error={formErrors.image_url?.message}
-                {...register('image_url')}
               />
             </div>
           </section>

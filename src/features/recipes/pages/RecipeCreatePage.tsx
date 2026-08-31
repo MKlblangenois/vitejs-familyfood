@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { z } from 'zod'
@@ -9,6 +10,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { TextInput } from '../../../shared/components/TextInput'
 import { useCreateRecipe } from '../hooks'
+import RecipeImageUpload from '../components/RecipeImageUpload'
 import type { CreateRecipeInput } from '../types'
 
 // ============================================================
@@ -450,12 +452,18 @@ function StepsSection({
 const RecipeCreatePage = () => {
   const navigate = useNavigate()
   const createRecipe = useCreateRecipe()
+  // Temporary id used as the storage folder for the image until the recipe
+  // row is created. The RLS policy only checks the user-id prefix, so this
+  // works even though the final recipe id differs.
+  const [tempRecipeId] = useState(() => crypto.randomUUID())
 
   const {
     register,
     control,
     handleSubmit,
     setError,
+    setValue,
+    watch,
     formState: { errors: formErrors },
   } = useForm<RecipeFormValues>({
     defaultValues: {
@@ -584,12 +592,11 @@ const RecipeCreatePage = () => {
                 />
               </div>
 
-              <TextInput
-                id="recipe-image-url"
-                label="Image URL"
-                placeholder="https://example.com/photo.jpg"
+              <RecipeImageUpload
+                value={watch('image_url') ?? ''}
+                onChange={(url) => setValue('image_url', url)}
+                recipeId={tempRecipeId}
                 error={formErrors.image_url?.message}
-                {...register('image_url')}
               />
             </div>
           </section>

@@ -99,3 +99,74 @@ export function mockSupabase(from: ReturnType<typeof vi.fn>) {
     chain: getChain,
   }
 }
+
+// ===========================================================================
+// Storage mock
+// ===========================================================================
+
+/**
+ * A mock of `supabase.storage.from(bucket)` that returns a chainable
+ * storage-bucket object with `upload`, `remove`, and `getPublicUrl`.
+ *
+ * Tests configure results via `setUploadResult`, `setRemoveResult`, and
+ * `setPublicUrl`, and assert on the `upload`/`remove`/`getPublicUrl` mocks.
+ */
+export interface StorageBucketMock {
+  upload: ReturnType<typeof vi.fn>
+  remove: ReturnType<typeof vi.fn>
+  getPublicUrl: ReturnType<typeof vi.fn>
+  setUploadResult: (result: { data: unknown; error: unknown }) => void
+  setRemoveResult: (result: { data: unknown; error: unknown }) => void
+  setPublicUrl: (url: string) => void
+}
+
+export function createStorageBucketMock(): StorageBucketMock {
+  let uploadResult: { data: unknown; error: unknown } = {
+    data: { path: 'mock-path' },
+    error: null,
+  }
+  let removeResult: { data: unknown; error: unknown } = {
+    data: [{ name: 'mock-path' }],
+    error: null,
+  }
+  let publicUrl = 'https://example.com/mock-public-url'
+
+  const bucket = {
+    upload: vi.fn(async () => uploadResult),
+    remove: vi.fn(async () => removeResult),
+    getPublicUrl: vi.fn(() => ({ data: { publicUrl } })),
+    setUploadResult: (result: { data: unknown; error: unknown }) => {
+      uploadResult = result
+    },
+    setRemoveResult: (result: { data: unknown; error: unknown }) => {
+      removeResult = result
+    },
+    setPublicUrl: (url: string) => {
+      publicUrl = url
+    },
+  }
+
+  return bucket
+}
+
+/**
+ * Attach a storage mock to a `supabase` object mock. The `storage.from(bucket)`
+ * call returns the same bucket mock for a given bucket name, so tests can
+ * configure results and assert on calls per bucket.
+ */
+export function mockSupabaseStorage(
+  storage: { from: ReturnType<typeof vi.fn> },
+) {
+  const buckets = new Map<string, StorageBucketMock>()
+
+  const getBucket = (bucket: string) => {
+    if (!buckets.has(bucket)) buckets.set(bucket, createStorageBucketMock())
+    return buckets.get(bucket)!
+  }
+
+  storage.from.mockImplementation((bucket: string) => getBucket(bucket))
+
+  return {
+    bucket: getBucket,
+  }
+}
