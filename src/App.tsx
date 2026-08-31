@@ -5,6 +5,10 @@ import RegisterPage from './features/auth/pages/RegisterPage'
 import ForgotPasswordPage from './features/auth/pages/ForgotPasswordPage'
 import ResetPasswordPage from './features/auth/pages/ResetPasswordPage'
 import HomePage from './features/recipes/pages/HomePage'
+import RecipesPage from './features/recipes/pages/RecipesPage'
+import RecipeDetailPage from './features/recipes/pages/RecipeDetailPage'
+import RecipeCreatePage from './features/recipes/pages/RecipeCreatePage'
+import RecipeEditPage from './features/recipes/pages/RecipeEditPage'
 import ShoppingListsPage from './features/shopping-lists/pages/ShoppingListsPage'
 import ProfilePage from './features/profile/pages/ProfilePage'
 import AppShell from './shared/components/AppShell'
@@ -22,6 +26,46 @@ function App() {
           <AuthGuard>
             <AppShell>
               <HomePage />
+            </AppShell>
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/recipes"
+        element={
+          <AuthGuard>
+            <AppShell>
+              <RecipesPage />
+            </AppShell>
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/recipes/new"
+        element={
+          <AuthGuard>
+            <AppShell>
+              <RecipeCreatePage />
+            </AppShell>
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/recipes/:id"
+        element={
+          <AuthGuard>
+            <AppShell>
+              <RecipeDetailPage />
+            </AppShell>
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/recipes/:id/edit"
+        element={
+          <AuthGuard>
+            <AppShell>
+              <RecipeEditPage />
             </AppShell>
           </AuthGuard>
         }
