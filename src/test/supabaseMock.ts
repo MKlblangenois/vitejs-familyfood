@@ -170,3 +170,84 @@ export function mockSupabaseStorage(
     bucket: getBucket,
   }
 }
+
+// ===========================================================================
+// Realtime mock
+// ===========================================================================
+
+/**
+ * A mock of `supabase.channel(name)` that reproduces the chainable realtime
+ * builder: `.on('postgres_changes', config, callback).subscribe(statusCb)`.
+ *
+ * Tests register postgres_changes callbacks per table via `handlers`, then
+ * drive them with `emit(table, payload)` and drive the subscription status
+ * with `setStatus(status)`.
+ */
+export interface RealtimeChannelMock {
+  on: ReturnType<typeof vi.fn>
+  subscribe: ReturnType<typeof vi.fn>
+  unsubscribe: ReturnType<typeof vi.fn>
+  /** postgres_changes callbacks keyed by table name. */
+  handlers: Map<string, (payload: unknown) => void>
+  /** The status callback passed to `.subscribe()`. */
+  statusCallback: ((status: string) => void) | null
+  /** Invoke the registered postgres_changes callback for a table. */
+  emit: (table: string, payload: unknown) => void
+  /** Invoke the subscription status callback. */
+  setStatus: (status: string) => void
+}
+
+export function createRealtimeChannelMock(): RealtimeChannelMock {
+  const handlers = new Map<string, (payload: unknown) => void>()
+  let statusCallback: ((status: string) => void) | null = null
+
+  const channel: RealtimeChannelMock = {
+    on: vi.fn(
+      (
+        _event: string,
+        config: { table: string },
+        callback: (payload: unknown) => void,
+      ) => {
+        handlers.set(config.table, callback)
+        return channel
+      },
+    ),
+    subscribe: vi.fn((callback?: (status: string) => void) => {
+      statusCallback = callback ?? null
+      return channel
+    }),
+    unsubscribe: vi.fn(),
+    handlers,
+    get statusCallback() {
+      return statusCallback
+    },
+    emit: (table: string, payload: unknown) => {
+      handlers.get(table)?.(payload)
+    },
+    setStatus: (status: string) => {
+      statusCallback?.(status)
+    },
+  }
+
+  return channel
+}
+
+/**
+ * Point `channel` at a fresh set of per-name realtime channel mocks and return
+ * a lookup helper. Each `.channel(name)` call returns the same mock for that
+ * name, so tests can configure handlers and assert on calls per channel.
+ */
+export function mockSupabaseRealtime(channel: ReturnType<typeof vi.fn>) {
+  const channels = new Map<string, RealtimeChannelMock>()
+
+  const getChannel = (name: string) => {
+    if (!channels.has(name)) channels.set(name, createRealtimeChannelMock())
+    return channels.get(name)!
+  }
+
+  channel.mockImplementation((name: string) => getChannel(name))
+
+  return {
+    channel: getChannel,
+  }
+}

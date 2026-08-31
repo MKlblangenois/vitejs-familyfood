@@ -22,6 +22,7 @@ import {
   useCreateShoppingList,
   useUpdateShoppingList,
   useDeleteShoppingList,
+  useRealtimeSync,
 } from '../hooks'
 
 // ============================================================
@@ -188,6 +189,7 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
 
 const ShoppingListsPage = () => {
   const { user } = useAuth()
+  useRealtimeSync()
   const {
     data: lists,
     isLoading,

@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import ShoppingListDetailPage from '../ShoppingListDetailPage'
-import { mockSupabase, createChain } from '../../../../test/supabaseMock'
+import { mockSupabase, mockSupabaseRealtime, createChain } from '../../../../test/supabaseMock'
 import type { ShoppingListWithRelations } from '../../types'
 
 // ---------------------------------------------------------------------------
@@ -16,11 +16,15 @@ const mocks = vi.hoisted(() => ({
   getSession: vi.fn(),
   onAuthStateChange: vi.fn(),
   getUser: vi.fn(),
+  channel: vi.fn(),
+  removeChannel: vi.fn(),
 }))
 
 vi.mock('../../../../shared/lib/supabase', () => ({
   supabase: {
     from: mocks.from,
+    channel: mocks.channel,
+    removeChannel: mocks.removeChannel,
     auth: {
       getSession: mocks.getSession,
       onAuthStateChange: mocks.onAuthStateChange,
@@ -126,6 +130,7 @@ function renderDetailPage(initialPath = '/shopping-lists/sl1') {
 
 beforeEach(() => {
   vi.clearAllMocks()
+  mockSupabaseRealtime(mocks.channel)
   useAuthMock.mockReturnValue({
     user: { id: 'u1', email: 'test@example.com' },
     session: null,

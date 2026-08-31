@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter } from 'react-router-dom'
 import App from '../../../App'
+import { mockSupabaseRealtime } from '../../../test/supabaseMock'
 
 // ---------------------------------------------------------------------------
 // Mocks – hoisted so they survive vi.mock factory hoisting
@@ -15,10 +16,12 @@ const mocks = vi.hoisted(() => ({
   signUp: vi.fn(),
   resetPasswordForEmail: vi.fn(),
   updateUser: vi.fn(),
+  channel: vi.fn(),
+  removeChannel: vi.fn(),
 }))
 
 vi.mock('../../../shared/lib/supabase', () => ({
-  supabase: { auth: mocks },
+  supabase: { auth: mocks, channel: mocks.channel, removeChannel: mocks.removeChannel },
 }))
 
 // Mutable session state that `getSession` reads from. Tests flip this between
@@ -52,6 +55,7 @@ const renderApp = (initialPath = '/') => {
 
 beforeEach(() => {
   vi.clearAllMocks()
+  mockSupabaseRealtime(mocks.channel)
   currentSession = null
 
   mocks.getSession.mockImplementation(async () => ({

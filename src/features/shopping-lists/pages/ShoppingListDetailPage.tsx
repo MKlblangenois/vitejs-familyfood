@@ -30,6 +30,7 @@ import {
   useToggleItem,
   useAddMember,
   useRemoveMember,
+  useRealtimeSync,
 } from '../hooks'
 import type { ShoppingListItem, ShoppingListMember } from '../types'
 
@@ -289,6 +290,7 @@ const ShoppingListDetailPage = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { user } = useAuth()
+  useRealtimeSync({ listId: id, enabled: !!id })
   const {
     data: list,
     isLoading,
