@@ -122,21 +122,21 @@ insert into public.recipes (
 
 -- Ingredient groups
 insert into public.recipe_ingredient_groups (id, recipe_id, name, position) values
-  ('g1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'Chicken', 0),
-  ('g2a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'Garlic Parmesan Sauce', 1);
+  ('a1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'Chicken', 0),
+  ('a2a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'Garlic Parmesan Sauce', 1);
 
 -- Ingredients: Chicken group
 insert into public.recipe_ingredients (group_id, recipe_id, name, quantity, unit, position) values
-  ('g1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'bone-in chicken thighs', 8, 'piece', 0),
-  ('g1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'salt', 1, 'tsp', 1),
-  ('g1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'black pepper', 0.5, 'tsp', 2);
+  ('a1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'bone-in chicken thighs', 8, 'piece', 0),
+  ('a1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'salt', 1, 'tsp', 1),
+  ('a1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'black pepper', 0.5, 'tsp', 2);
 
 -- Ingredients: Garlic Parmesan Sauce group
 insert into public.recipe_ingredients (group_id, recipe_id, name, quantity, unit, position) values
-  ('g2a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'unsalted butter', 4, 'tbsp', 0),
-  ('g2a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'garlic cloves, minced', 6, 'piece', 1),
-  ('g2a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'grated parmesan', 0.5, 'cup', 2),
-  ('g2a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'fresh parsley, chopped', 2, 'tbsp', 3);
+  ('a2a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'unsalted butter', 4, 'tbsp', 0),
+  ('a2a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'garlic cloves, minced', 6, 'piece', 1),
+  ('a2a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'grated parmesan', 0.5, 'cup', 2),
+  ('a2a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c', 'fresh parsley, chopped', 2, 'tbsp', 3);
 
 -- Steps
 insert into public.recipe_steps (recipe_id, instruction, position) values
@@ -162,20 +162,20 @@ insert into public.recipes (
 
 -- Ingredient groups
 insert into public.recipe_ingredient_groups (id, recipe_id, name, position) values
-  ('g3b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'd2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'Pasta', 0),
-  ('g4b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'd2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'Sauce', 1);
+  ('a3b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'd2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'Pasta', 0),
+  ('a4b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'd2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'Sauce', 1);
 
 -- Ingredients: Pasta
 insert into public.recipe_ingredients (group_id, recipe_id, name, quantity, unit, position) values
-  ('g3b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'd2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'penne pasta', 400, 'g', 0);
+  ('a3b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'd2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'penne pasta', 400, 'g', 0);
 
 -- Ingredients: Sauce
 insert into public.recipe_ingredients (group_id, recipe_id, name, quantity, unit, position) values
-  ('g4b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'd2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'olive oil', 2, 'tbsp', 0),
-  ('g4b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'd2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'garlic cloves, minced', 3, 'piece', 1),
-  ('g4b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'd2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'crushed tomatoes', 400, 'ml', 2),
-  ('g4b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'd2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'heavy cream', 120, 'ml', 3),
-  ('g4b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'd2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'fresh basil leaves', 6, 'piece', 4);
+  ('a4b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'd2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'olive oil', 2, 'tbsp', 0),
+  ('a4b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'd2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'garlic cloves, minced', 3, 'piece', 1),
+  ('a4b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'd2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'crushed tomatoes', 400, 'ml', 2),
+  ('a4b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'd2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'heavy cream', 120, 'ml', 3),
+  ('a4b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'd2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d', 'fresh basil leaves', 6, 'piece', 4);
 
 -- Steps
 insert into public.recipe_steps (recipe_id, instruction, position) values
@@ -200,23 +200,23 @@ insert into public.recipes (
 
 -- Ingredient groups
 insert into public.recipe_ingredient_groups (id, recipe_id, name, position) values
-  ('g5c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'Dry Ingredients', 0),
-  ('g6c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'Wet Ingredients', 1);
+  ('a5c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'Dry Ingredients', 0),
+  ('a6c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'Wet Ingredients', 1);
 
 -- Ingredients: Dry
 insert into public.recipe_ingredients (group_id, recipe_id, name, quantity, unit, position) values
-  ('g5c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'all-purpose flour', 2.25, 'cup', 0),
-  ('g5c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'baking soda', 1, 'tsp', 1),
-  ('g5c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'salt', 1, 'tsp', 2),
-  ('g5c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'semisweet chocolate chips', 2, 'cup', 3);
+  ('a5c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'all-purpose flour', 2.25, 'cup', 0),
+  ('a5c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'baking soda', 1, 'tsp', 1),
+  ('a5c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'salt', 1, 'tsp', 2),
+  ('a5c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'semisweet chocolate chips', 2, 'cup', 3);
 
 -- Ingredients: Wet
 insert into public.recipe_ingredients (group_id, recipe_id, name, quantity, unit, position) values
-  ('g6c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'unsalted butter, softened', 1, 'cup', 0),
-  ('g6c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'granulated sugar', 0.75, 'cup', 1),
-  ('g6c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'brown sugar, packed', 0.75, 'cup', 2),
-  ('g6c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'large eggs', 2, 'piece', 3),
-  ('g6c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'vanilla extract', 1, 'tsp', 4);
+  ('a6c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'unsalted butter, softened', 1, 'cup', 0),
+  ('a6c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'granulated sugar', 0.75, 'cup', 1),
+  ('a6c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'brown sugar, packed', 0.75, 'cup', 2),
+  ('a6c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'large eggs', 2, 'piece', 3),
+  ('a6c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e', 'vanilla extract', 1, 'tsp', 4);
 
 -- Steps
 insert into public.recipe_steps (recipe_id, instruction, position) values
