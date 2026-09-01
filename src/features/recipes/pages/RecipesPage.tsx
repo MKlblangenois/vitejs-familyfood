@@ -35,7 +35,7 @@ function totalTime(recipe: Recipe): string | null {
 // Sub-components
 // ============================================================
 
-function RecipeImage({
+export function RecipeImage({
   recipe,
   className,
   iconClassName,
@@ -65,7 +65,7 @@ function RecipeImage({
   )
 }
 
-function FeaturedRecipeCard({ recipe }: { recipe: Recipe }) {
+export function FeaturedRecipeCard({ recipe }: { recipe: Recipe }) {
   const time = totalTime(recipe)
 
   return (
@@ -109,7 +109,7 @@ function FeaturedRecipeCard({ recipe }: { recipe: Recipe }) {
   )
 }
 
-function CompactRecipeCard({ recipe }: { recipe: Recipe }) {
+export function CompactRecipeCard({ recipe }: { recipe: Recipe }) {
   const time = totalTime(recipe)
 
   return (

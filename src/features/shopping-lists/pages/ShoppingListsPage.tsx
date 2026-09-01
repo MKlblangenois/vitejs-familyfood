@@ -27,7 +27,7 @@ import ErrorState from '../../../shared/components/ErrorState'
 // Sub-components
 // ============================================================
 
-function ListCard({
+export function ListCard({
   list,
   currentUserId,
   onRename,

@@ -37,7 +37,7 @@ import LoadingSkeleton from '../../../shared/components/LoadingSkeleton'
 // Sub-components
 // ============================================================
 
-function ItemRow({
+export function ItemRow({
   item,
   listId,
   onEdit,
@@ -125,7 +125,7 @@ function ItemRow({
   )
 }
 
-function AddItemRow({ listId }: { listId: string }) {
+export function AddItemRow({ listId }: { listId: string }) {
   const addItemMutation = useAddItem()
   const [name, setName] = useState('')
   const [quantity, setQuantity] = useState('')

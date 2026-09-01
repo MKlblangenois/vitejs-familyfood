@@ -63,7 +63,7 @@ function scaleIngredient(
 // Sub-components
 // ============================================================
 
-function ServingsStepper({
+export function ServingsStepper({
   servings,
   onDecrement,
   onIncrement,
@@ -97,7 +97,7 @@ function ServingsStepper({
   )
 }
 
-function IngredientGroupSection({
+export function IngredientGroupSection({
   group,
   originalServings,
   targetServings,
@@ -137,7 +137,7 @@ function IngredientGroupSection({
   )
 }
 
-function StepList({ steps }: { steps: RecipeWithRelations['recipe_steps'] }) {
+export function StepList({ steps }: { steps: RecipeWithRelations['recipe_steps'] }) {
   return (
     <ol className="space-y-6" role="list">
       {steps.map((step, index) => (
