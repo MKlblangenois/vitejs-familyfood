@@ -3,6 +3,7 @@ node_modules/
 
 # Build output
 dist/
+dev-dist/
 
 # Environment
 .env
@@ -31,3 +32,6 @@ coverage/
 
 # Misc
 *.tsbuildinfo
+
+*storybook.log
+storybook-static
