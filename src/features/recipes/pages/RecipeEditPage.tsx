@@ -39,31 +39,31 @@ const CANONICAL_UNITS = [
 // ============================================================
 
 const recipeFormSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
+  title: z.string().min(1, 'Le titre est requis'),
   description: z.string().optional(),
-  servings: z.number().min(1, 'Must be at least 1'),
-  prep_time_minutes: z.number().min(0, 'Must be at least 0').optional(),
-  cook_time_minutes: z.number().min(0, 'Must be at least 0').optional(),
+  servings: z.number().min(1, 'Doit être au moins 1'),
+  prep_time_minutes: z.number().min(0, 'Doit être au moins 0').optional(),
+  cook_time_minutes: z.number().min(0, 'Doit être au moins 0').optional(),
   image_url: z.string().optional(),
   ingredient_groups: z
     .array(
       z.object({
-        name: z.string().min(1, 'Group name is required'),
+        name: z.string().min(1, 'Le nom du groupe est requis'),
         ingredients: z
           .array(
             z.object({
-              name: z.string().min(1, 'Ingredient name is required'),
-              quantity: z.number().min(0, 'Must be at least 0'),
+              name: z.string().min(1, 'Le nom de l’ingrédient est requis'),
+              quantity: z.number().min(0, 'Doit être au moins 0'),
               unit: z.string().optional(),
             }),
           )
-          .min(1, 'Add at least one ingredient'),
+          .min(1, 'Ajoutez au moins un ingrédient'),
       }),
     )
-    .min(1, 'Add at least one ingredient group'),
+    .min(1, 'Ajoutez au moins un groupe d’ingrédients'),
   steps: z.array(
     z.object({
-      instruction: z.string().min(1, 'Step instruction is required'),
+      instruction: z.string().min(1, 'L’instruction de l’étape est requise'),
     }),
   ),
 })
@@ -303,8 +303,8 @@ function IngredientGroupCard({
         <div className="flex-1">
           <TextInput
             id={`group-name-${groupIdx}`}
-            label="Group name"
-            placeholder="e.g. Dough, Toppings, Sauce"
+            label="Nom du groupe"
+            placeholder="p. ex. Pâte, Garnitures, Sauce"
             error={groupError?.name?.message}
             required
             {...register(`ingredient_groups.${groupIdx}.name`)}
@@ -315,7 +315,7 @@ function IngredientGroupCard({
             type="button"
             onClick={onRemoveGroup}
             className="mt-6 inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 dark:text-gray-500 dark:hover:bg-red-500/10 dark:hover:text-red-400 dark:focus-visible:outline-red-500"
-            aria-label={`Remove ingredient group ${groupIdx + 1}`}
+            aria-label={`Supprimer le groupe d’ingrédients ${groupIdx + 1}`}
           >
             <TrashIcon aria-hidden="true" className="size-4" />
           </button>
@@ -340,8 +340,8 @@ function IngredientGroupCard({
               <div className="min-w-0 flex-1">
                 <TextInput
                   id={`ing-name-${groupIdx}-${ingIdx}`}
-                  label={ingIdx === 0 ? 'Name' : undefined}
-                  placeholder="Ingredient name"
+                  label={ingIdx === 0 ? 'Nom' : undefined}
+                  placeholder="Nom de l’ingrédient"
                   error={ingError?.name?.message}
                   required
                   {...register(
@@ -352,7 +352,7 @@ function IngredientGroupCard({
               <div className="w-24 shrink-0">
                 <TextInput
                   id={`ing-qty-${groupIdx}-${ingIdx}`}
-                  label={ingIdx === 0 ? 'Qty' : undefined}
+                  label={ingIdx === 0 ? 'Qté' : undefined}
                   type="number"
                   placeholder="0"
                   min={0}
@@ -367,7 +367,7 @@ function IngredientGroupCard({
               <div className="w-28 shrink-0">
                 <SelectInput
                   id={`ing-unit-${groupIdx}-${ingIdx}`}
-                  label={ingIdx === 0 ? 'Unit' : undefined}
+                  label={ingIdx === 0 ? 'Unité' : undefined}
                   {...register(
                     `ingredient_groups.${groupIdx}.ingredients.${ingIdx}.unit`,
                   )}
@@ -383,7 +383,7 @@ function IngredientGroupCard({
               <button
                 type="button"
                 onClick={() => removeIngredient(ingIdx)}
-                aria-label={`Remove ingredient ${ingIdx + 1}`}
+                aria-label={`Supprimer l’ingrédient ${ingIdx + 1}`}
                 className="mb-0.5 inline-flex shrink-0 items-center justify-center rounded-md p-2 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 dark:text-gray-500 dark:hover:bg-red-500/10 dark:hover:text-red-400 dark:focus-visible:outline-red-500"
               >
                 <XMarkIcon aria-hidden="true" className="size-4" />
@@ -399,7 +399,7 @@ function IngredientGroupCard({
         className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 transition-colors hover:text-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 dark:focus-visible:outline-indigo-500"
       >
         <PlusIcon aria-hidden="true" className="size-3.5" />
-        Add ingredient
+        Ajouter un ingrédient
       </button>
     </div>
   )
@@ -433,7 +433,7 @@ function StepsSection({
         id="steps-heading"
         className="mb-4 font-display text-lg font-semibold text-gray-900 dark:text-white"
       >
-        Steps
+        Étapes
       </h2>
 
       <div className="space-y-3">
@@ -446,12 +446,12 @@ function StepsSection({
               </span>
               <div className="min-w-0 flex-1">
                 <label htmlFor={`step-${stepIdx}`} className="sr-only">
-                  Step {stepIdx + 1}
+                  Étape {stepIdx + 1}
                 </label>
                 <textarea
                   id={`step-${stepIdx}`}
                   rows={2}
-                  placeholder={`Describe step ${stepIdx + 1}…`}
+                  placeholder={`Décrivez l’étape ${stepIdx + 1}…`}
                   aria-describedby={
                     stepError?.instruction?.message
                       ? `step-${stepIdx}-error`
@@ -476,7 +476,7 @@ function StepsSection({
               <button
                 type="button"
                 onClick={() => removeStep(stepIdx)}
-                aria-label={`Remove step ${stepIdx + 1}`}
+                aria-label={`Supprimer l’étape ${stepIdx + 1}`}
                 className="mt-1 inline-flex shrink-0 items-center justify-center rounded-md p-2 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 dark:text-gray-500 dark:hover:bg-red-500/10 dark:hover:text-red-400 dark:focus-visible:outline-red-500"
               >
                 <XMarkIcon aria-hidden="true" className="size-4" />
@@ -492,7 +492,7 @@ function StepsSection({
         className="mt-4 inline-flex items-center gap-2 rounded-lg border border-dashed border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:border-indigo-400 hover:text-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:border-white/20 dark:text-gray-400 dark:hover:border-indigo-400 dark:hover:text-indigo-400 dark:focus-visible:outline-indigo-500"
       >
         <PlusIcon aria-hidden="true" className="size-4" />
-        Add step
+        Ajouter une étape
       </button>
     </section>
   )
@@ -528,17 +528,17 @@ function NotFoundState() {
   return (
     <div className="flex min-h-[40vh] flex-col items-center justify-center text-center">
       <h2 className="font-display text-2xl font-bold text-gray-900 dark:text-white">
-        Recipe not found
+        Recette introuvable
       </h2>
       <p className="mt-2 max-w-sm text-sm/6 text-gray-500 dark:text-gray-400">
-        This recipe may have been deleted or doesn't exist.
+        Cette recette a peut-être été supprimée ou n&apos;existe pas.
       </p>
       <Link
         to="/recipes"
         className="mt-6 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
       >
         <ArrowLeftIcon aria-hidden="true" className="size-4" />
-        Back to recipes
+        Retour aux recettes
       </Link>
     </div>
   )
@@ -632,11 +632,11 @@ const RecipeEditPage = () => {
         className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
       >
         <ArrowLeftIcon aria-hidden="true" className="size-4" />
-        Back to recipe
+        Retour à la recette
       </Link>
 
       <h1 className="mb-6 font-display text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
-        Edit Recipe
+        Modifier la recette
       </h1>
 
       {/* Error banner */}
@@ -645,7 +645,8 @@ const RecipeEditPage = () => {
           role="alert"
           className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-400"
         >
-          Something went wrong while saving your recipe. Please try again.
+          Une erreur est survenue lors de l&apos;enregistrement de votre recette.
+          Veuillez réessayer.
         </div>
       )}
 
@@ -657,15 +658,15 @@ const RecipeEditPage = () => {
               id="basic-heading"
               className="mb-4 font-display text-lg font-semibold text-gray-900 dark:text-white"
             >
-              Basic Info
+              Informations de base
             </h2>
 
             <div className="space-y-4">
               <TextInput
                 id="recipe-title"
-                label="Title"
+                label="Titre"
                 required
-                placeholder="e.g. Classic Margherita Pizza"
+                placeholder="p. ex. Pizza Margherita classique"
                 error={formErrors.title?.message}
                 {...register('title')}
               />
@@ -673,7 +674,7 @@ const RecipeEditPage = () => {
               <TextareaInput
                 id="recipe-description"
                 label="Description"
-                placeholder="A short description of this recipe…"
+                placeholder="Une courte description de cette recette…"
                 error={formErrors.description?.message}
                 {...register('description')}
               />
@@ -681,7 +682,7 @@ const RecipeEditPage = () => {
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <TextInput
                   id="recipe-servings"
-                  label="Servings"
+                  label="Portions"
                   type="number"
                   required
                   min={1}
@@ -690,7 +691,7 @@ const RecipeEditPage = () => {
                 />
                 <TextInput
                   id="recipe-prep-time"
-                  label="Prep time (min)"
+                  label="Temps de préparation (min)"
                   type="number"
                   min={0}
                   placeholder="0"
@@ -699,7 +700,7 @@ const RecipeEditPage = () => {
                 />
                 <TextInput
                   id="recipe-cook-time"
-                  label="Cook time (min)"
+                  label="Temps de cuisson (min)"
                   type="number"
                   min={0}
                   placeholder="0"
@@ -737,7 +738,7 @@ const RecipeEditPage = () => {
               id="ingredients-heading"
               className="mb-4 font-display text-lg font-semibold text-gray-900 dark:text-white"
             >
-              Ingredients
+              Ingrédients
             </h2>
 
             {formErrors.ingredient_groups?.message && (
@@ -774,7 +775,7 @@ const RecipeEditPage = () => {
               className="mt-4 inline-flex items-center gap-2 rounded-lg border border-dashed border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:border-indigo-400 hover:text-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:border-white/20 dark:text-gray-400 dark:hover:border-indigo-400 dark:hover:text-indigo-400 dark:focus-visible:outline-indigo-500"
             >
               <PlusIcon aria-hidden="true" className="size-4" />
-              Add ingredient group
+              Ajouter un groupe d’ingrédients
             </button>
           </section>
 
@@ -791,7 +792,7 @@ const RecipeEditPage = () => {
               to={id ? `/recipes/${id}` : '/recipes'}
               className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-indigo-500"
             >
-              Cancel
+              Annuler
             </Link>
             <button
               type="submit"
@@ -801,10 +802,10 @@ const RecipeEditPage = () => {
               {updateRecipe.isPending ? (
                 <>
                   <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                  Saving…
+                  Enregistrement…
                 </>
               ) : (
-                'Save changes'
+                'Enregistrer les modifications'
               )}
             </button>
           </div>

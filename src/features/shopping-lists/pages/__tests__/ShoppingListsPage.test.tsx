@@ -111,7 +111,7 @@ describe('ShoppingListsPage', () => {
     renderPage()
 
     expect(
-      await screen.findByRole('heading', { name: /no shopping lists yet/i }),
+      await screen.findByRole('heading', { name: /aucune liste de courses pour le moment/i }),
     ).toBeInTheDocument()
   })
 
@@ -135,7 +135,7 @@ describe('ShoppingListsPage', () => {
 
     await screen.findByText('Weekly Groceries')
 
-    await user.type(screen.getByLabelText('Search shopping lists'), 'party')
+    await user.type(screen.getByLabelText('Rechercher des listes de courses'), 'party')
 
     expect(screen.queryByText('Weekly Groceries')).not.toBeInTheDocument()
     expect(screen.getByText('Party Supplies')).toBeInTheDocument()
@@ -155,16 +155,16 @@ describe('ShoppingListsPage', () => {
     await screen.findByText('Weekly Groceries')
 
     await user.click(
-      screen.getAllByRole('button', { name: /new list/i })[0],
+      screen.getAllByRole('button', { name: /nouvelle liste/i })[0],
     )
 
     expect(
-      screen.getByRole('heading', { name: /new shopping list/i }),
+      screen.getByRole('heading', { name: /nouvelle liste de courses/i }),
     ).toBeInTheDocument()
 
-    await user.type(screen.getByLabelText('List name'), 'Bakery Run')
+    await user.type(screen.getByLabelText('Nom de la liste'), 'Bakery Run')
 
-    await user.click(screen.getByRole('button', { name: /create list/i }))
+    await user.click(screen.getByRole('button', { name: /créer la liste/i }))
 
     await waitFor(() => {
       expect(chain('shopping_lists').insert).toHaveBeenCalledWith(
@@ -203,14 +203,14 @@ describe('ShoppingListsPage', () => {
     await user.hover(card)
 
     await user.click(
-      screen.getByRole('button', { name: /delete "weekly groceries"/i }),
+      screen.getByRole('button', { name: /supprimer « weekly groceries »/i }),
     )
 
     expect(
-      screen.getByRole('heading', { name: /delete list/i }),
+      screen.getByRole('heading', { name: /supprimer la liste/i }),
     ).toBeInTheDocument()
     expect(
-      screen.getByText(/are you sure you want to delete/i),
+      screen.getByText(/voulez-vous vraiment supprimer/i),
     ).toBeInTheDocument()
   })
 
@@ -222,9 +222,9 @@ describe('ShoppingListsPage', () => {
 
     await screen.findByText('Weekly Groceries')
 
-    // sl1 is owned by u1 (current user) → "Owner"
-    // sl2 is owned by u2 (not current user) → "Member"
-    expect(screen.getByText('Owner')).toBeInTheDocument()
-    expect(screen.getByText('Member')).toBeInTheDocument()
+    // sl1 is owned by u1 (current user) → "Propriétaire"
+    // sl2 is owned by u2 (not current user) → "Membre"
+    expect(screen.getByText('Propriétaire')).toBeInTheDocument()
+    expect(screen.getByText('Membre')).toBeInTheDocument()
   })
 })

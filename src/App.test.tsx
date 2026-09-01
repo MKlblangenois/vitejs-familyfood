@@ -35,7 +35,9 @@ describe('App', () => {
     renderApp('/login')
 
     expect(
-      await screen.findByRole('heading', { name: /sign in to your account/i }),
+      await screen.findByRole('heading', {
+        name: /connectez-vous à votre compte/i,
+      }),
     ).toBeInTheDocument()
   })
 })

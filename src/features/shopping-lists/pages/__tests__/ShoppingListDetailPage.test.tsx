@@ -170,7 +170,7 @@ describe('ShoppingListDetailPage', () => {
     expect(screen.getByText('Bread')).toBeInTheDocument()
 
     // Member count
-    expect(screen.getByText('2 members')).toBeInTheDocument()
+    expect(screen.getByText('2 membres')).toBeInTheDocument()
   })
 
   it('adds an item via the form', async () => {
@@ -198,11 +198,11 @@ describe('ShoppingListDetailPage', () => {
 
     await screen.findByRole('heading', { name: /weekly groceries/i })
 
-    await user.type(screen.getByLabelText('Item name'), 'Eggs')
-    await user.type(screen.getByLabelText('Quantity'), '12')
-    await user.type(screen.getByLabelText('Unit'), 'pcs')
+    await user.type(screen.getByLabelText('Nom de l’article'), 'Eggs')
+    await user.type(screen.getByLabelText('Quantité'), '12')
+    await user.type(screen.getByLabelText('Unité'), 'pcs')
 
-    await user.click(screen.getByRole('button', { name: /add item/i }))
+    await user.click(screen.getByRole('button', { name: /ajouter un article/i }))
 
     await waitFor(() => {
       expect(chain('shopping_list_items').insert).toHaveBeenCalledWith(
@@ -232,7 +232,7 @@ describe('ShoppingListDetailPage', () => {
     await screen.findByRole('heading', { name: /weekly groceries/i })
 
     await user.click(
-      screen.getByRole('button', { name: /check "milk"/i }),
+      screen.getByRole('button', { name: /cocher « milk »/i }),
     )
 
     await waitFor(() => {
@@ -260,17 +260,17 @@ describe('ShoppingListDetailPage', () => {
 
     await screen.findByRole('heading', { name: /weekly groceries/i })
 
-    await user.click(screen.getByRole('button', { name: /edit "milk"/i }))
+    await user.click(screen.getByRole('button', { name: /modifier « milk »/i }))
 
     expect(
-      screen.getByRole('heading', { name: /edit item/i }),
+      screen.getByRole('heading', { name: /modifier l'article/i }),
     ).toBeInTheDocument()
 
-    const nameInput = screen.getByLabelText('Name')
+    const nameInput = screen.getByLabelText('Nom')
     await user.clear(nameInput)
     await user.type(nameInput, 'Whole Milk')
 
-    await user.click(screen.getByRole('button', { name: /save$/i }))
+    await user.click(screen.getByRole('button', { name: /enregistrer/i }))
 
     await waitFor(() => {
       expect(chain('shopping_list_items').update).toHaveBeenCalledWith(
@@ -291,13 +291,13 @@ describe('ShoppingListDetailPage', () => {
 
     await screen.findByRole('heading', { name: /weekly groceries/i })
 
-    await user.click(screen.getByRole('button', { name: /delete "milk"/i }))
+    await user.click(screen.getByRole('button', { name: /supprimer « milk »/i }))
 
     expect(
-      screen.getByRole('heading', { name: /delete item/i }),
+      screen.getByRole('heading', { name: /supprimer l'article/i }),
     ).toBeInTheDocument()
 
-    await user.click(screen.getByRole('button', { name: /delete item/i }))
+    await user.click(screen.getByRole('button', { name: /supprimer l'article/i }))
 
     await waitFor(() => {
       expect(chain('shopping_list_items').delete).toHaveBeenCalled()
@@ -313,14 +313,14 @@ describe('ShoppingListDetailPage', () => {
     await screen.findByRole('heading', { name: /weekly groceries/i })
 
     // Owner badge
-    expect(screen.getByText('Owner')).toBeInTheDocument()
+    expect(screen.getByText('Propriétaire')).toBeInTheDocument()
 
     // Share button
-    expect(screen.getByRole('button', { name: /share/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /partager/i })).toBeInTheDocument()
 
     // Delete button
     expect(
-      screen.getByRole('button', { name: /delete$/i }),
+      screen.getByRole('button', { name: /^supprimer$/i }),
     ).toBeInTheDocument()
   })
 
@@ -339,14 +339,14 @@ describe('ShoppingListDetailPage', () => {
     await screen.findByRole('heading', { name: /weekly groceries/i })
 
     // Editor badge
-    expect(screen.getByText('Editor')).toBeInTheDocument()
+    expect(screen.getByText('Éditeur')).toBeInTheDocument()
 
     // No share button
-    expect(screen.queryByRole('button', { name: /share/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /partager/i })).not.toBeInTheDocument()
 
     // No delete list button
     expect(
-      screen.queryByRole('button', { name: /delete$/i }),
+      screen.queryByRole('button', { name: /^supprimer$/i }),
     ).not.toBeInTheDocument()
   })
 
@@ -374,7 +374,7 @@ describe('ShoppingListDetailPage', () => {
 
     expect(
       await screen.findByRole('heading', {
-        name: /couldn't load shopping list/i,
+        name: /impossible de charger la liste de courses/i,
       }),
     ).toBeInTheDocument()
   })
@@ -386,7 +386,7 @@ describe('ShoppingListDetailPage', () => {
     renderDetailPage()
 
     expect(
-      await screen.findByRole('heading', { name: /list not found/i }),
+      await screen.findByRole('heading', { name: /liste introuvable/i }),
     ).toBeInTheDocument()
   })
 })

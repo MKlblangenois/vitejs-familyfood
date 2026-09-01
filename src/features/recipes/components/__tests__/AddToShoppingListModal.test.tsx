@@ -145,13 +145,13 @@ describe('AddToShoppingListModal', () => {
     renderModal()
 
     expect(
-      screen.getByRole('heading', { name: /add to shopping list/i }),
+      screen.getByRole('heading', { name: /ajouter à la liste de courses/i }),
     ).toBeInTheDocument()
     expect(
-      screen.getByRole('combobox', { name: /shopping list/i }),
+      screen.getByRole('combobox', { name: /liste de courses/i }),
     ).toBeInTheDocument()
     expect(
-      screen.getByRole('spinbutton', { name: /servings/i }),
+      screen.getByRole('spinbutton', { name: /portions/i }),
     ).toHaveValue(4)
 
     // Both ingredients are checked by default.
@@ -167,11 +167,11 @@ describe('AddToShoppingListModal', () => {
     const user = userEvent.setup()
     renderModal()
 
-    const submit = screen.getByRole('button', { name: /add to list/i })
+    const submit = screen.getByRole('button', { name: /ajouter à la liste/i })
     expect(submit).toBeDisabled()
 
     await user.selectOptions(
-      screen.getByRole('combobox', { name: /shopping list/i }),
+      screen.getByRole('combobox', { name: /liste de courses/i }),
       'sl1',
     )
 
@@ -183,15 +183,15 @@ describe('AddToShoppingListModal', () => {
     renderModal()
 
     await user.selectOptions(
-      screen.getByRole('combobox', { name: /shopping list/i }),
+      screen.getByRole('combobox', { name: /liste de courses/i }),
       'sl1',
     )
 
     // Deselect all ingredients.
-    await user.click(screen.getByRole('button', { name: /deselect all/i }))
+    await user.click(screen.getByRole('button', { name: /tout désélectionner/i }))
 
     expect(
-      screen.getByRole('button', { name: /add to list/i }),
+      screen.getByRole('button', { name: /ajouter à la liste/i }),
     ).toBeDisabled()
   })
 
@@ -200,13 +200,13 @@ describe('AddToShoppingListModal', () => {
     renderModal()
 
     await user.selectOptions(
-      screen.getByRole('combobox', { name: /shopping list/i }),
+      screen.getByRole('combobox', { name: /liste de courses/i }),
       'sl1',
     )
 
     // Tomato already exists (1 cup) → merged; Garlic is new → added.
     expect(
-      screen.getByText(/1 item will be added, 1 merged with existing items/i),
+      screen.getByText(/1 article sera ajouté, 1 fusionné avec des articles existants/i),
     ).toBeInTheDocument()
   })
 
@@ -216,10 +216,10 @@ describe('AddToShoppingListModal', () => {
     renderModal()
 
     expect(
-      screen.getByText(/you don't have any shopping lists yet/i),
+      screen.getByText(/vous n'avez pas encore de liste de courses/i),
     ).toBeInTheDocument()
     expect(
-      screen.getByRole('link', { name: /create a list/i }),
+      screen.getByRole('link', { name: /créer une liste/i }),
     ).toHaveAttribute('href', '/shopping-lists')
   })
 
@@ -235,15 +235,15 @@ describe('AddToShoppingListModal', () => {
     renderModal()
 
     await user.selectOptions(
-      screen.getByRole('combobox', { name: /shopping list/i }),
+      screen.getByRole('combobox', { name: /liste de courses/i }),
       'sl1',
     )
     fireEvent.change(
-      screen.getByRole('spinbutton', { name: /servings/i }),
+      screen.getByRole('spinbutton', { name: /portions/i }),
       { target: { value: '8' } },
     )
 
-    await user.click(screen.getByRole('button', { name: /add to list/i }))
+    await user.click(screen.getByRole('button', { name: /ajouter à la liste/i }))
 
     expect(mutate).toHaveBeenCalledWith(
       {
@@ -257,7 +257,7 @@ describe('AddToShoppingListModal', () => {
 
     // Success state is shown.
     expect(
-      await screen.findByRole('heading', { name: /added to shopping list/i }),
+      await screen.findByRole('heading', { name: /ajouté à la liste de courses/i }),
     ).toBeInTheDocument()
   })
 
@@ -273,7 +273,7 @@ describe('AddToShoppingListModal', () => {
     renderModal()
 
     await user.selectOptions(
-      screen.getByRole('combobox', { name: /shopping list/i }),
+      screen.getByRole('combobox', { name: /liste de courses/i }),
       'sl1',
     )
 
@@ -282,7 +282,7 @@ describe('AddToShoppingListModal', () => {
     ).toHaveTextContent('Failed to add items: boom')
     // The form is still present (modal not closed).
     expect(
-      screen.getByRole('heading', { name: /add to shopping list/i }),
+      screen.getByRole('heading', { name: /ajouter à la liste de courses/i }),
     ).toBeInTheDocument()
   })
 
@@ -295,12 +295,12 @@ describe('AddToShoppingListModal', () => {
     renderModal()
 
     await user.selectOptions(
-      screen.getByRole('combobox', { name: /shopping list/i }),
+      screen.getByRole('combobox', { name: /liste de courses/i }),
       'sl1',
     )
 
     expect(
-      screen.getByRole('button', { name: /adding/i }),
+      screen.getByRole('button', { name: /ajout/i }),
     ).toBeInTheDocument()
   })
 })

@@ -6,7 +6,7 @@ const signInMutation = async (email: string, password: string) => {
   if (error) {
     const message =
       error.message === 'Invalid login credentials'
-        ? 'Invalid email or password. Please try again.'
+        ? 'E-mail ou mot de passe invalide. Veuillez réessayer.'
         : error.message
     throw new Error(message)
   }

@@ -9,8 +9,8 @@ import { TextInput } from '../../../shared/components/TextInput'
 const forgotPasswordSchema = z.object({
   email: z
     .string()
-    .min(1, 'Email is required')
-    .email('Please enter a valid email address'),
+    .min(1, "L'e-mail est requis")
+    .email('Veuillez saisir une adresse e-mail valide'),
 })
 
 type ForgotPasswordForm = z.infer<typeof forgotPasswordSchema>
@@ -51,17 +51,18 @@ const ForgotPasswordPage = () => {
             </svg>
           </div>
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Check your email
+            Vérifiez votre e-mail
           </h2>
           <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-            We&apos;ve sent a password reset link to your email address. Follow
-            the instructions to create a new password.
+            Nous avons envoyé un lien de réinitialisation de mot de passe à
+            votre adresse e-mail. Suivez les instructions pour créer un nouveau
+            mot de passe.
           </p>
           <Link
             to="/login"
             className="mt-6 inline-block text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
           >
-            Back to sign in
+            Retour à la connexion
           </Link>
         </div>
       </AuthLayout>
@@ -72,11 +73,11 @@ const ForgotPasswordPage = () => {
     <AuthLayout>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <h2 className="mb-2 text-center text-lg font-semibold text-gray-900 dark:text-white">
-          Reset your password
+          Réinitialisez votre mot de passe
         </h2>
         <p className="mb-6 text-center text-sm text-gray-500 dark:text-gray-400">
-          Enter your email and we&apos;ll send you a link to reset your
-          password.
+          Saisissez votre e-mail et nous vous enverrons un lien pour
+          réinitialiser votre mot de passe.
         </p>
 
         {resetPassword.isError && (
@@ -85,16 +86,16 @@ const ForgotPasswordPage = () => {
             role="alert"
           >
             {resetPassword.error?.message ??
-              'Something went wrong. Please try again.'}
+              'Une erreur est survenue. Veuillez réessayer.'}
           </div>
         )}
 
         <TextInput
-          label="Email address"
+          label="Adresse e-mail"
           id="forgot-email"
           type="email"
           autoComplete="email"
-          placeholder="you@example.com"
+          placeholder="vous@exemple.com"
           error={errors.email?.message}
           required
           {...register('email')}
@@ -105,17 +106,17 @@ const ForgotPasswordPage = () => {
           disabled={resetPassword.isPending}
           className="mt-6 flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus:outline-indigo-500"
         >
-          {resetPassword.isPending ? 'Sending link…' : 'Send reset link'}
+          {resetPassword.isPending ? 'Envoi du lien…' : 'Envoyer le lien de réinitialisation'}
         </button>
       </form>
 
       <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
-        Remember your password?{' '}
+        Vous vous souvenez de votre mot de passe ?{' '}
         <Link
           to="/login"
           className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
         >
-          Sign in
+          Se connecter
         </Link>
       </p>
     </AuthLayout>

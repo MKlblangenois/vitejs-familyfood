@@ -95,7 +95,7 @@ describe('RecipesPage', () => {
     ).toBeInTheDocument()
     expect(screen.getByText('Chicken Curry')).toBeInTheDocument()
     expect(screen.getByText('Creamy Roman pasta')).toBeInTheDocument()
-    expect(screen.getByText('4 servings')).toBeInTheDocument()
+    expect(screen.getByText('4 portions')).toBeInTheDocument()
     expect(screen.getByText('30m')).toBeInTheDocument()
   })
 
@@ -106,7 +106,9 @@ describe('RecipesPage', () => {
     renderPage()
 
     expect(
-      await screen.findByRole('heading', { name: /no recipes yet/i }),
+      await screen.findByRole('heading', {
+        name: /aucune recette pour le moment/i,
+      }),
     ).toBeInTheDocument()
   })
 
@@ -130,7 +132,10 @@ describe('RecipesPage', () => {
 
     await screen.findByText('Spaghetti Carbonara')
 
-    await user.type(screen.getByLabelText('Search recipes'), 'chicken')
+    await user.type(
+      screen.getByLabelText('Rechercher des recettes'),
+      'chicken',
+    )
 
     expect(screen.queryByText('Spaghetti Carbonara')).not.toBeInTheDocument()
     expect(screen.getByText('Chicken Curry')).toBeInTheDocument()

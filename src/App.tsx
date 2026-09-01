@@ -4,7 +4,6 @@ import LoginPage from './features/auth/pages/LoginPage'
 import RegisterPage from './features/auth/pages/RegisterPage'
 import ForgotPasswordPage from './features/auth/pages/ForgotPasswordPage'
 import ResetPasswordPage from './features/auth/pages/ResetPasswordPage'
-import HomePage from './features/recipes/pages/HomePage'
 import RecipesPage from './features/recipes/pages/RecipesPage'
 import RecipeDetailPage from './features/recipes/pages/RecipeDetailPage'
 import RecipeCreatePage from './features/recipes/pages/RecipeCreatePage'
@@ -26,7 +25,7 @@ function App() {
         element={
           <AuthGuard>
             <AppShell>
-              <HomePage />
+              <RecipesPage />
             </AppShell>
           </AuthGuard>
         }

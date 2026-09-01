@@ -80,7 +80,7 @@ function RecipeCard({ recipe }: { recipe: Recipe }) {
           {recipe.servings > 0 && (
             <span className="inline-flex items-center gap-1">
               <UsersIcon aria-hidden="true" className="size-4" />
-              {recipe.servings} servings
+              {recipe.servings} portion{recipe.servings !== 1 ? 's' : ''}
             </span>
           )}
           {time && (
@@ -93,7 +93,7 @@ function RecipeCard({ recipe }: { recipe: Recipe }) {
             recipe.cook_time_minutes !== null &&
             recipe.prep_time_minutes + recipe.cook_time_minutes > 0 && (
               <span className="ml-auto text-gray-300 dark:text-gray-600">
-                prep {formatTime(recipe.prep_time_minutes) ?? '—'} / cook{' '}
+                prép {formatTime(recipe.prep_time_minutes) ?? '—'} / cuisson{' '}
                 {formatTime(recipe.cook_time_minutes) ?? '—'}
               </span>
             )}
@@ -131,11 +131,11 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
         className="size-12 text-red-500 dark:text-red-400"
       />
       <h2 className="mt-4 font-display text-xl font-semibold text-gray-900 dark:text-white">
-        Something went wrong
+        Une erreur est survenue
       </h2>
       <p className="mt-2 max-w-sm text-sm/6 text-gray-500 dark:text-gray-400">
-        We couldn't load your recipes. Please check your connection and try
-        again.
+        Nous n&apos;avons pas pu charger vos recettes. Veuillez vérifier votre
+        connexion et réessayer.
       </p>
       <button
         type="button"
@@ -143,7 +143,7 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
         className="mt-6 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
       >
         <ArrowPathIcon aria-hidden="true" className="size-4" />
-        Try again
+        Réessayer
       </button>
     </div>
   )
@@ -159,18 +159,18 @@ function EmptyState() {
         />
       </div>
       <h2 className="mt-6 font-display text-2xl font-bold text-gray-900 dark:text-white">
-        No recipes yet
+        Aucune recette pour le moment
       </h2>
       <p className="mt-2 max-w-sm text-sm/6 text-gray-500 dark:text-gray-400">
-        Start building your personal recipe collection. Add your first recipe
-        and it'll show up here.
+        Commencez à constituer votre collection de recettes personnelles.
+        Ajoutez votre première recette et elle apparaîtra ici.
       </p>
       <Link
         to="/recipes/new"
         className="mt-6 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
       >
         <PlusIcon aria-hidden="true" className="size-5" />
-        Create your first recipe
+        Créer votre première recette
       </Link>
     </div>
   )
@@ -196,7 +196,7 @@ const RecipesPage = () => {
       {/* Header */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="font-display text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
-          Recipes
+          Recettes
         </h1>
 
         <Link
@@ -204,7 +204,7 @@ const RecipesPage = () => {
           className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
         >
           <PlusIcon aria-hidden="true" className="size-5" />
-          New Recipe
+          Nouvelle recette
         </Link>
       </div>
 
@@ -212,7 +212,7 @@ const RecipesPage = () => {
       {!isError && (
         <div className="relative mb-6">
           <label htmlFor="recipe-search" className="sr-only">
-            Search recipes
+            Rechercher des recettes
           </label>
           <MagnifyingGlassIcon
             aria-hidden="true"
@@ -221,7 +221,7 @@ const RecipesPage = () => {
           <input
             id="recipe-search"
             type="text"
-            placeholder="Search recipes…"
+            placeholder="Rechercher des recettes…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="block w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-4 text-sm text-gray-900 shadow-xs placeholder:text-gray-400 focus:border-indigo-500 focus:outline-2 focus:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:outline-indigo-500"
@@ -258,7 +258,7 @@ const RecipesPage = () => {
               className="size-10 text-gray-300 dark:text-gray-600"
             />
             <p className="mt-4 text-sm/6 text-gray-500 dark:text-gray-400">
-              No recipes match "{search}"
+              Aucune recette ne correspond à « {search} »
             </p>
           </div>
         )}
@@ -266,7 +266,7 @@ const RecipesPage = () => {
       {/* Mobile FAB */}
       <Link
         to="/recipes/new"
-        aria-label="New Recipe"
+        aria-label="Nouvelle recette"
         className="fixed bottom-20 right-5 z-30 flex size-14 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:hidden dark:bg-indigo-500 dark:focus-visible:outline-indigo-400"
       >
         <PlusIcon aria-hidden="true" className="size-6" />

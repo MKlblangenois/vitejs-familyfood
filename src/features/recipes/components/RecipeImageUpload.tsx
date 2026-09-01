@@ -40,7 +40,9 @@ const RecipeImageUpload = ({
     if (!file) return
 
     if (!recipeId) {
-      setUploadError('Recipe must be saved before uploading an image.')
+      setUploadError(
+        'La recette doit être enregistrée avant de pouvoir téléverser une image.',
+      )
       return
     }
 
@@ -52,7 +54,7 @@ const RecipeImageUpload = ({
       onChange(url)
     } catch (err) {
       setUploadError(
-        err instanceof Error ? err.message : 'Failed to upload image.',
+        err instanceof Error ? err.message : 'Échec du téléversement de l’image.',
       )
     } finally {
       setIsUploading(false)
@@ -75,7 +77,7 @@ const RecipeImageUpload = ({
           <div className="relative overflow-hidden rounded-lg border border-gray-200 dark:border-white/10">
             <img
               src={value}
-              alt="Recipe preview"
+              alt="Aperçu de la recette"
               className="aspect-[4/3] w-full object-cover"
             />
             <div className="absolute right-2 top-2 flex items-center gap-2">
@@ -83,7 +85,7 @@ const RecipeImageUpload = ({
                 type="button"
                 onClick={() => inputRef.current?.click()}
                 disabled={isUploading}
-                aria-label="Replace image"
+                aria-label="Remplacer l’image"
                 className="inline-flex items-center justify-center rounded-full bg-gray-950/60 p-1.5 text-white transition-colors hover:bg-gray-950/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <ArrowPathIcon aria-hidden="true" className="size-4" />
@@ -92,7 +94,7 @@ const RecipeImageUpload = ({
                 type="button"
                 onClick={handleRemove}
                 disabled={isUploading}
-                aria-label="Remove image"
+                aria-label="Supprimer l’image"
                 className="inline-flex items-center justify-center rounded-full bg-gray-950/60 p-1.5 text-white transition-colors hover:bg-gray-950/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <XMarkIcon aria-hidden="true" className="size-4" />
@@ -108,10 +110,10 @@ const RecipeImageUpload = ({
           >
             <PhotoIcon aria-hidden="true" className="size-8" />
             <span className="text-sm font-medium">
-              {isUploading ? 'Uploading…' : 'Choose an image'}
+              {isUploading ? 'Téléversement…' : 'Choisir une image'}
             </span>
             <span className="text-xs text-gray-400 dark:text-gray-500">
-              JPEG, PNG, or WebP · up to 5 MB
+              JPEG, PNG ou WebP · jusqu&apos;à 5 Mo
             </span>
           </button>
         )}
@@ -120,7 +122,7 @@ const RecipeImageUpload = ({
         {isUploading && (
           <div className="mt-2 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
             <span className="size-4 animate-spin rounded-full border-2 border-indigo-600/30 border-t-indigo-600 dark:border-indigo-400/30 dark:border-t-indigo-400" />
-            Uploading…
+            Téléversement…
           </div>
         )}
       </div>

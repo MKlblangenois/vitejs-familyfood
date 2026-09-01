@@ -11,21 +11,21 @@ const registerSchema = z
   .object({
     displayName: z
       .string()
-      .min(1, 'Display name is required')
-      .max(50, 'Display name is too long'),
+      .min(1, 'Le nom d’affichage est requis')
+      .max(50, 'Le nom d’affichage est trop long'),
     email: z
       .string()
-      .min(1, 'Email is required')
-      .email('Please enter a valid email address'),
+      .min(1, "L'e-mail est requis")
+      .email('Veuillez saisir une adresse e-mail valide'),
     password: z
       .string()
-      .min(8, 'Password must be at least 8 characters')
-      .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-      .regex(/[0-9]/, 'Password must contain at least one number'),
-    confirmPassword: z.string().min(1, 'Please confirm your password'),
+      .min(8, 'Le mot de passe doit contenir au moins 8 caractères')
+      .regex(/[A-Z]/, 'Le mot de passe doit contenir au moins une majuscule')
+      .regex(/[0-9]/, 'Le mot de passe doit contenir au moins un chiffre'),
+    confirmPassword: z.string().min(1, 'Veuillez confirmer votre mot de passe'),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
+    message: 'Les mots de passe ne correspondent pas',
     path: ['confirmPassword'],
   })
 
@@ -71,7 +71,7 @@ const RegisterPage = () => {
     <AuthLayout>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <h2 className="mb-6 text-center text-lg font-semibold text-gray-900 dark:text-white">
-          Create your account
+          Créez votre compte
         </h2>
 
         {errors.root?.message && (
@@ -85,40 +85,40 @@ const RegisterPage = () => {
 
         <div className="space-y-4">
           <TextInput
-            label="Display name"
+            label="Nom d’affichage"
             id="register-displayName"
             type="text"
             autoComplete="name"
-            placeholder="Chef Wannabe"
+            placeholder="Chef en herbe"
             error={errors.displayName?.message}
             required
             {...register('displayName')}
           />
 
           <TextInput
-            label="Email address"
+            label="Adresse e-mail"
             id="register-email"
             type="email"
             autoComplete="email"
-            placeholder="you@example.com"
+            placeholder="vous@exemple.com"
             error={errors.email?.message}
             required
             {...register('email')}
           />
 
           <TextInput
-            label="Password"
+            label="Mot de passe"
             id="register-password"
             type="password"
             autoComplete="new-password"
-            placeholder="Min. 8 characters"
+            placeholder="Min. 8 caractères"
             error={errors.password?.message}
             required
             {...register('password')}
           />
 
           <TextInput
-            label="Confirm password"
+            label="Confirmer le mot de passe"
             id="register-confirmPassword"
             type="password"
             autoComplete="new-password"
@@ -134,17 +134,17 @@ const RegisterPage = () => {
           disabled={isSubmitting}
           className="mt-6 flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus:outline-indigo-500"
         >
-          {isSubmitting ? 'Creating account…' : 'Create account'}
+          {isSubmitting ? 'Création du compte…' : 'Créer un compte'}
         </button>
       </form>
 
       <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
-        Already have an account?{' '}
+        Vous avez déjà un compte ?{' '}
         <Link
           to="/login"
           className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
         >
-          Sign in
+          Se connecter
         </Link>
       </p>
     </AuthLayout>

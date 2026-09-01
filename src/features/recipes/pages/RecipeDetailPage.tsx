@@ -74,7 +74,7 @@ function ServingsStepper({
       <button
         type="button"
         onClick={onDecrement}
-        aria-label="Decrease servings"
+        aria-label="Diminuer les portions"
         className="flex size-8 items-center justify-center rounded-md text-gray-600 transition-colors hover:bg-gray-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:text-gray-400 dark:hover:bg-white/10 dark:focus-visible:outline-indigo-500"
       >
         <MinusIcon aria-hidden="true" className="size-4" />
@@ -85,7 +85,7 @@ function ServingsStepper({
       <button
         type="button"
         onClick={onIncrement}
-        aria-label="Increase servings"
+        aria-label="Augmenter les portions"
         className="flex size-8 items-center justify-center rounded-md text-gray-600 transition-colors hover:bg-gray-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:text-gray-400 dark:hover:bg-white/10 dark:focus-visible:outline-indigo-500"
       >
         <PlusIcon aria-hidden="true" className="size-4" />
@@ -180,11 +180,11 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
         className="size-12 text-red-500 dark:text-red-400"
       />
       <h2 className="mt-4 font-display text-xl font-semibold text-gray-900 dark:text-white">
-        Couldn't load recipe
+        Impossible de charger la recette
       </h2>
       <p className="mt-2 max-w-sm text-sm/6 text-gray-500 dark:text-gray-400">
-        Something went wrong while loading this recipe. Check your connection
-        and try again.
+        Une erreur est survenue lors du chargement de cette recette. Vérifiez
+        votre connexion et réessayez.
       </p>
       <button
         type="button"
@@ -192,7 +192,7 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
         className="mt-6 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
       >
         <ArrowPathIcon aria-hidden="true" className="size-4" />
-        Try again
+        Réessayer
       </button>
     </div>
   )
@@ -206,17 +206,17 @@ function NotFoundState() {
         className="size-16 text-gray-300 dark:text-gray-600"
       />
       <h2 className="mt-6 font-display text-2xl font-bold text-gray-900 dark:text-white">
-        Recipe not found
+        Recette introuvable
       </h2>
       <p className="mt-2 max-w-sm text-sm/6 text-gray-500 dark:text-gray-400">
-        This recipe may have been deleted or doesn't exist.
+        Cette recette a peut-être été supprimée ou n&apos;existe pas.
       </p>
       <Link
         to="/recipes"
         className="mt-6 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
       >
         <ArrowLeftIcon aria-hidden="true" className="size-4" />
-        Back to recipes
+        Retour aux recettes
       </Link>
     </div>
   )
@@ -241,7 +241,6 @@ const RecipeDetailPage = () => {
   const [targetServings, setTargetServings] = useState<number | null>(null)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
   const [isAddToListOpen, setIsAddToListOpen] = useState(false)
-  const [addToListOpenCount, setAddToListOpenCount] = useState(0)
   const [imageFailed, setImageFailed] = useState(false)
 
   const originalServings = recipe?.servings ?? 1
@@ -304,7 +303,7 @@ const RecipeDetailPage = () => {
         className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
       >
         <ArrowLeftIcon aria-hidden="true" className="size-4" />
-        All recipes
+        Toutes les recettes
       </Link>
 
       {/* Hero image */}
@@ -336,21 +335,18 @@ const RecipeDetailPage = () => {
         <div className="flex items-center gap-2">
           <button
             type="button"
-            onClick={() => {
-              setIsAddToListOpen(true)
-              setAddToListOpenCount((count) => count + 1)
-            }}
+            onClick={() => setIsAddToListOpen(true)}
             className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
           >
             <ShoppingBagIcon aria-hidden="true" className="size-4" />
-            Add to shopping list
+            Ajouter à la liste de courses
           </button>
           <Link
             to={`/recipes/${recipe.id}/edit`}
             className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-indigo-500"
           >
             <PencilIcon aria-hidden="true" className="size-4" />
-            Edit
+            Modifier
           </Link>
           <button
             type="button"
@@ -358,7 +354,7 @@ const RecipeDetailPage = () => {
             className="inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-600 shadow-xs transition-colors hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 dark:border-red-500/20 dark:bg-white/5 dark:text-red-400 dark:hover:bg-red-500/10 dark:focus-visible:outline-red-500"
           >
             <TrashIcon aria-hidden="true" className="size-4" />
-            Delete
+            Supprimer
           </button>
         </div>
       </div>
@@ -369,27 +365,27 @@ const RecipeDetailPage = () => {
           recipe.prep_time_minutes > 0 && (
             <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400">
               <ClockIcon aria-hidden="true" className="size-4 text-gray-400 dark:text-gray-500" />
-              Prep: {formatTime(recipe.prep_time_minutes)}
+              Préparation : {formatTime(recipe.prep_time_minutes)}
             </div>
           )}
         {recipe.cook_time_minutes !== null &&
           recipe.cook_time_minutes > 0 && (
             <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400">
               <ClockIcon aria-hidden="true" className="size-4 text-gray-400 dark:text-gray-500" />
-              Cook: {formatTime(recipe.cook_time_minutes)}
+              Cuisson : {formatTime(recipe.cook_time_minutes)}
             </div>
           )}
         {totalMinutes && (
           <div className="flex items-center gap-1.5 text-sm font-medium text-gray-900 dark:text-white">
             <ClockIcon aria-hidden="true" className="size-4 text-indigo-600 dark:text-indigo-400" />
-            Total: {totalMinutes}
+            Total : {totalMinutes}
           </div>
         )}
 
         <div className="ml-auto flex items-center gap-3">
           <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400">
             <UsersIcon aria-hidden="true" className="size-4 text-gray-400 dark:text-gray-500" />
-            Servings
+            Portions
           </div>
           <ServingsStepper
             servings={currentServings}
@@ -406,7 +402,7 @@ const RecipeDetailPage = () => {
             id="ingredients-heading"
             className="mb-4 font-display text-xl font-bold text-gray-900 dark:text-white"
           >
-            Ingredients
+            Ingrédients
           </h2>
           <div className="space-y-6 rounded-lg border border-gray-200 p-4 dark:border-white/10">
             {recipe.recipe_ingredient_groups.map((group) => (
@@ -438,7 +434,6 @@ const RecipeDetailPage = () => {
 
       {/* Add to shopping list dialog */}
       <AddToShoppingListModal
-        key={addToListOpenCount}
         open={isAddToListOpen}
         onClose={() => setIsAddToListOpen(false)}
         recipe={recipe}
@@ -471,11 +466,11 @@ const RecipeDetailPage = () => {
                 </div>
                 <div className="flex-1">
                   <DialogTitle className="font-display text-lg font-semibold text-gray-900 dark:text-white">
-                    Delete recipe?
+                    Supprimer la recette ?
                   </DialogTitle>
                   <p className="mt-2 text-sm/6 text-gray-500 dark:text-gray-400">
-                    Are you sure you want to delete "{recipe.title}"? This action
-                    cannot be undone.
+                    Voulez-vous vraiment supprimer « {recipe.title} » ? Cette
+                    action est irréversible.
                   </p>
                 </div>
               </div>
@@ -487,7 +482,7 @@ const RecipeDetailPage = () => {
                   disabled={deleteMutation.isPending}
                   className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-indigo-500"
                 >
-                  Cancel
+                  Annuler
                 </button>
                 <button
                   type="button"
@@ -498,12 +493,12 @@ const RecipeDetailPage = () => {
                   {deleteMutation.isPending ? (
                     <>
                       <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                      Deleting…
+                      Suppression…
                     </>
                   ) : (
                     <>
                       <TrashIcon aria-hidden="true" className="size-4" />
-                      Delete recipe
+                      Supprimer la recette
                     </>
                   )}
                 </button>

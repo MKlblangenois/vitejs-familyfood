@@ -9,9 +9,9 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { to: '/', label: 'Home', icon: HomeIcon },
-  { to: '/shopping-lists', label: 'Shopping Lists', icon: ShoppingBagIcon },
-  { to: '/profile', label: 'Profile', icon: UserIcon },
+  { to: '/recipes', label: 'Recettes', icon: HomeIcon },
+  { to: '/shopping-lists', label: 'Listes de courses', icon: ShoppingBagIcon },
+  { to: '/profile', label: 'Profil', icon: UserIcon },
 ]
 
 interface AppShellProps {
@@ -28,7 +28,7 @@ const AppShell = ({ children }: AppShellProps) => {
       </main>
 
       <nav
-        aria-label="Primary"
+        aria-label="Navigation principale"
         className="fixed inset-x-0 bottom-0 z-40 border-t border-gray-200 bg-white/90 pb-[env(safe-area-inset-bottom)] backdrop-blur dark:border-white/10 dark:bg-gray-900/90 sm:top-0 sm:bottom-auto sm:border-t-0 sm:border-b sm:pb-0 sm:pt-[env(safe-area-inset-top)] lg:inset-x-auto lg:inset-y-0 lg:left-0 lg:w-60 lg:border-r lg:border-b-0 lg:pt-0"
       >
         <ul className="mx-auto flex max-w-7xl items-stretch justify-around sm:justify-start sm:gap-2 sm:px-6 lg:mx-0 lg:h-full lg:max-w-none lg:flex-col lg:justify-start lg:gap-1 lg:px-3 lg:py-6">
@@ -36,7 +36,6 @@ const AppShell = ({ children }: AppShellProps) => {
             <li key={to} className="flex-1 sm:flex-none">
               <NavLink
                 to={to}
-                end={to === '/'}
                 className={({ isActive }) =>
                   `flex flex-col items-center gap-1 rounded-md px-4 py-3 text-xs font-medium transition-colors focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 sm:flex-row sm:gap-2 sm:py-4 sm:text-sm lg:py-3 ${
                     isActive

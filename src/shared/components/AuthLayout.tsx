@@ -11,7 +11,7 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
             Tablee
           </h1>
           <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-            Your kitchen companion
+            Votre compagnon de cuisine
           </p>
         </div>
         <div className="rounded-xl bg-white p-6 shadow-lg dark:bg-gray-800 dark:shadow-none sm:p-8">

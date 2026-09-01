@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from 'react'
+import { useMemo, useState, useCallback, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Dialog,
@@ -60,6 +60,17 @@ const AddToShoppingListModal = ({
     initialServings ?? recipe.servings,
   )
   const [success, setSuccess] = useState(false)
+
+  // Reset the form's internal state each time the dialog is opened so a
+  // previously submitted/edited state doesn't leak into the next open.
+  useEffect(() => {
+    if (open) {
+      setSelectedListId('')
+      setSelectedIngredientIds(new Set(allIngredientIds))
+      setTargetServings(initialServings ?? recipe.servings)
+      setSuccess(false)
+    }
+  }, [open, allIngredientIds, initialServings, recipe.servings])
 
   const { data: targetList, isLoading: targetListLoading } =
     useShoppingList(selectedListId)
@@ -162,13 +173,14 @@ const AddToShoppingListModal = ({
                   />
                 </div>
                 <DialogTitle className="mt-4 font-display text-lg font-semibold text-gray-900 dark:text-white">
-                  Added to shopping list
+                  Ajouté à la liste de courses
                 </DialogTitle>
                 <p className="mt-2 text-sm/6 text-gray-500 dark:text-gray-400">
-                  {summary.addedCount} item
-                  {summary.addedCount !== 1 ? 's' : ''} added
+                  {summary.addedCount} article
+                  {summary.addedCount !== 1 ? 's' : ''} ajouté
+                  {summary.addedCount !== 1 ? 's' : ''}
                   {summary.mergedCount > 0 &&
-                    `, ${summary.mergedCount} merged`}
+                    `, ${summary.mergedCount} fusionné${summary.mergedCount !== 1 ? 's' : ''}`}
                   .
                 </p>
                 <button
@@ -176,7 +188,7 @@ const AddToShoppingListModal = ({
                   onClick={onClose}
                   className="mt-6 inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
                 >
-                  Done
+                  Terminé
                 </button>
               </div>
             ) : (
@@ -185,11 +197,11 @@ const AddToShoppingListModal = ({
               // ============================================================
               <>
                 <DialogTitle className="font-display text-lg font-semibold text-gray-900 dark:text-white">
-                  Add to shopping list
+                  Ajouter à la liste de courses
                 </DialogTitle>
                 <p className="mt-2 text-sm/6 text-gray-500 dark:text-gray-400">
-                  Choose a list, adjust servings, and pick which ingredients to
-                  add.
+                  Choisissez une liste, ajustez les portions et sélectionnez les
+                  ingrédients à ajouter.
                 </p>
 
                 {/* Shopping list selector */}
@@ -198,7 +210,7 @@ const AddToShoppingListModal = ({
                     htmlFor="shopping-list-select"
                     className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                   >
-                    Shopping list
+                    Liste de courses
                   </label>
 
                   {hasNoLists ? (
@@ -208,7 +220,7 @@ const AddToShoppingListModal = ({
                         className="mx-auto size-8 text-gray-300 dark:text-gray-600"
                       />
                       <p className="mt-2 text-sm/6 text-gray-500 dark:text-gray-400">
-                        You don't have any shopping lists yet.
+                        Vous n&apos;avez pas encore de liste de courses.
                       </p>
                       <Link
                         to="/shopping-lists"
@@ -216,7 +228,7 @@ const AddToShoppingListModal = ({
                         className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
                       >
                         <PlusIcon aria-hidden="true" className="size-4" />
-                        Create a list
+                        Créer une liste
                       </Link>
                     </div>
                   ) : (
@@ -227,7 +239,7 @@ const AddToShoppingListModal = ({
                       disabled={listsLoading}
                       className="mt-1.5 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 shadow-xs focus:border-indigo-500 focus:outline-2 focus:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10 dark:bg-gray-800 dark:text-white dark:focus:border-indigo-400 dark:focus:outline-indigo-500"
                     >
-                      <option value="">Select a list…</option>
+                      <option value="">Sélectionner une liste…</option>
                       {(lists ?? []).map((list) => (
                         <option key={list.id} value={list.id}>
                           {list.title}
@@ -243,7 +255,7 @@ const AddToShoppingListModal = ({
                     htmlFor="target-servings"
                     className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                   >
-                    Servings
+                    Portions
                   </label>
                   <input
                     id="target-servings"
@@ -265,7 +277,7 @@ const AddToShoppingListModal = ({
                 <div className="mt-5">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Ingredients
+                      Ingrédients
                     </span>
                     <button
                       type="button"
@@ -273,8 +285,8 @@ const AddToShoppingListModal = ({
                       className="text-xs font-medium text-indigo-600 transition-colors hover:text-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 dark:focus-visible:outline-indigo-500"
                     >
                       {selectedIngredientIds.size === allIngredientIds.length
-                        ? 'Deselect all'
-                        : 'Select all'}
+                        ? 'Tout désélectionner'
+                        : 'Tout sélectionner'}
                     </button>
                   </div>
 
@@ -328,10 +340,11 @@ const AddToShoppingListModal = ({
                 {/* Added vs merged summary */}
                 {selectedListId && (
                   <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
-                    {summary.addedCount} item
-                    {summary.addedCount !== 1 ? 's' : ''} will be added
+                    {summary.addedCount} article
+                    {summary.addedCount !== 1 ? 's' : ''} sera ajouté
+                    {summary.addedCount !== 1 ? 's' : ''}
                     {summary.mergedCount > 0 &&
-                      `, ${summary.mergedCount} merged with existing items`}
+                      `, ${summary.mergedCount} fusionné${summary.mergedCount !== 1 ? 's' : ''} avec des articles existants`}
                     .
                   </p>
                 )}
@@ -348,7 +361,7 @@ const AddToShoppingListModal = ({
                     />
                     {mutation.error instanceof Error
                       ? mutation.error.message
-                      : 'Failed to add items. Please try again.'}
+                      : 'Échec de l’ajout des articles. Veuillez réessayer.'}
                   </p>
                 )}
 
@@ -360,7 +373,7 @@ const AddToShoppingListModal = ({
                     disabled={mutation.isPending}
                     className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-indigo-500"
                   >
-                    Cancel
+                    Annuler
                   </button>
                   <button
                     type="button"
@@ -371,12 +384,12 @@ const AddToShoppingListModal = ({
                     {mutation.isPending ? (
                       <>
                         <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                        Adding…
+                        Ajout…
                       </>
                     ) : (
                       <>
                         <PlusIcon aria-hidden="true" className="size-4" />
-                        Add to list
+                        Ajouter à la liste
                       </>
                     )}
                   </button>

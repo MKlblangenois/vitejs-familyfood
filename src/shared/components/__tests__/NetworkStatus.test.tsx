@@ -31,7 +31,7 @@ describe('NetworkStatus', () => {
     setOnline(false)
     render(<NetworkStatus />)
 
-    expect(screen.getByRole('status')).toHaveTextContent(/offline/i)
+    expect(screen.getByRole('status')).toHaveTextContent(/hors ligne/i)
   })
 
   it('clears the banner when the browser comes back online', () => {
@@ -55,6 +55,6 @@ describe('NetworkStatus', () => {
       window.dispatchEvent(new Event('offline'))
     })
 
-    expect(screen.getByRole('status')).toHaveTextContent(/offline/i)
+    expect(screen.getByRole('status')).toHaveTextContent(/hors ligne/i)
   })
 })

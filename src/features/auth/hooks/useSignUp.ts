@@ -14,7 +14,7 @@ const signUpMutation = async (
   if (error) {
     const message =
       error.message === 'User already registered'
-        ? 'An account with this email already exists.'
+        ? 'Un compte avec cet e-mail existe déjà.'
         : error.message
     throw new Error(message)
   }

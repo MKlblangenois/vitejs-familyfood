@@ -119,10 +119,10 @@ describe('RecipeDetailPage', () => {
       await screen.findByRole('heading', { name: /spaghetti carbonara/i }),
     ).toBeInTheDocument()
     expect(screen.getByText('A classic Roman pasta')).toBeInTheDocument()
-    expect(screen.getByText('Servings')).toBeInTheDocument()
+    expect(screen.getByText('Portions')).toBeInTheDocument()
 
     expect(
-      screen.getByRole('heading', { name: /ingredients/i }),
+      screen.getByRole('heading', { name: /ingrédients/i }),
     ).toBeInTheDocument()
     expect(screen.getByText('Sauce')).toBeInTheDocument()
     expect(screen.getByText('2 whole')).toBeInTheDocument()
@@ -150,7 +150,7 @@ describe('RecipeDetailPage', () => {
     expect(screen.getByText('2 whole')).toBeInTheDocument()
 
     // Increase to 5 servings → 2 × 5/4 = 2.5 → "2 ½".
-    await user.click(screen.getByRole('button', { name: /increase servings/i }))
+    await user.click(screen.getByRole('button', { name: /augmenter les portions/i }))
 
     expect(screen.getByText('2 ½ whole')).toBeInTheDocument()
     expect(screen.getByText('5')).toBeInTheDocument()
@@ -169,13 +169,13 @@ describe('RecipeDetailPage', () => {
     // successful delete result before triggering the mutation.
     chain('recipes').setResult({ data: null, error: null })
 
-    await user.click(screen.getByRole('button', { name: /delete/i }))
+    await user.click(screen.getByRole('button', { name: /supprimer/i }))
 
     expect(
-      screen.getByRole('heading', { name: /delete recipe/i }),
+      screen.getByRole('heading', { name: /supprimer la recette/i }),
     ).toBeInTheDocument()
 
-    await user.click(screen.getByRole('button', { name: /delete recipe/i }))
+    await user.click(screen.getByRole('button', { name: /supprimer la recette/i }))
 
     await waitFor(() => {
       expect(chain('recipes').delete).toHaveBeenCalled()
@@ -203,7 +203,7 @@ describe('RecipeDetailPage', () => {
     renderDetailPage()
 
     expect(
-      await screen.findByRole('heading', { name: /recipe not found/i }),
+      await screen.findByRole('heading', { name: /recette introuvable/i }),
     ).toBeInTheDocument()
   })
 
@@ -214,7 +214,7 @@ describe('RecipeDetailPage', () => {
     renderDetailPage()
 
     expect(
-      await screen.findByRole('heading', { name: /couldn't load recipe/i }),
+      await screen.findByRole('heading', { name: /impossible de charger la recette/i }),
     ).toBeInTheDocument()
   })
 })

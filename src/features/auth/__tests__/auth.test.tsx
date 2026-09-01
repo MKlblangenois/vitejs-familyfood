@@ -85,13 +85,13 @@ describe('Auth System', () => {
 
       expect(
         await screen.findByRole('heading', {
-          name: /sign in to your account/i,
+          name: /connectez-vous à votre compte/i,
         }),
       ).toBeInTheDocument()
-      expect(screen.getByLabelText('Email address')).toBeInTheDocument()
-      expect(screen.getByLabelText('Password')).toBeInTheDocument()
+      expect(screen.getByLabelText('Adresse e-mail')).toBeInTheDocument()
+      expect(screen.getByLabelText('Mot de passe')).toBeInTheDocument()
       expect(
-        screen.getByRole('button', { name: /sign in/i }),
+        screen.getByRole('button', { name: /se connecter/i }),
       ).toBeInTheDocument()
     })
 
@@ -100,12 +100,12 @@ describe('Auth System', () => {
       renderApp('/login')
 
       await screen.findByRole('heading', {
-        name: /sign in to your account/i,
+        name: /connectez-vous à votre compte/i,
       })
 
-      await user.click(screen.getByRole('button', { name: /sign in/i }))
+      await user.click(screen.getByRole('button', { name: /se connecter/i }))
 
-      expect(screen.getByText('Email is required')).toBeInTheDocument()
+      expect(screen.getByText("L'e-mail est requis")).toBeInTheDocument()
     })
 
     it('shows validation error for invalid email format', async () => {
@@ -113,15 +113,15 @@ describe('Auth System', () => {
       renderApp('/login')
 
       await screen.findByRole('heading', {
-        name: /sign in to your account/i,
+        name: /connectez-vous à votre compte/i,
       })
 
-      await user.type(screen.getByLabelText('Email address'), 'notanemail')
-      await user.type(screen.getByLabelText('Password'), 'Password1')
-      await user.click(screen.getByRole('button', { name: /sign in/i }))
+      await user.type(screen.getByLabelText('Adresse e-mail'), 'notanemail')
+      await user.type(screen.getByLabelText('Mot de passe'), 'Password1')
+      await user.click(screen.getByRole('button', { name: /se connecter/i }))
 
       expect(
-        screen.getByText('Please enter a valid email address'),
+        screen.getByText('Veuillez saisir une adresse e-mail valide'),
       ).toBeInTheDocument()
     })
 
@@ -130,12 +130,12 @@ describe('Auth System', () => {
       renderApp('/login')
 
       await screen.findByRole('heading', {
-        name: /sign in to your account/i,
+        name: /connectez-vous à votre compte/i,
       })
 
-      await user.type(screen.getByLabelText('Email address'), 'test@example.com')
-      await user.type(screen.getByLabelText('Password'), 'Password1')
-      await user.click(screen.getByRole('button', { name: /sign in/i }))
+      await user.type(screen.getByLabelText('Adresse e-mail'), 'test@example.com')
+      await user.type(screen.getByLabelText('Mot de passe'), 'Password1')
+      await user.click(screen.getByRole('button', { name: /se connecter/i }))
 
       await waitFor(() => {
         expect(mocks.signInWithPassword).toHaveBeenCalledWith({
@@ -154,16 +154,16 @@ describe('Auth System', () => {
       renderApp('/login')
 
       await screen.findByRole('heading', {
-        name: /sign in to your account/i,
+        name: /connectez-vous à votre compte/i,
       })
 
-      await user.type(screen.getByLabelText('Email address'), 'test@example.com')
-      await user.type(screen.getByLabelText('Password'), 'wrongpassword')
-      await user.click(screen.getByRole('button', { name: /sign in/i }))
+      await user.type(screen.getByLabelText('Adresse e-mail'), 'test@example.com')
+      await user.type(screen.getByLabelText('Mot de passe'), 'wrongpassword')
+      await user.click(screen.getByRole('button', { name: /se connecter/i }))
 
       expect(
         await screen.findByRole('alert'),
-      ).toHaveTextContent('Invalid email or password. Please try again.')
+      ).toHaveTextContent('E-mail ou mot de passe invalide. Veuillez réessayer.')
     })
 
     it('navigates to / on successful login', async () => {
@@ -181,15 +181,15 @@ describe('Auth System', () => {
       renderApp('/login')
 
       await screen.findByRole('heading', {
-        name: /sign in to your account/i,
+        name: /connectez-vous à votre compte/i,
       })
 
-      await user.type(screen.getByLabelText('Email address'), 'test@example.com')
-      await user.type(screen.getByLabelText('Password'), 'Password1')
-      await user.click(screen.getByRole('button', { name: /sign in/i }))
+      await user.type(screen.getByLabelText('Adresse e-mail'), 'test@example.com')
+      await user.type(screen.getByLabelText('Mot de passe'), 'Password1')
+      await user.click(screen.getByRole('button', { name: /se connecter/i }))
 
       expect(
-        await screen.findByRole('heading', { name: /welcome to tablee/i }),
+        await screen.findByRole('heading', { name: /recettes/i }),
       ).toBeInTheDocument()
     })
 
@@ -197,14 +197,14 @@ describe('Auth System', () => {
       renderApp('/login')
 
       await screen.findByRole('heading', {
-        name: /sign in to your account/i,
+        name: /connectez-vous à votre compte/i,
       })
 
       expect(
-        screen.getByRole('link', { name: /create one now/i }),
+        screen.getByRole('link', { name: /créez-en un maintenant/i }),
       ).toHaveAttribute('href', '/register')
       expect(
-        screen.getByRole('link', { name: /forgot your password/i }),
+        screen.getByRole('link', { name: /mot de passe oublié/i }),
       ).toHaveAttribute('href', '/forgot-password')
     })
   })
@@ -218,14 +218,14 @@ describe('Auth System', () => {
       renderApp('/register')
 
       expect(
-        await screen.findByRole('heading', { name: /create your account/i }),
+        await screen.findByRole('heading', { name: /créez votre compte/i }),
       ).toBeInTheDocument()
-      expect(screen.getByLabelText('Display name')).toBeInTheDocument()
-      expect(screen.getByLabelText('Email address')).toBeInTheDocument()
-      expect(screen.getByLabelText('Password')).toBeInTheDocument()
-      expect(screen.getByLabelText('Confirm password')).toBeInTheDocument()
+      expect(screen.getByLabelText('Nom d’affichage')).toBeInTheDocument()
+      expect(screen.getByLabelText('Adresse e-mail')).toBeInTheDocument()
+      expect(screen.getByLabelText('Mot de passe')).toBeInTheDocument()
+      expect(screen.getByLabelText('Confirmer le mot de passe')).toBeInTheDocument()
       expect(
-        screen.getByRole('button', { name: /create account/i }),
+        screen.getByRole('button', { name: /créer un compte/i }),
       ).toBeInTheDocument()
     })
 
@@ -233,31 +233,31 @@ describe('Auth System', () => {
       const user = userEvent.setup()
       renderApp('/register')
 
-      await screen.findByRole('heading', { name: /create your account/i })
+      await screen.findByRole('heading', { name: /créez votre compte/i })
 
-      await user.type(screen.getByLabelText('Display name'), 'Chef')
-      await user.type(screen.getByLabelText('Email address'), 'chef@example.com')
-      await user.type(screen.getByLabelText('Password'), 'Password1')
-      await user.type(screen.getByLabelText('Confirm password'), 'Password2')
-      await user.click(screen.getByRole('button', { name: /create account/i }))
+      await user.type(screen.getByLabelText('Nom d’affichage'), 'Chef')
+      await user.type(screen.getByLabelText('Adresse e-mail'), 'chef@example.com')
+      await user.type(screen.getByLabelText('Mot de passe'), 'Password1')
+      await user.type(screen.getByLabelText('Confirmer le mot de passe'), 'Password2')
+      await user.click(screen.getByRole('button', { name: /créer un compte/i }))
 
-      expect(screen.getByText('Passwords do not match')).toBeInTheDocument()
+      expect(screen.getByText('Les mots de passe ne correspondent pas')).toBeInTheDocument()
     })
 
     it('shows validation error for password shorter than 8 characters', async () => {
       const user = userEvent.setup()
       renderApp('/register')
 
-      await screen.findByRole('heading', { name: /create your account/i })
+      await screen.findByRole('heading', { name: /créez votre compte/i })
 
-      await user.type(screen.getByLabelText('Display name'), 'Chef')
-      await user.type(screen.getByLabelText('Email address'), 'chef@example.com')
-      await user.type(screen.getByLabelText('Password'), 'Ab1')
-      await user.type(screen.getByLabelText('Confirm password'), 'Ab1')
-      await user.click(screen.getByRole('button', { name: /create account/i }))
+      await user.type(screen.getByLabelText('Nom d’affichage'), 'Chef')
+      await user.type(screen.getByLabelText('Adresse e-mail'), 'chef@example.com')
+      await user.type(screen.getByLabelText('Mot de passe'), 'Ab1')
+      await user.type(screen.getByLabelText('Confirmer le mot de passe'), 'Ab1')
+      await user.click(screen.getByRole('button', { name: /créer un compte/i }))
 
       expect(
-        screen.getByText('Password must be at least 8 characters'),
+        screen.getByText('Le mot de passe doit contenir au moins 8 caractères'),
       ).toBeInTheDocument()
     })
 
@@ -265,17 +265,17 @@ describe('Auth System', () => {
       const user = userEvent.setup()
       renderApp('/register')
 
-      await screen.findByRole('heading', { name: /create your account/i })
+      await screen.findByRole('heading', { name: /créez votre compte/i })
 
-      await user.type(screen.getByLabelText('Display name'), 'Chef')
-      await user.type(screen.getByLabelText('Email address'), 'chef@example.com')
-      await user.type(screen.getByLabelText('Password'), 'password1')
-      await user.type(screen.getByLabelText('Confirm password'), 'password1')
-      await user.click(screen.getByRole('button', { name: /create account/i }))
+      await user.type(screen.getByLabelText('Nom d’affichage'), 'Chef')
+      await user.type(screen.getByLabelText('Adresse e-mail'), 'chef@example.com')
+      await user.type(screen.getByLabelText('Mot de passe'), 'password1')
+      await user.type(screen.getByLabelText('Confirmer le mot de passe'), 'password1')
+      await user.click(screen.getByRole('button', { name: /créer un compte/i }))
 
       expect(
         screen.getByText(
-          'Password must contain at least one uppercase letter',
+          'Le mot de passe doit contenir au moins une majuscule',
         ),
       ).toBeInTheDocument()
     })
@@ -284,16 +284,16 @@ describe('Auth System', () => {
       const user = userEvent.setup()
       renderApp('/register')
 
-      await screen.findByRole('heading', { name: /create your account/i })
+      await screen.findByRole('heading', { name: /créez votre compte/i })
 
-      await user.type(screen.getByLabelText('Display name'), 'Chef')
-      await user.type(screen.getByLabelText('Email address'), 'chef@example.com')
-      await user.type(screen.getByLabelText('Password'), 'Password')
-      await user.type(screen.getByLabelText('Confirm password'), 'Password')
-      await user.click(screen.getByRole('button', { name: /create account/i }))
+      await user.type(screen.getByLabelText('Nom d’affichage'), 'Chef')
+      await user.type(screen.getByLabelText('Adresse e-mail'), 'chef@example.com')
+      await user.type(screen.getByLabelText('Mot de passe'), 'Password')
+      await user.type(screen.getByLabelText('Confirmer le mot de passe'), 'Password')
+      await user.click(screen.getByRole('button', { name: /créer un compte/i }))
 
       expect(
-        screen.getByText('Password must contain at least one number'),
+        screen.getByText('Le mot de passe doit contenir au moins un chiffre'),
       ).toBeInTheDocument()
     })
 
@@ -301,16 +301,16 @@ describe('Auth System', () => {
       const user = userEvent.setup()
       renderApp('/register')
 
-      await screen.findByRole('heading', { name: /create your account/i })
+      await screen.findByRole('heading', { name: /créez votre compte/i })
 
-      await user.type(screen.getByLabelText('Display name'), 'Chef Wannabe')
+      await user.type(screen.getByLabelText('Nom d’affichage'), 'Chef Wannabe')
       await user.type(
-        screen.getByLabelText('Email address'),
+        screen.getByLabelText('Adresse e-mail'),
         'chef@example.com',
       )
-      await user.type(screen.getByLabelText('Password'), 'StrongPass1')
-      await user.type(screen.getByLabelText('Confirm password'), 'StrongPass1')
-      await user.click(screen.getByRole('button', { name: /create account/i }))
+      await user.type(screen.getByLabelText('Mot de passe'), 'StrongPass1')
+      await user.type(screen.getByLabelText('Confirmer le mot de passe'), 'StrongPass1')
+      await user.click(screen.getByRole('button', { name: /créer un compte/i }))
 
       await waitFor(() => {
         expect(mocks.signUp).toHaveBeenCalledWith({
@@ -329,20 +329,20 @@ describe('Auth System', () => {
 
       renderApp('/register')
 
-      await screen.findByRole('heading', { name: /create your account/i })
+      await screen.findByRole('heading', { name: /créez votre compte/i })
 
-      await user.type(screen.getByLabelText('Display name'), 'Chef')
+      await user.type(screen.getByLabelText('Nom d’affichage'), 'Chef')
       await user.type(
-        screen.getByLabelText('Email address'),
+        screen.getByLabelText('Adresse e-mail'),
         'existing@example.com',
       )
-      await user.type(screen.getByLabelText('Password'), 'StrongPass1')
-      await user.type(screen.getByLabelText('Confirm password'), 'StrongPass1')
-      await user.click(screen.getByRole('button', { name: /create account/i }))
+      await user.type(screen.getByLabelText('Mot de passe'), 'StrongPass1')
+      await user.type(screen.getByLabelText('Confirmer le mot de passe'), 'StrongPass1')
+      await user.click(screen.getByRole('button', { name: /créer un compte/i }))
 
       expect(
         await screen.findByRole('alert'),
-      ).toHaveTextContent('An account with this email already exists.')
+      ).toHaveTextContent('Un compte avec cet e-mail existe déjà.')
     })
 
     it('navigates to / on successful registration', async () => {
@@ -358,29 +358,29 @@ describe('Auth System', () => {
 
       renderApp('/register')
 
-      await screen.findByRole('heading', { name: /create your account/i })
+      await screen.findByRole('heading', { name: /créez votre compte/i })
 
-      await user.type(screen.getByLabelText('Display name'), 'Chef')
+      await user.type(screen.getByLabelText('Nom d’affichage'), 'Chef')
       await user.type(
-        screen.getByLabelText('Email address'),
+        screen.getByLabelText('Adresse e-mail'),
         'newuser@example.com',
       )
-      await user.type(screen.getByLabelText('Password'), 'StrongPass1')
-      await user.type(screen.getByLabelText('Confirm password'), 'StrongPass1')
-      await user.click(screen.getByRole('button', { name: /create account/i }))
+      await user.type(screen.getByLabelText('Mot de passe'), 'StrongPass1')
+      await user.type(screen.getByLabelText('Confirmer le mot de passe'), 'StrongPass1')
+      await user.click(screen.getByRole('button', { name: /créer un compte/i }))
 
       expect(
-        await screen.findByRole('heading', { name: /welcome to tablee/i }),
+        await screen.findByRole('heading', { name: /recettes/i }),
       ).toBeInTheDocument()
     })
 
     it('links to the login page', async () => {
       renderApp('/register')
 
-      await screen.findByRole('heading', { name: /create your account/i })
+      await screen.findByRole('heading', { name: /créez votre compte/i })
 
       expect(
-        screen.getByRole('link', { name: /sign in/i }),
+        screen.getByRole('link', { name: /se connecter/i }),
       ).toHaveAttribute('href', '/login')
     })
   })
@@ -394,11 +394,11 @@ describe('Auth System', () => {
       renderApp('/forgot-password')
 
       expect(
-        await screen.findByRole('heading', { name: /reset your password/i }),
+        await screen.findByRole('heading', { name: /réinitialisez votre mot de passe/i }),
       ).toBeInTheDocument()
-      expect(screen.getByLabelText('Email address')).toBeInTheDocument()
+      expect(screen.getByLabelText('Adresse e-mail')).toBeInTheDocument()
       expect(
-        screen.getByRole('button', { name: /send reset link/i }),
+        screen.getByRole('button', { name: /envoyer le lien de réinitialisation/i }),
       ).toBeInTheDocument()
     })
 
@@ -406,16 +406,16 @@ describe('Auth System', () => {
       const user = userEvent.setup()
       renderApp('/forgot-password')
 
-      await screen.findByRole('heading', { name: /reset your password/i })
+      await screen.findByRole('heading', { name: /réinitialisez votre mot de passe/i })
 
-      await user.type(screen.getByLabelText('Email address'), 'user@example.com')
-      await user.click(screen.getByRole('button', { name: /send reset link/i }))
+      await user.type(screen.getByLabelText('Adresse e-mail'), 'user@example.com')
+      await user.click(screen.getByRole('button', { name: /envoyer le lien de réinitialisation/i }))
 
       expect(
-        await screen.findByRole('heading', { name: /check your email/i }),
+        await screen.findByRole('heading', { name: /vérifiez votre e-mail/i }),
       ).toBeInTheDocument()
       expect(
-        screen.getByText(/we've sent a password reset link/i),
+        screen.getByText(/nous avons envoyé un lien de réinitialisation/i),
       ).toBeInTheDocument()
     })
 
@@ -427,10 +427,10 @@ describe('Auth System', () => {
 
       renderApp('/forgot-password')
 
-      await screen.findByRole('heading', { name: /reset your password/i })
+      await screen.findByRole('heading', { name: /réinitialisez votre mot de passe/i })
 
-      await user.type(screen.getByLabelText('Email address'), 'user@example.com')
-      await user.click(screen.getByRole('button', { name: /send reset link/i }))
+      await user.type(screen.getByLabelText('Adresse e-mail'), 'user@example.com')
+      await user.click(screen.getByRole('button', { name: /envoyer le lien de réinitialisation/i }))
 
       expect(
         await screen.findByRole('alert'),
@@ -441,34 +441,34 @@ describe('Auth System', () => {
       const user = userEvent.setup()
       renderApp('/forgot-password')
 
-      await screen.findByRole('heading', { name: /reset your password/i })
+      await screen.findByRole('heading', { name: /réinitialisez votre mot de passe/i })
 
-      await user.click(screen.getByRole('button', { name: /send reset link/i }))
+      await user.click(screen.getByRole('button', { name: /envoyer le lien de réinitialisation/i }))
 
-      expect(screen.getByText('Email is required')).toBeInTheDocument()
+      expect(screen.getByText("L'e-mail est requis")).toBeInTheDocument()
     })
 
     it('shows validation error for invalid email format', async () => {
       const user = userEvent.setup()
       renderApp('/forgot-password')
 
-      await screen.findByRole('heading', { name: /reset your password/i })
+      await screen.findByRole('heading', { name: /réinitialisez votre mot de passe/i })
 
-      await user.type(screen.getByLabelText('Email address'), 'notanemail')
-      await user.click(screen.getByRole('button', { name: /send reset link/i }))
+      await user.type(screen.getByLabelText('Adresse e-mail'), 'notanemail')
+      await user.click(screen.getByRole('button', { name: /envoyer le lien de réinitialisation/i }))
 
       expect(
-        screen.getByText('Please enter a valid email address'),
+        screen.getByText('Veuillez saisir une adresse e-mail valide'),
       ).toBeInTheDocument()
     })
 
     it('links back to the login page', async () => {
       renderApp('/forgot-password')
 
-      await screen.findByRole('heading', { name: /reset your password/i })
+      await screen.findByRole('heading', { name: /réinitialisez votre mot de passe/i })
 
       expect(
-        screen.getByRole('link', { name: /sign in/i }),
+        screen.getByRole('link', { name: /se connecter/i }),
       ).toHaveAttribute('href', '/login')
     })
   })
@@ -482,14 +482,14 @@ describe('Auth System', () => {
       renderApp('/reset-password')
 
       expect(
-        await screen.findByRole('heading', { name: /set new password/i }),
+        await screen.findByRole('heading', { name: /définir un nouveau mot de passe/i }),
       ).toBeInTheDocument()
-      expect(screen.getByLabelText('New password')).toBeInTheDocument()
+      expect(screen.getByLabelText('Nouveau mot de passe')).toBeInTheDocument()
       expect(
-        screen.getByLabelText('Confirm new password'),
+        screen.getByLabelText('Confirmer le nouveau mot de passe'),
       ).toBeInTheDocument()
       expect(
-        screen.getByRole('button', { name: /update password/i }),
+        screen.getByRole('button', { name: /mettre à jour le mot de passe/i }),
       ).toBeInTheDocument()
     })
 
@@ -497,30 +497,30 @@ describe('Auth System', () => {
       const user = userEvent.setup()
       renderApp('/reset-password')
 
-      await screen.findByRole('heading', { name: /set new password/i })
+      await screen.findByRole('heading', { name: /définir un nouveau mot de passe/i })
 
-      await user.type(screen.getByLabelText('New password'), 'NewPass1')
-      await user.type(screen.getByLabelText('Confirm new password'), 'NewPass2')
-      await user.click(screen.getByRole('button', { name: /update password/i }))
+      await user.type(screen.getByLabelText('Nouveau mot de passe'), 'NewPass1')
+      await user.type(screen.getByLabelText('Confirmer le nouveau mot de passe'), 'NewPass2')
+      await user.click(screen.getByRole('button', { name: /mettre à jour le mot de passe/i }))
 
-      expect(screen.getByText('Passwords do not match')).toBeInTheDocument()
+      expect(screen.getByText('Les mots de passe ne correspondent pas')).toBeInTheDocument()
     })
 
     it('shows success state after updating password', async () => {
       const user = userEvent.setup()
       renderApp('/reset-password')
 
-      await screen.findByRole('heading', { name: /set new password/i })
+      await screen.findByRole('heading', { name: /définir un nouveau mot de passe/i })
 
-      await user.type(screen.getByLabelText('New password'), 'NewPass1')
-      await user.type(screen.getByLabelText('Confirm new password'), 'NewPass1')
-      await user.click(screen.getByRole('button', { name: /update password/i }))
+      await user.type(screen.getByLabelText('Nouveau mot de passe'), 'NewPass1')
+      await user.type(screen.getByLabelText('Confirmer le nouveau mot de passe'), 'NewPass1')
+      await user.click(screen.getByRole('button', { name: /mettre à jour le mot de passe/i }))
 
       expect(
-        await screen.findByRole('heading', { name: /password updated/i }),
+        await screen.findByRole('heading', { name: /mot de passe mis à jour/i }),
       ).toBeInTheDocument()
       expect(
-        screen.getByText(/your password has been successfully changed/i),
+        screen.getByText(/votre mot de passe a été modifié avec succès/i),
       ).toBeInTheDocument()
     })
 
@@ -532,11 +532,11 @@ describe('Auth System', () => {
 
       renderApp('/reset-password')
 
-      await screen.findByRole('heading', { name: /set new password/i })
+      await screen.findByRole('heading', { name: /définir un nouveau mot de passe/i })
 
-      await user.type(screen.getByLabelText('New password'), 'NewPass1')
-      await user.type(screen.getByLabelText('Confirm new password'), 'NewPass1')
-      await user.click(screen.getByRole('button', { name: /update password/i }))
+      await user.type(screen.getByLabelText('Nouveau mot de passe'), 'NewPass1')
+      await user.type(screen.getByLabelText('Confirmer le nouveau mot de passe'), 'NewPass1')
+      await user.click(screen.getByRole('button', { name: /mettre à jour le mot de passe/i }))
 
       expect(
         await screen.findByRole('alert'),
@@ -547,14 +547,14 @@ describe('Auth System', () => {
       const user = userEvent.setup()
       renderApp('/reset-password')
 
-      await screen.findByRole('heading', { name: /set new password/i })
+      await screen.findByRole('heading', { name: /définir un nouveau mot de passe/i })
 
-      await user.type(screen.getByLabelText('New password'), 'short')
-      await user.type(screen.getByLabelText('Confirm new password'), 'short')
-      await user.click(screen.getByRole('button', { name: /update password/i }))
+      await user.type(screen.getByLabelText('Nouveau mot de passe'), 'short')
+      await user.type(screen.getByLabelText('Confirmer le nouveau mot de passe'), 'short')
+      await user.click(screen.getByRole('button', { name: /mettre à jour le mot de passe/i }))
 
       expect(
-        screen.getByText('Password must be at least 8 characters'),
+        screen.getByText('Le mot de passe doit contenir au moins 8 caractères'),
       ).toBeInTheDocument()
     })
   })
@@ -569,7 +569,7 @@ describe('Auth System', () => {
 
       expect(
         await screen.findByRole('heading', {
-          name: /sign in to your account/i,
+          name: /connectez-vous à votre compte/i,
         }),
       ).toBeInTheDocument()
     })
@@ -587,7 +587,7 @@ describe('Auth System', () => {
       renderApp('/')
 
       expect(
-        await screen.findByRole('heading', { name: /welcome to tablee/i }),
+        await screen.findByRole('heading', { name: /recettes/i }),
       ).toBeInTheDocument()
     })
 
@@ -596,7 +596,7 @@ describe('Auth System', () => {
 
       expect(
         await screen.findByRole('heading', {
-          name: /sign in to your account/i,
+          name: /connectez-vous à votre compte/i,
         }),
       ).toBeInTheDocument()
     })
@@ -615,7 +615,7 @@ describe('Auth System', () => {
 
       // The AppShell navigation should be visible for an authenticated user
       expect(
-        await screen.findByRole('navigation', { name: /primary/i }),
+        await screen.findByRole('navigation', { name: /navigation principale/i }),
       ).toBeInTheDocument()
     })
   })

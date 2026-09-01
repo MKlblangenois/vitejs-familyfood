@@ -71,7 +71,7 @@ function ItemRow({
         type="button"
         onClick={handleToggle}
         disabled={toggleMutation.isPending}
-        aria-label={item.checked ? `Uncheck "${item.name}"` : `Check "${item.name}"`}
+        aria-label={item.checked ? `Décocher « ${item.name} »` : `Cocher « ${item.name} »`}
         className={`flex size-6 shrink-0 items-center justify-center rounded-md border-2 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:focus-visible:outline-indigo-500 ${
           item.checked
             ? 'border-indigo-600 bg-indigo-600 text-white dark:border-indigo-400 dark:bg-indigo-400'
@@ -108,7 +108,7 @@ function ItemRow({
         <button
           type="button"
           onClick={() => onEdit(item)}
-          aria-label={`Edit "${item.name}"`}
+          aria-label={`Modifier « ${item.name} »`}
           className="rounded-md p-1 text-gray-400 transition-colors hover:text-gray-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:text-gray-500 dark:hover:text-gray-300 dark:focus-visible:outline-indigo-500"
         >
           <PencilIcon aria-hidden="true" className="size-4" />
@@ -116,7 +116,7 @@ function ItemRow({
         <button
           type="button"
           onClick={() => onDelete(item)}
-          aria-label={`Delete "${item.name}"`}
+          aria-label={`Supprimer « ${item.name} »`}
           className="rounded-md p-1 text-gray-400 transition-colors hover:text-red-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 dark:text-gray-500 dark:hover:text-red-400 dark:focus-visible:outline-red-500"
         >
           <TrashIcon aria-hidden="true" className="size-4" />
@@ -170,16 +170,16 @@ function AddItemRow({ listId }: { listId: string }) {
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Item name"
-          aria-label="Item name"
+          placeholder="Nom de l’article"
+          aria-label="Nom de l’article"
           className="flex-1 min-w-0 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-xs placeholder:text-gray-400 focus:border-indigo-500 focus:outline-2 focus:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:outline-indigo-500"
         />
         <input
           type="number"
           value={quantity}
           onChange={(e) => setQuantity(e.target.value)}
-          placeholder="Qty"
-          aria-label="Quantity"
+          placeholder="Qté"
+          aria-label="Quantité"
           min="0"
           step="any"
           className="w-20 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-xs placeholder:text-gray-400 focus:border-indigo-500 focus:outline-2 focus:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:outline-indigo-500"
@@ -188,8 +188,8 @@ function AddItemRow({ listId }: { listId: string }) {
           type="text"
           value={unit}
           onChange={(e) => setUnit(e.target.value)}
-          placeholder="Unit"
-          aria-label="Unit"
+          placeholder="Unité"
+          aria-label="Unité"
           className="w-20 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-xs placeholder:text-gray-400 focus:border-indigo-500 focus:outline-2 focus:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:outline-indigo-500"
         />
       </div>
@@ -201,12 +201,12 @@ function AddItemRow({ listId }: { listId: string }) {
         {addItemMutation.isPending ? (
           <>
             <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-            Adding…
+            Ajout…
           </>
         ) : (
           <>
             <PlusIcon aria-hidden="true" className="size-4" />
-            Add item
+            Ajouter un article
           </>
         )}
       </button>
@@ -240,11 +240,11 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
         className="size-12 text-red-500 dark:text-red-400"
       />
       <h2 className="mt-4 font-display text-xl font-semibold text-gray-900 dark:text-white">
-        Couldn't load shopping list
+        Impossible de charger la liste de courses
       </h2>
       <p className="mt-2 max-w-sm text-sm/6 text-gray-500 dark:text-gray-400">
-        Something went wrong while loading this list. Check your connection and
-        try again.
+        Une erreur est survenue lors du chargement de cette liste. Vérifiez
+        votre connexion et réessayez.
       </p>
       <button
         type="button"
@@ -252,7 +252,7 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
         className="mt-6 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
       >
         <ArrowPathIcon aria-hidden="true" className="size-4" />
-        Try again
+        Réessayer
       </button>
     </div>
   )
@@ -266,17 +266,17 @@ function NotFoundState() {
         className="size-16 text-gray-300 dark:text-gray-600"
       />
       <h2 className="mt-6 font-display text-2xl font-bold text-gray-900 dark:text-white">
-        List not found
+        Liste introuvable
       </h2>
       <p className="mt-2 max-w-sm text-sm/6 text-gray-500 dark:text-gray-400">
-        This shopping list may have been deleted or doesn't exist.
+        Cette liste de courses a peut-être été supprimée ou n&apos;existe pas.
       </p>
       <Link
         to="/shopping-lists"
         className="mt-6 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
       >
         <ArrowLeftIcon aria-hidden="true" className="size-4" />
-        Back to lists
+        Retour aux listes
       </Link>
     </div>
   )
@@ -449,7 +449,7 @@ const ShoppingListDetailPage = () => {
         className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
       >
         <ArrowLeftIcon aria-hidden="true" className="size-4" />
-        All lists
+        Toutes les listes
       </Link>
 
       {/* Title + actions */}
@@ -472,7 +472,7 @@ const ShoppingListDetailPage = () => {
                 type="button"
                 onClick={saveTitle}
                 disabled={updateListMutation.isPending}
-                aria-label="Save title"
+                aria-label="Enregistrer le titre"
                 className="inline-flex size-10 items-center justify-center rounded-lg bg-indigo-600 text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
               >
                 <CheckIcon aria-hidden="true" className="size-5" />
@@ -480,7 +480,7 @@ const ShoppingListDetailPage = () => {
               <button
                 type="button"
                 onClick={() => setIsTitleEditing(false)}
-                aria-label="Cancel editing title"
+                aria-label="Annuler la modification du titre"
                 className="inline-flex size-10 items-center justify-center rounded-lg border border-gray-300 bg-white text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-indigo-500"
               >
                 <XMarkIcon aria-hidden="true" className="size-5" />
@@ -494,7 +494,7 @@ const ShoppingListDetailPage = () => {
               <button
                 type="button"
                 onClick={startEditTitle}
-                aria-label="Edit title"
+                aria-label="Modifier le titre"
                 className="mt-1 rounded-md p-1 text-gray-400 transition-colors hover:text-gray-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:text-gray-500 dark:hover:text-gray-300 dark:focus-visible:outline-indigo-500"
               >
                 <PencilIcon aria-hidden="true" className="size-5" />
@@ -511,10 +511,10 @@ const ShoppingListDetailPage = () => {
                   : 'bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-400'
               }`}
             >
-              {isOwner ? 'Owner' : 'Editor'}
+              {isOwner ? 'Propriétaire' : 'Éditeur'}
             </span>
             <span className="text-xs text-gray-400 dark:text-gray-500">
-              {members.length} member{members.length !== 1 ? 's' : ''}
+              {members.length} membre{members.length !== 1 ? 's' : ''}
             </span>
           </div>
         </div>
@@ -527,7 +527,7 @@ const ShoppingListDetailPage = () => {
               className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-indigo-500"
             >
               <UserGroupIcon aria-hidden="true" className="size-4" />
-              Share
+              Partager
             </button>
           )}
           {isOwner && (
@@ -537,7 +537,7 @@ const ShoppingListDetailPage = () => {
               className="inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-600 shadow-xs transition-colors hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 dark:border-red-500/20 dark:bg-white/5 dark:text-red-400 dark:hover:bg-red-500/10 dark:focus-visible:outline-red-500"
             >
               <TrashIcon aria-hidden="true" className="size-4" />
-              Delete
+              Supprimer
             </button>
           )}
         </div>
@@ -546,7 +546,7 @@ const ShoppingListDetailPage = () => {
       {/* Add item */}
       <section aria-labelledby="add-item-heading" className="mb-6">
         <h2 id="add-item-heading" className="sr-only">
-          Add item
+          Ajouter un article
         </h2>
         <AddItemRow listId={list.id} />
       </section>
@@ -557,7 +557,7 @@ const ShoppingListDetailPage = () => {
           id="items-heading"
           className="mb-4 font-display text-xl font-bold text-gray-900 dark:text-white"
         >
-          Items
+          Articles
           {items.length > 0 && (
             <span className="ml-2 text-sm font-normal text-gray-400 dark:text-gray-500">
               {checkedItems.length}/{items.length}
@@ -572,7 +572,8 @@ const ShoppingListDetailPage = () => {
               className="mx-auto size-10 text-gray-300 dark:text-gray-600"
             />
             <p className="mt-3 text-sm/6 text-gray-500 dark:text-gray-400">
-              No items yet. Add your first item above.
+              Aucun article pour le moment. Ajoutez votre premier article
+              ci-dessus.
             </p>
           </div>
         ) : (
@@ -596,7 +597,7 @@ const ShoppingListDetailPage = () => {
             {checkedItems.length > 0 && (
               <div>
                 <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-                  Completed
+                  Terminés
                 </h3>
                 <ul className="space-y-2" role="list">
                   {checkedItems.map((item) => (
@@ -632,11 +633,12 @@ const ShoppingListDetailPage = () => {
               className="relative w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left shadow-xl transition-all data-closed:scale-95 data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-gray-800 sm:p-8"
             >
               <DialogTitle className="font-display text-lg font-semibold text-gray-900 dark:text-white">
-                Share list
+                Partager la liste
               </DialogTitle>
               <p className="mt-2 text-sm/6 text-gray-500 dark:text-gray-400">
-                Add members by their user ID. Currently, adding by email is not
-                supported (email is not accessible via RLS).
+                Ajoutez des membres avec leur identifiant utilisateur.
+                L&apos;ajout par e-mail n&apos;est actuellement pas pris en charge
+                (l&apos;e-mail n&apos;est pas accessible via RLS).
               </p>
 
               {/* Add member form */}
@@ -645,8 +647,8 @@ const ShoppingListDetailPage = () => {
                   type="text"
                   value={shareUserId}
                   onChange={(e) => setShareUserId(e.target.value)}
-                  placeholder="User ID"
-                  aria-label="User ID to add as member"
+                  placeholder="Identifiant utilisateur"
+                  aria-label="Identifiant utilisateur à ajouter comme membre"
                   className="flex-1 min-w-0 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-xs placeholder:text-gray-400 focus:border-indigo-500 focus:outline-2 focus:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:outline-indigo-500"
                 />
                 <button
@@ -660,7 +662,7 @@ const ShoppingListDetailPage = () => {
                   ) : (
                     <>
                       <UserPlusIcon aria-hidden="true" className="size-4" />
-                      Add
+                      Ajouter
                     </>
                   )}
                 </button>
@@ -668,14 +670,15 @@ const ShoppingListDetailPage = () => {
 
               {addMemberMutation.isError && (
                 <p className="mt-2 text-sm text-red-600 dark:text-red-400">
-                  Failed to add member. Check the user ID and try again.
+                  Échec de l&apos;ajout du membre. Vérifiez l&apos;identifiant
+                  utilisateur et réessayez.
                 </p>
               )}
 
               {/* Current members */}
               <div className="mt-6">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Current members
+                  Membres actuels
                 </h3>
                 <ul className="mt-2 divide-y divide-gray-100 dark:divide-white/10" role="list">
                   {members.map((member) => (
@@ -701,7 +704,7 @@ const ShoppingListDetailPage = () => {
                           type="button"
                           onClick={() => handleRemoveMember(member)}
                           disabled={removeMemberMutation.isPending}
-                          aria-label={`Remove member ${member.user_id.slice(0, 8)}`}
+                          aria-label={`Retirer le membre ${member.user_id.slice(0, 8)}`}
                           className="rounded-md p-1 text-gray-400 transition-colors hover:text-red-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-500 dark:hover:text-red-400 dark:focus-visible:outline-red-500"
                         >
                           <XMarkIcon aria-hidden="true" className="size-4" />
@@ -718,7 +721,7 @@ const ShoppingListDetailPage = () => {
                   onClick={() => setIsShareOpen(false)}
                   className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-indigo-500"
                 >
-                  Done
+                  Terminé
                 </button>
               </div>
             </DialogPanel>
@@ -743,7 +746,7 @@ const ShoppingListDetailPage = () => {
               className="relative w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left shadow-xl transition-all data-closed:scale-95 data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-gray-800 sm:p-8"
             >
               <DialogTitle className="font-display text-lg font-semibold text-gray-900 dark:text-white">
-                Edit item
+                Modifier l&apos;article
               </DialogTitle>
 
               <div className="mt-4 space-y-3">
@@ -752,7 +755,7 @@ const ShoppingListDetailPage = () => {
                     htmlFor="edit-item-name"
                     className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                   >
-                    Name
+                    Nom
                   </label>
                   <input
                     id="edit-item-name"
@@ -768,7 +771,7 @@ const ShoppingListDetailPage = () => {
                       htmlFor="edit-item-quantity"
                       className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                     >
-                      Quantity
+                      Quantité
                     </label>
                     <input
                       id="edit-item-quantity"
@@ -785,7 +788,7 @@ const ShoppingListDetailPage = () => {
                       htmlFor="edit-item-unit"
                       className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                     >
-                      Unit
+                      Unité
                     </label>
                     <input
                       id="edit-item-unit"
@@ -805,7 +808,7 @@ const ShoppingListDetailPage = () => {
                   disabled={updateItemMutation.isPending}
                   className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-indigo-500"
                 >
-                  Cancel
+                  Annuler
                 </button>
                 <button
                   type="button"
@@ -816,12 +819,12 @@ const ShoppingListDetailPage = () => {
                   {updateItemMutation.isPending ? (
                     <>
                       <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                      Saving…
+                      Enregistrement…
                     </>
                   ) : (
                     <>
                       <CheckIcon aria-hidden="true" className="size-4" />
-                      Save
+                      Enregistrer
                     </>
                   )}
                 </button>
@@ -856,11 +859,11 @@ const ShoppingListDetailPage = () => {
                 </div>
                 <div className="flex-1">
                   <DialogTitle className="font-display text-lg font-semibold text-gray-900 dark:text-white">
-                    Delete item?
+                    Supprimer l&apos;article ?
                   </DialogTitle>
                   <p className="mt-2 text-sm/6 text-gray-500 dark:text-gray-400">
-                    Are you sure you want to delete &quot;{deletingItem?.name}
-                    &quot;? This action cannot be undone.
+                    Voulez-vous vraiment supprimer « {deletingItem?.name} » ?
+                    Cette action est irréversible.
                   </p>
                 </div>
               </div>
@@ -872,7 +875,7 @@ const ShoppingListDetailPage = () => {
                   disabled={deleteItemMutation.isPending}
                   className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-indigo-500"
                 >
-                  Cancel
+                  Annuler
                 </button>
                 <button
                   type="button"
@@ -883,12 +886,12 @@ const ShoppingListDetailPage = () => {
                   {deleteItemMutation.isPending ? (
                     <>
                       <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                      Deleting…
+                      Suppression…
                     </>
                   ) : (
                     <>
                       <TrashIcon aria-hidden="true" className="size-4" />
-                      Delete item
+                      Supprimer l&apos;article
                     </>
                   )}
                 </button>
@@ -923,12 +926,12 @@ const ShoppingListDetailPage = () => {
                 </div>
                 <div className="flex-1">
                   <DialogTitle className="font-display text-lg font-semibold text-gray-900 dark:text-white">
-                    Delete list?
+                    Supprimer la liste ?
                   </DialogTitle>
                   <p className="mt-2 text-sm/6 text-gray-500 dark:text-gray-400">
-                    Are you sure you want to delete &quot;{list.title}&quot;? All
-                    items and members will be removed. This action cannot be
-                    undone.
+                    Voulez-vous vraiment supprimer « {list.title} » ? Tous les
+                    articles et membres seront supprimés. Cette action est
+                    irréversible.
                   </p>
                 </div>
               </div>
@@ -940,7 +943,7 @@ const ShoppingListDetailPage = () => {
                   disabled={deleteListMutation.isPending}
                   className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-indigo-500"
                 >
-                  Cancel
+                  Annuler
                 </button>
                 <button
                   type="button"
@@ -951,12 +954,12 @@ const ShoppingListDetailPage = () => {
                   {deleteListMutation.isPending ? (
                     <>
                       <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                      Deleting…
+                      Suppression…
                     </>
                   ) : (
                     <>
                       <TrashIcon aria-hidden="true" className="size-4" />
-                      Delete list
+                      Supprimer la liste
                     </>
                   )}
                 </button>

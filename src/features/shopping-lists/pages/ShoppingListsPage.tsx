@@ -61,7 +61,7 @@ function ListCard({
                 : 'bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-400'
             }`}
           >
-            {isOwner ? 'Owner' : 'Member'}
+            {isOwner ? 'Propriétaire' : 'Membre'}
           </span>
           <button
             type="button"
@@ -70,7 +70,7 @@ function ListCard({
               e.stopPropagation()
               onRename(list)
             }}
-            aria-label={`Rename "${list.title}"`}
+            aria-label={`Renommer « ${list.title} »`}
             className="rounded-md p-1 text-gray-400 opacity-0 transition-opacity hover:text-gray-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 group-hover:opacity-100 dark:text-gray-500 dark:hover:text-gray-300 dark:focus-visible:outline-indigo-500"
           >
             <PencilIcon aria-hidden="true" className="size-4" />
@@ -82,7 +82,7 @@ function ListCard({
               e.stopPropagation()
               onDelete(list)
             }}
-            aria-label={`Delete "${list.title}"`}
+            aria-label={`Supprimer « ${list.title} »`}
             className="rounded-md p-1 text-gray-400 opacity-0 transition-opacity hover:text-red-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 group-hover:opacity-100 dark:text-gray-500 dark:hover:text-red-400 dark:focus-visible:outline-red-500"
           >
             <TrashIcon aria-hidden="true" className="size-4" />
@@ -99,7 +99,7 @@ function ListCard({
         <div className="mt-auto flex items-center gap-3 pt-2 text-xs text-gray-400 dark:text-gray-500">
           <span className="inline-flex items-center gap-1">
             <UserGroupIcon aria-hidden="true" className="size-4" />
-            Shared
+            Partagée
           </span>
         </div>
       </div>
@@ -137,11 +137,11 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
         className="size-12 text-red-500 dark:text-red-400"
       />
       <h2 className="mt-4 font-display text-xl font-semibold text-gray-900 dark:text-white">
-        Something went wrong
+        Une erreur est survenue
       </h2>
       <p className="mt-2 max-w-sm text-sm/6 text-gray-500 dark:text-gray-400">
-        We couldn't load your shopping lists. Please check your connection and
-        try again.
+        Nous n&apos;avons pas pu charger vos listes de courses. Veuillez vérifier
+        votre connexion et réessayer.
       </p>
       <button
         type="button"
@@ -149,7 +149,7 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
         className="mt-6 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
       >
         <ArrowPathIcon aria-hidden="true" className="size-4" />
-        Try again
+        Réessayer
       </button>
     </div>
   )
@@ -165,11 +165,11 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
         />
       </div>
       <h2 className="mt-6 font-display text-2xl font-bold text-gray-900 dark:text-white">
-        No shopping lists yet
+        Aucune liste de courses pour le moment
       </h2>
       <p className="mt-2 max-w-sm text-sm/6 text-gray-500 dark:text-gray-400">
-        Create your first shopping list to start tracking ingredients and
-        collaborating with others.
+        Créez votre première liste de courses pour commencer à suivre vos
+        ingrédients et collaborer avec d&apos;autres.
       </p>
       <button
         type="button"
@@ -177,7 +177,7 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
         className="mt-6 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
       >
         <PlusIcon aria-hidden="true" className="size-5" />
-        Create your first list
+        Créer votre première liste
       </button>
     </div>
   )
@@ -275,7 +275,7 @@ const ShoppingListsPage = () => {
       {/* Header */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="font-display text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
-          Shopping Lists
+          Listes de courses
         </h1>
 
         <button
@@ -284,7 +284,7 @@ const ShoppingListsPage = () => {
           className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
         >
           <PlusIcon aria-hidden="true" className="size-5" />
-          New List
+          Nouvelle liste
         </button>
       </div>
 
@@ -292,7 +292,7 @@ const ShoppingListsPage = () => {
       {!isError && (
         <div className="relative mb-6">
           <label htmlFor="list-search" className="sr-only">
-            Search shopping lists
+            Rechercher des listes de courses
           </label>
           <ShoppingBagIcon
             aria-hidden="true"
@@ -301,7 +301,7 @@ const ShoppingListsPage = () => {
           <input
             id="list-search"
             type="text"
-            placeholder="Search lists…"
+            placeholder="Rechercher des listes…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="block w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-4 text-sm text-gray-900 shadow-xs placeholder:text-gray-400 focus:border-indigo-500 focus:outline-2 focus:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:outline-indigo-500"
@@ -344,7 +344,7 @@ const ShoppingListsPage = () => {
               className="size-10 text-gray-300 dark:text-gray-600"
             />
             <p className="mt-4 text-sm/6 text-gray-500 dark:text-gray-400">
-              No lists match &quot;{search}&quot;
+              Aucune liste ne correspond à « {search} »
             </p>
           </div>
         )}
@@ -353,7 +353,7 @@ const ShoppingListsPage = () => {
       <button
         type="button"
         onClick={openCreateDialog}
-        aria-label="New List"
+        aria-label="Nouvelle liste"
         className="fixed bottom-20 right-5 z-30 flex size-14 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:hidden dark:bg-indigo-500 dark:focus-visible:outline-indigo-400"
       >
         <PlusIcon aria-hidden="true" className="size-6" />
@@ -376,10 +376,10 @@ const ShoppingListsPage = () => {
               className="relative w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left shadow-xl transition-all data-closed:scale-95 data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-gray-800 sm:p-8"
             >
               <DialogTitle className="font-display text-lg font-semibold text-gray-900 dark:text-white">
-                New shopping list
+                Nouvelle liste de courses
               </DialogTitle>
               <p className="mt-2 text-sm/6 text-gray-500 dark:text-gray-400">
-                Give your list a name to get started.
+                Donnez un nom à votre liste pour commencer.
               </p>
 
               <div className="mt-4">
@@ -387,7 +387,7 @@ const ShoppingListsPage = () => {
                   htmlFor="new-list-title"
                   className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >
-                  List name
+                  Nom de la liste
                 </label>
                 <input
                   id="new-list-title"
@@ -397,7 +397,7 @@ const ShoppingListsPage = () => {
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') handleCreate()
                   }}
-                  placeholder="e.g. Weekly Groceries"
+                  placeholder="p. ex. Courses de la semaine"
                   autoFocus
                   className="mt-1.5 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 shadow-xs placeholder:text-gray-400 focus:border-indigo-500 focus:outline-2 focus:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:outline-indigo-500"
                 />
@@ -410,7 +410,7 @@ const ShoppingListsPage = () => {
                   disabled={createMutation.isPending}
                   className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-indigo-500"
                 >
-                  Cancel
+                  Annuler
                 </button>
                 <button
                   type="button"
@@ -421,10 +421,10 @@ const ShoppingListsPage = () => {
                   {createMutation.isPending ? (
                     <>
                       <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                      Creating…
+                      Création…
                     </>
                   ) : (
-                    'Create list'
+                    'Créer la liste'
                   )}
                 </button>
               </div>
@@ -450,7 +450,7 @@ const ShoppingListsPage = () => {
               className="relative w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left shadow-xl transition-all data-closed:scale-95 data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-gray-800 sm:p-8"
             >
               <DialogTitle className="font-display text-lg font-semibold text-gray-900 dark:text-white">
-                Rename list
+                Renommer la liste
               </DialogTitle>
 
               <div className="mt-4">
@@ -458,7 +458,7 @@ const ShoppingListsPage = () => {
                   htmlFor="rename-list-title"
                   className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >
-                  List name
+                  Nom de la liste
                 </label>
                 <input
                   id="rename-list-title"
@@ -480,7 +480,7 @@ const ShoppingListsPage = () => {
                   disabled={updateMutation.isPending}
                   className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-indigo-500"
                 >
-                  Cancel
+                  Annuler
                 </button>
                 <button
                   type="button"
@@ -495,12 +495,12 @@ const ShoppingListsPage = () => {
                   {updateMutation.isPending ? (
                     <>
                       <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                      Renaming…
+                      Renommage…
                     </>
                   ) : (
                     <>
                       <CheckIcon aria-hidden="true" className="size-4" />
-                      Rename
+                      Renommer
                     </>
                   )}
                 </button>
@@ -535,11 +535,11 @@ const ShoppingListsPage = () => {
                 </div>
                 <div className="flex-1">
                   <DialogTitle className="font-display text-lg font-semibold text-gray-900 dark:text-white">
-                    Delete list?
+                    Supprimer la liste ?
                   </DialogTitle>
                   <p className="mt-2 text-sm/6 text-gray-500 dark:text-gray-400">
-                    Are you sure you want to delete &quot;{deleteTarget?.title}
-                    &quot;? This action cannot be undone.
+                    Voulez-vous vraiment supprimer « {deleteTarget?.title} » ?
+                    Cette action est irréversible.
                   </p>
                 </div>
               </div>
@@ -551,7 +551,7 @@ const ShoppingListsPage = () => {
                   disabled={deleteMutation.isPending}
                   className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-indigo-500"
                 >
-                  Cancel
+                  Annuler
                 </button>
                 <button
                   type="button"
@@ -562,12 +562,12 @@ const ShoppingListsPage = () => {
                   {deleteMutation.isPending ? (
                     <>
                       <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                      Deleting…
+                      Suppression…
                     </>
                   ) : (
                     <>
                       <TrashIcon aria-hidden="true" className="size-4" />
-                      Delete list
+                      Supprimer la liste
                     </>
                   )}
                 </button>
