@@ -619,7 +619,10 @@ const ShoppingListDetailPage = () => {
       {/* Share / member management dialog */}
       <Dialog
         open={isShareOpen}
-        onClose={() => setIsShareOpen(false)}
+        onClose={() => {
+          setIsShareOpen(false)
+          setShareUserId('')
+        }}
         className="relative z-50"
       >
         <DialogBackdrop

@@ -341,7 +341,8 @@ const AddToShoppingListModal = ({
                 {selectedListId && (
                   <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
                     {summary.addedCount} article
-                    {summary.addedCount !== 1 ? 's' : ''} sera ajouté
+                    {summary.addedCount !== 1 ? 's' : ''}{' '}
+                    {summary.addedCount !== 1 ? 'seront' : 'sera'} ajouté
                     {summary.addedCount !== 1 ? 's' : ''}
                     {summary.mergedCount > 0 &&
                       `, ${summary.mergedCount} fusionné${summary.mergedCount !== 1 ? 's' : ''} avec des articles existants`}

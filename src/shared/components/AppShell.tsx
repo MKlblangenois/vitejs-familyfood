@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import { HomeIcon, ShoppingBagIcon, UserIcon } from '@heroicons/react/24/outline'
 import NetworkStatus from './NetworkStatus'
 
@@ -19,6 +19,7 @@ interface AppShellProps {
 }
 
 const AppShell = ({ children }: AppShellProps) => {
+  const location = useLocation()
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <NetworkStatus />
@@ -36,25 +37,31 @@ const AppShell = ({ children }: AppShellProps) => {
             <li key={to} className="flex-1 sm:flex-none">
               <NavLink
                 to={to}
-                className={({ isActive }) =>
-                  `flex flex-col items-center gap-1 rounded-md px-4 py-3 text-xs font-medium transition-colors focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 sm:flex-row sm:gap-2 sm:py-4 sm:text-sm lg:py-3 ${
-                    isActive
+                className={({ isActive }) => {
+                  const active =
+                    isActive || (to === '/recipes' && location.pathname === '/')
+                  return `flex flex-col items-center gap-1 rounded-md px-4 py-3 text-xs font-medium transition-colors focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 sm:flex-row sm:gap-2 sm:py-4 sm:text-sm lg:py-3 ${
+                    active
                       ? 'text-indigo-600 dark:text-indigo-400'
                       : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'
                   }`
-                }
+                }}
               >
-                {({ isActive }) => (
-                  <>
-                    <Icon
-                      aria-hidden="true"
-                      className={`size-6 sm:size-5 ${
-                        isActive ? 'text-indigo-600 dark:text-indigo-400' : ''
-                      }`}
-                    />
-                    <span className="sr-only sm:not-sr-only">{label}</span>
-                  </>
-                )}
+                {({ isActive }) => {
+                  const active =
+                    isActive || (to === '/recipes' && location.pathname === '/')
+                  return (
+                    <>
+                      <Icon
+                        aria-hidden="true"
+                        className={`size-6 sm:size-5 ${
+                          active ? 'text-indigo-600 dark:text-indigo-400' : ''
+                        }`}
+                      />
+                      <span className="sr-only sm:not-sr-only">{label}</span>
+                    </>
+                  )
+                }}
               </NavLink>
             </li>
           ))}
