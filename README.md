@@ -48,7 +48,7 @@ cp .env.example .env.local
 
 ```env
 VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
+VITE_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
 ```
 
 You can find both values in the Supabase dashboard under **Project Settings → API**.
@@ -130,7 +130,7 @@ The app is a static site — deploy `dist/` to any static host (Vercel, Netlify,
 
 ### Supabase
 
-- Keep your Supabase project's **anon key** in the `VITE_SUPABASE_ANON_KEY` env var at build time.
+- Keep your Supabase project's **publishable key** in the `VITE_SUPABASE_PUBLISHABLE_KEY` env var at build time.
 - Apply migrations with `supabase db push` before deploying.
 - Enable the **Realtime** extension for shopping-list sync (configured in `supabase/migrations/20260831000009_realtime.sql`).
 
