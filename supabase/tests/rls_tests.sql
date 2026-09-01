@@ -295,4 +295,8 @@ end $$;
 -- ============================================================
 
 set local role 'postgres';
-raise notice '--- All RLS tests complete ---';
+
+do $$
+begin
+  raise notice '--- All RLS tests complete ---';
+end $$;

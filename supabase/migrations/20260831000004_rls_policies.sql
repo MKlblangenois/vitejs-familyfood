@@ -231,6 +231,32 @@ create policy "recipe_steps_delete_own"
   );
 
 -- ==================
+-- SHOPPING LIST MEMBER HELPER
+-- ==================
+
+-- security-definer function: checks membership without triggering RLS
+create or replace function public.is_list_member(list_id uuid)
+returns boolean
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select exists (
+    select 1 from public.shopping_list_members m
+    where m.list_id = $1
+      and m.user_id = auth.uid()
+  );
+$$;
+
+-- Grant EXECUTE only to authenticated (RLS policies run as the requesting role).
+-- Revoke the default PUBLIC grant and anon so the security-definer function
+-- is NOT exposed via /rest/v1/rpc/is_list_member to unauthenticated users.
+grant execute on function public.is_list_member(uuid) to authenticated;
+revoke execute on function public.is_list_member(uuid) from public;
+revoke execute on function public.is_list_member(uuid) from anon;
+
+-- ==================
 -- SHOPPING LISTS
 -- ==================
 
@@ -244,13 +270,7 @@ create policy "shopping_lists_select_owner"
 create policy "shopping_lists_select_member"
   on public.shopping_lists
   for select
-  using (
-    exists (
-      select 1 from public.shopping_list_members m
-      where m.list_id = shopping_lists.id
-        and m.user_id = auth.uid()
-    )
-  );
+  using (public.is_list_member(shopping_lists.id));
 
 -- Owner can create lists
 create policy "shopping_lists_insert_own"
@@ -313,13 +333,7 @@ create policy "shopping_list_members_delete_owner"
 create policy "shopping_list_members_select_member"
   on public.shopping_list_members
   for select
-  using (
-    exists (
-      select 1 from public.shopping_list_members m
-      where m.list_id = shopping_list_members.list_id
-        and m.user_id = auth.uid()
-    )
-  );
+  using (public.is_list_member(shopping_list_members.list_id));
 
 -- ==================
 -- SHOPPING LIST ITEMS
@@ -381,50 +395,20 @@ create policy "shopping_list_items_delete_owner"
 create policy "shopping_list_items_select_member"
   on public.shopping_list_items
   for select
-  using (
-    exists (
-      select 1 from public.shopping_list_members m
-      where m.list_id = shopping_list_items.list_id
-        and m.user_id = auth.uid()
-    )
-  );
+  using (public.is_list_member(shopping_list_items.list_id));
 
 create policy "shopping_list_items_insert_member"
   on public.shopping_list_items
   for insert
-  with check (
-    exists (
-      select 1 from public.shopping_list_members m
-      where m.list_id = shopping_list_items.list_id
-        and m.user_id = auth.uid()
-    )
-  );
+  with check (public.is_list_member(shopping_list_items.list_id));
 
 create policy "shopping_list_items_update_member"
   on public.shopping_list_items
   for update
-  using (
-    exists (
-      select 1 from public.shopping_list_members m
-      where m.list_id = shopping_list_items.list_id
-        and m.user_id = auth.uid()
-    )
-  )
-  with check (
-    exists (
-      select 1 from public.shopping_list_members m
-      where m.list_id = shopping_list_items.list_id
-        and m.user_id = auth.uid()
-    )
-  );
+  using (public.is_list_member(shopping_list_items.list_id))
+  with check (public.is_list_member(shopping_list_items.list_id));
 
 create policy "shopping_list_items_delete_member"
   on public.shopping_list_items
   for delete
-  using (
-    exists (
-      select 1 from public.shopping_list_members m
-      where m.list_id = shopping_list_items.list_id
-        and m.user_id = auth.uid()
-    )
-  );
+  using (public.is_list_member(shopping_list_items.list_id));
