@@ -5,12 +5,13 @@ import {
   MagnifyingGlassIcon,
   ClockIcon,
   UsersIcon,
-  ExclamationTriangleIcon,
-  ArrowPathIcon,
   CakeIcon,
 } from '@heroicons/react/24/outline'
 import { useRecipes } from '../hooks'
 import type { Recipe } from '../types'
+import EmptyState from '../../../shared/components/EmptyState'
+import ErrorState from '../../../shared/components/ErrorState'
+import LoadingSkeleton from '../../../shared/components/LoadingSkeleton'
 
 // ============================================================
 // Helpers
@@ -34,49 +35,106 @@ function totalTime(recipe: Recipe): string | null {
 // Sub-components
 // ============================================================
 
-function RecipeCard({ recipe }: { recipe: Recipe }) {
-  const time = totalTime(recipe)
+function RecipeImage({
+  recipe,
+  className,
+  iconClassName,
+}: {
+  recipe: Recipe
+  className: string
+  iconClassName: string
+}) {
   const [imageFailed, setImageFailed] = useState(false)
+
+  return (
+    <div className={`relative overflow-hidden bg-sand-100 dark:bg-white/5 ${className}`}>
+      {recipe.image_url && !imageFailed ? (
+        <img
+          src={recipe.image_url}
+          alt=""
+          aria-hidden="true"
+          onError={() => setImageFailed(true)}
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center">
+          <CakeIcon aria-hidden="true" className={iconClassName} />
+        </div>
+      )}
+    </div>
+  )
+}
+
+function FeaturedRecipeCard({ recipe }: { recipe: Recipe }) {
+  const time = totalTime(recipe)
 
   return (
     <Link
       to={`/recipes/${recipe.id}`}
-      className="group relative flex flex-col overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-200 transition-all hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-gray-800 dark:ring-white/10 dark:hover:shadow-none dark:focus-visible:outline-indigo-500"
+      className="group flex flex-col overflow-hidden rounded-page border border-sand-200 bg-white shadow-card transition-shadow hover:shadow-float focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 dark:border-white/10 dark:bg-forest-900 dark:focus-visible:outline-forest-400 sm:flex-row"
     >
-      {/* Image */}
-      <div className="relative aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-700">
-        {recipe.image_url && !imageFailed ? (
-          <img
-            src={recipe.image_url}
-            alt=""
-            aria-hidden="true"
-            onError={() => setImageFailed(true)}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center">
-            <CakeIcon
-              aria-hidden="true"
-              className="size-12 text-gray-300 dark:text-gray-500"
-            />
-          </div>
-        )}
-      </div>
+      <RecipeImage
+        recipe={recipe}
+        className="aspect-[16/10] w-full sm:aspect-auto sm:w-3/5"
+        iconClassName="size-16 text-sand-300 dark:text-white/20"
+      />
 
-      {/* Content */}
-      <div className="flex flex-1 flex-col gap-2 p-4">
-        <h3 className="font-display text-lg font-semibold text-gray-900 dark:text-white sm:text-xl">
+      <div className="flex flex-1 flex-col justify-center gap-3 p-6 sm:p-10">
+        <h2 className="font-display text-2xl font-semibold text-ink dark:text-white sm:text-3xl">
           {recipe.title}
-        </h3>
+        </h2>
 
         {recipe.description && (
-          <p className="line-clamp-2 text-sm/6 text-gray-500 dark:text-gray-400">
+          <p className="line-clamp-2 text-sm/6 text-ink-500 dark:text-ink-300 sm:text-base/7">
             {recipe.description}
           </p>
         )}
 
-        {/* Meta row */}
-        <div className="mt-auto flex flex-wrap items-center gap-3 pt-2 text-xs text-gray-400 dark:text-gray-500">
+        <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-ink-600 dark:text-ink-300">
+          {recipe.servings > 0 && (
+            <span className="inline-flex items-center gap-1.5">
+              <UsersIcon aria-hidden="true" className="size-4" />
+              {recipe.servings} portion{recipe.servings !== 1 ? 's' : ''}
+            </span>
+          )}
+          {time && (
+            <span className="inline-flex items-center gap-1.5">
+              <ClockIcon aria-hidden="true" className="size-4" />
+              {time}
+            </span>
+          )}
+        </div>
+      </div>
+    </Link>
+  )
+}
+
+function CompactRecipeCard({ recipe }: { recipe: Recipe }) {
+  const time = totalTime(recipe)
+
+  return (
+    <Link
+      to={`/recipes/${recipe.id}`}
+      className="group flex flex-col overflow-hidden rounded-card border border-sand-200 bg-white shadow-card transition-shadow hover:shadow-float focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 dark:border-white/10 dark:bg-forest-900 dark:focus-visible:outline-forest-400"
+    >
+      <RecipeImage
+        recipe={recipe}
+        className="aspect-[16/9] w-full"
+        iconClassName="size-12 text-sand-300 dark:text-white/20"
+      />
+
+      <div className="flex flex-1 flex-col gap-2 p-5">
+        <h3 className="font-display text-lg font-semibold text-ink dark:text-white">
+          {recipe.title}
+        </h3>
+
+        {recipe.description && (
+          <p className="line-clamp-2 text-sm/6 text-ink-500 dark:text-ink-300">
+            {recipe.description}
+          </p>
+        )}
+
+        <div className="mt-auto flex flex-wrap items-center gap-3 pt-2 text-xs text-ink-600 dark:text-ink-300">
           {recipe.servings > 0 && (
             <span className="inline-flex items-center gap-1">
               <UsersIcon aria-hidden="true" className="size-4" />
@@ -89,89 +147,45 @@ function RecipeCard({ recipe }: { recipe: Recipe }) {
               {time}
             </span>
           )}
-          {recipe.prep_time_minutes !== null &&
-            recipe.cook_time_minutes !== null &&
-            recipe.prep_time_minutes + recipe.cook_time_minutes > 0 && (
-              <span className="ml-auto text-gray-300 dark:text-gray-600">
-                prép {formatTime(recipe.prep_time_minutes) ?? '—'} / cuisson{' '}
-                {formatTime(recipe.cook_time_minutes) ?? '—'}
-              </span>
-            )}
         </div>
       </div>
     </Link>
   )
 }
 
-function LoadingSkeleton() {
+function RecipesLoadingSkeleton() {
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {Array.from({ length: 6 }).map((_, i) => (
-        <div
-          key={i}
-          className="overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-white/10"
-        >
-          <div className="aspect-[4/3] animate-pulse bg-gray-200 dark:bg-gray-700" />
-          <div className="space-y-3 p-4">
-            <div className="h-5 w-3/4 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-            <div className="h-4 w-full animate-pulse rounded bg-gray-100 dark:bg-gray-600" />
-            <div className="h-4 w-1/2 animate-pulse rounded bg-gray-100 dark:bg-gray-600" />
-          </div>
+    <div className="space-y-6">
+      {/* Featured skeleton */}
+      <div className="overflow-hidden rounded-page border border-sand-200 bg-white dark:border-white/10 dark:bg-forest-900">
+        <div className="aspect-[16/10] w-full overflow-hidden sm:aspect-[21/9]">
+          <LoadingSkeleton className="h-full w-full" />
         </div>
-      ))}
-    </div>
-  )
-}
-
-function ErrorState({ onRetry }: { onRetry: () => void }) {
-  return (
-    <div className="flex min-h-[40vh] flex-col items-center justify-center text-center">
-      <ExclamationTriangleIcon
-        aria-hidden="true"
-        className="size-12 text-red-500 dark:text-red-400"
-      />
-      <h2 className="mt-4 font-display text-xl font-semibold text-gray-900 dark:text-white">
-        Une erreur est survenue
-      </h2>
-      <p className="mt-2 max-w-sm text-sm/6 text-gray-500 dark:text-gray-400">
-        Nous n&apos;avons pas pu charger vos recettes. Veuillez vérifier votre
-        connexion et réessayer.
-      </p>
-      <button
-        type="button"
-        onClick={onRetry}
-        className="mt-6 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
-      >
-        <ArrowPathIcon aria-hidden="true" className="size-4" />
-        Réessayer
-      </button>
-    </div>
-  )
-}
-
-function EmptyState() {
-  return (
-    <div className="flex min-h-[40vh] flex-col items-center justify-center text-center">
-      <div className="rounded-2xl bg-indigo-50 p-4 dark:bg-indigo-500/10">
-        <CakeIcon
-          aria-hidden="true"
-          className="size-12 text-indigo-600 dark:text-indigo-400"
-        />
+        <div className="space-y-3 p-6 sm:p-10">
+          <LoadingSkeleton className="h-7 w-2/3" />
+          <LoadingSkeleton className="h-4 w-full" />
+          <LoadingSkeleton className="h-4 w-1/2" />
+        </div>
       </div>
-      <h2 className="mt-6 font-display text-2xl font-bold text-gray-900 dark:text-white">
-        Aucune recette pour le moment
-      </h2>
-      <p className="mt-2 max-w-sm text-sm/6 text-gray-500 dark:text-gray-400">
-        Commencez à constituer votre collection de recettes personnelles.
-        Ajoutez votre première recette et elle apparaîtra ici.
-      </p>
-      <Link
-        to="/recipes/new"
-        className="mt-6 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
-      >
-        <PlusIcon aria-hidden="true" className="size-5" />
-        Créer votre première recette
-      </Link>
+
+      {/* Compact skeletons */}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div
+            key={i}
+            className="overflow-hidden rounded-card border border-sand-200 bg-white dark:border-white/10 dark:bg-forest-900"
+          >
+            <div className="aspect-[16/9] w-full overflow-hidden">
+              <LoadingSkeleton className="h-full w-full" />
+            </div>
+            <div className="space-y-3 p-5">
+              <LoadingSkeleton className="h-5 w-3/4" />
+              <LoadingSkeleton className="h-4 w-full" />
+              <LoadingSkeleton className="h-4 w-1/2" />
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
@@ -194,14 +208,14 @@ const RecipesPage = () => {
   return (
     <div>
       {/* Header */}
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="font-display text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="font-display text-3xl font-bold text-ink dark:text-white sm:text-4xl">
           Recettes
         </h1>
 
         <Link
           to="/recipes/new"
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
+          className="inline-flex items-center justify-center gap-2 rounded-control bg-forest px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-forest-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-700 dark:bg-forest-600 dark:hover:bg-forest-500 dark:focus-visible:outline-forest-400"
         >
           <PlusIcon aria-hidden="true" className="size-5" />
           Nouvelle recette
@@ -210,13 +224,13 @@ const RecipesPage = () => {
 
       {/* Search — only show when there are recipes or loading */}
       {!isError && (
-        <div className="relative mb-6">
+        <div className="relative mb-8">
           <label htmlFor="recipe-search" className="sr-only">
             Rechercher des recettes
           </label>
           <MagnifyingGlassIcon
             aria-hidden="true"
-            className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-gray-400 dark:text-gray-500"
+            className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-ink-400 dark:text-ink-300"
           />
           <input
             id="recipe-search"
@@ -224,25 +238,49 @@ const RecipesPage = () => {
             placeholder="Rechercher des recettes…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="block w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-4 text-sm text-gray-900 shadow-xs placeholder:text-gray-400 focus:border-indigo-500 focus:outline-2 focus:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:outline-indigo-500"
+            className="block w-full rounded-control border border-sand-200 bg-white py-3 pl-11 pr-4 text-sm text-ink shadow-soft placeholder:text-ink-400 focus:border-forest-500 focus:outline-2 focus:outline-forest-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-ink-300 dark:focus:border-forest-400 dark:focus:outline-forest-400"
           />
         </div>
       )}
 
       {/* Content */}
-      {isLoading && <LoadingSkeleton />}
+      {isLoading && <RecipesLoadingSkeleton />}
 
-      {isError && <ErrorState onRetry={() => void refetch()} />}
+      {isError && (
+        <ErrorState
+          title="Une erreur est survenue"
+          description="Nous n'avons pas pu charger vos recettes. Veuillez vérifier votre connexion et réessayer."
+          onRetry={() => void refetch()}
+        />
+      )}
 
       {!isLoading && !isError && filteredRecipes.length === 0 && (
-        <EmptyState />
+        <EmptyState
+          icon={<CakeIcon aria-hidden="true" className="size-7" />}
+          title="Aucune recette pour le moment"
+          description="Commencez à constituer votre collection de recettes personnelles. Ajoutez votre première recette et elle apparaîtra ici."
+          action={
+            <Link
+              to="/recipes/new"
+              className="inline-flex items-center justify-center gap-2 rounded-control bg-forest px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-forest-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-700 dark:bg-forest-600 dark:hover:bg-forest-500 dark:focus-visible:outline-forest-400"
+            >
+              <PlusIcon aria-hidden="true" className="size-5" />
+              Créer votre première recette
+            </Link>
+          }
+        />
       )}
 
       {!isLoading && !isError && filteredRecipes.length > 0 && (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredRecipes.map((recipe) => (
-            <RecipeCard key={recipe.id} recipe={recipe} />
-          ))}
+        <div className="space-y-6">
+          <FeaturedRecipeCard recipe={filteredRecipes[0]} />
+          {filteredRecipes.length > 1 && (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {filteredRecipes.slice(1).map((recipe) => (
+                <CompactRecipeCard key={recipe.id} recipe={recipe} />
+              ))}
+            </div>
+          )}
         </div>
       )}
 
@@ -253,11 +291,10 @@ const RecipesPage = () => {
         recipes.length > 0 &&
         filteredRecipes.length === 0 && (
           <div className="flex min-h-[30vh] flex-col items-center justify-center text-center">
-            <MagnifyingGlassIcon
-              aria-hidden="true"
-              className="size-10 text-gray-300 dark:text-gray-600"
-            />
-            <p className="mt-4 text-sm/6 text-gray-500 dark:text-gray-400">
+            <div className="flex size-14 items-center justify-center rounded-full bg-sand-100 text-ink-400 dark:bg-white/10 dark:text-ink-300">
+              <MagnifyingGlassIcon aria-hidden="true" className="size-6" />
+            </div>
+            <p className="mt-4 text-sm/6 text-ink-500 dark:text-ink-300">
               Aucune recette ne correspond à « {search} »
             </p>
           </div>
@@ -267,7 +304,7 @@ const RecipesPage = () => {
       <Link
         to="/recipes/new"
         aria-label="Nouvelle recette"
-        className="fixed bottom-20 right-5 z-30 flex size-14 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:hidden dark:bg-indigo-500 dark:focus-visible:outline-indigo-400"
+        className="fixed bottom-24 right-5 z-30 flex size-14 items-center justify-center rounded-full bg-forest text-white shadow-float transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 sm:hidden dark:bg-forest-600 dark:focus-visible:outline-forest-400"
       >
         <PlusIcon aria-hidden="true" className="size-6" />
       </Link>

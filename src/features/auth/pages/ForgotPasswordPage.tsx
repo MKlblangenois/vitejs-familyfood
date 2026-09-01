@@ -4,7 +4,8 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useResetPassword } from '../hooks/useResetPassword'
 import AuthLayout from '../../../shared/components/AuthLayout'
-import { TextInput } from '../../../shared/components/TextInput'
+import Button from '../../../shared/components/Button'
+import TextField from '../../../shared/components/TextField'
 
 const forgotPasswordSchema = z.object({
   email: z
@@ -34,9 +35,9 @@ const ForgotPasswordPage = () => {
     return (
       <AuthLayout>
         <div className="text-center">
-          <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-500/10">
+          <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-sage-50 dark:bg-sage-500/10">
             <svg
-              className="size-6 text-green-600 dark:text-green-400"
+              className="size-6 text-forest dark:text-sage-400"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth={1.5}
@@ -50,17 +51,17 @@ const ForgotPasswordPage = () => {
               />
             </svg>
           </div>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+          <h2 className="text-lg font-semibold text-ink dark:text-white">
             Vérifiez votre e-mail
           </h2>
-          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+          <p className="mt-2 text-sm text-ink-500 dark:text-ink-300">
             Nous avons envoyé un lien de réinitialisation de mot de passe à
             votre adresse e-mail. Suivez les instructions pour créer un nouveau
             mot de passe.
           </p>
           <Link
             to="/login"
-            className="mt-6 inline-block text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+            className="mt-6 inline-block text-sm font-medium text-forest-600 hover:text-forest-700 dark:text-forest-300 dark:hover:text-forest-200"
           >
             Retour à la connexion
           </Link>
@@ -72,17 +73,17 @@ const ForgotPasswordPage = () => {
   return (
     <AuthLayout>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <h2 className="mb-2 text-center text-lg font-semibold text-gray-900 dark:text-white">
+        <h2 className="mb-2 text-center text-lg font-semibold text-ink dark:text-white">
           Réinitialisez votre mot de passe
         </h2>
-        <p className="mb-6 text-center text-sm text-gray-500 dark:text-gray-400">
+        <p className="mb-6 text-center text-sm text-ink-500 dark:text-ink-300">
           Saisissez votre e-mail et nous vous enverrons un lien pour
           réinitialiser votre mot de passe.
         </p>
 
         {resetPassword.isError && (
           <div
-            className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-500/10 dark:text-red-400"
+            className="mb-4 rounded-control border border-error-200 bg-error-50 p-3 text-sm text-error dark:border-error-700 dark:bg-error/10 dark:text-error-400"
             role="alert"
           >
             {resetPassword.error?.message ??
@@ -90,7 +91,7 @@ const ForgotPasswordPage = () => {
           </div>
         )}
 
-        <TextInput
+        <TextField
           label="Adresse e-mail"
           id="forgot-email"
           type="email"
@@ -101,20 +102,23 @@ const ForgotPasswordPage = () => {
           {...register('email')}
         />
 
-        <button
+        <Button
           type="submit"
+          variant="primary"
+          size="lg"
+          className="mt-6 w-full"
           disabled={resetPassword.isPending}
-          className="mt-6 flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus:outline-indigo-500"
+          isLoading={resetPassword.isPending}
         >
           {resetPassword.isPending ? 'Envoi du lien…' : 'Envoyer le lien de réinitialisation'}
-        </button>
+        </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
+      <p className="mt-6 text-center text-sm text-ink-500 dark:text-ink-300">
         Vous vous souvenez de votre mot de passe ?{' '}
         <Link
           to="/login"
-          className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+          className="font-medium text-forest-600 hover:text-forest-700 dark:text-forest-300 dark:hover:text-forest-200"
         >
           Se connecter
         </Link>

@@ -5,7 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useAuth } from '../hooks/useAuth'
 import { useSignUp } from '../hooks/useSignUp'
 import AuthLayout from '../../../shared/components/AuthLayout'
-import { TextInput } from '../../../shared/components/TextInput'
+import Button from '../../../shared/components/Button'
+import TextField from '../../../shared/components/TextField'
 
 const registerSchema = z
   .object({
@@ -70,13 +71,13 @@ const RegisterPage = () => {
   return (
     <AuthLayout>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <h2 className="mb-6 text-center text-lg font-semibold text-gray-900 dark:text-white">
+        <h2 className="mb-6 text-center text-lg font-semibold text-ink dark:text-white">
           Créez votre compte
         </h2>
 
         {errors.root?.message && (
           <div
-            className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-500/10 dark:text-red-400"
+            className="mb-4 rounded-control border border-error-200 bg-error-50 p-3 text-sm text-error dark:border-error-700 dark:bg-error/10 dark:text-error-400"
             role="alert"
           >
             {errors.root.message}
@@ -84,7 +85,7 @@ const RegisterPage = () => {
         )}
 
         <div className="space-y-4">
-          <TextInput
+          <TextField
             label="Nom d’affichage"
             id="register-displayName"
             type="text"
@@ -95,7 +96,7 @@ const RegisterPage = () => {
             {...register('displayName')}
           />
 
-          <TextInput
+          <TextField
             label="Adresse e-mail"
             id="register-email"
             type="email"
@@ -106,7 +107,7 @@ const RegisterPage = () => {
             {...register('email')}
           />
 
-          <TextInput
+          <TextField
             label="Mot de passe"
             id="register-password"
             type="password"
@@ -117,7 +118,7 @@ const RegisterPage = () => {
             {...register('password')}
           />
 
-          <TextInput
+          <TextField
             label="Confirmer le mot de passe"
             id="register-confirmPassword"
             type="password"
@@ -129,20 +130,23 @@ const RegisterPage = () => {
           />
         </div>
 
-        <button
+        <Button
           type="submit"
+          variant="primary"
+          size="lg"
+          className="mt-6 w-full"
           disabled={isSubmitting}
-          className="mt-6 flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus:outline-indigo-500"
+          isLoading={isSubmitting}
         >
           {isSubmitting ? 'Création du compte…' : 'Créer un compte'}
-        </button>
+        </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
+      <p className="mt-6 text-center text-sm text-ink-500 dark:text-ink-300">
         Vous avez déjà un compte ?{' '}
         <Link
           to="/login"
-          className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+          className="font-medium text-forest-600 hover:text-forest-700 dark:text-forest-300 dark:hover:text-forest-200"
         >
           Se connecter
         </Link>

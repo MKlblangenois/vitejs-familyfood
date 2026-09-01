@@ -6,6 +6,107 @@
   --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
+
+  /* ============================================================
+     Design-system palette (source of truth)
+     ============================================================ */
+  --color-forest: #1f3a2e; /* primary dark green */
+  --color-forest-50: #eef3f0;
+  --color-forest-100: #dce7e0;
+  --color-forest-200: #b9cfc2;
+  --color-forest-300: #8fb0a0;
+  --color-forest-400: #6b9180;
+  --color-forest-500: #4f7c63;
+  --color-forest-600: #3a5f4b;
+  --color-forest-700: #2c4a3a;
+  --color-forest-800: #243a2e;
+  --color-forest-900: #1f3a2e;
+  --color-forest-950: #101a14; /* deep forest-tinted dark surface */
+
+  --color-sage: #4f7c63; /* secondary muted green */
+  --color-sage-50: #f0f5f2;
+  --color-sage-100: #e0ebe4;
+  --color-sage-200: #c2d7ca;
+  --color-sage-300: #9dbca9;
+  --color-sage-400: #76a088;
+  --color-sage-500: #4f7c63;
+  --color-sage-600: #3f6450;
+  --color-sage-700: #33503f;
+  --color-sage-800: #2a4134;
+  --color-sage-900: #24362c;
+
+  --color-citrus: #f2bc43; /* warm yellow accent */
+  --color-citrus-50: #fdf8ea;
+  --color-citrus-100: #faf0d0;
+  --color-citrus-200: #f5e0a1;
+  --color-citrus-300: #f0cf72;
+  --color-citrus-400: #f2bc43;
+  --color-citrus-500: #e0a52a;
+  --color-citrus-600: #c08a1f;
+  --color-citrus-700: #9a6d1a;
+
+  --color-tomato: #e85d3a; /* warm orange/red accent */
+  --color-tomato-50: #fdf1ed;
+  --color-tomato-100: #fbe2da;
+  --color-tomato-200: #f6c5b5;
+  --color-tomato-300: #f0a28a;
+  --color-tomato-400: #ec7f5f;
+  --color-tomato-500: #e85d3a;
+  --color-tomato-600: #cf4526;
+  --color-tomato-700: #ab3720;
+
+  --color-cream: #f9f7f0; /* main warm background */
+  --color-cream-50: #fcfbf7;
+  --color-cream-100: #f9f7f0;
+  --color-cream-200: #f1ecdd;
+  --color-cream-300: #e7dfc9;
+
+  --color-sand: #efe7d5; /* secondary neutral surface */
+  --color-sand-50: #f7f3e9;
+  --color-sand-100: #efe7d5;
+  --color-sand-200: #e3d6ba;
+  --color-sand-300: #d3c09a;
+
+  --color-ink: #243029; /* primary dark text */
+  --color-ink-50: #f2f4f2;
+  --color-ink-100: #e2e7e3;
+  --color-ink-200: #c5cec8;
+  --color-ink-300: #a2afa7;
+  --color-ink-400: #7f8f85;
+  --color-ink-500: #5f7066;
+  --color-ink-600: #48574e;
+  --color-ink-700: #37443c;
+  --color-ink-800: #2b362f;
+  --color-ink-900: #243029;
+  --color-ink-950: #0f1712; /* deep forest-tinted dark page bg */
+
+  --color-error: #c7432c; /* destructive/error state */
+  --color-error-50: #fdf1ee;
+  --color-error-100: #fbe2dc;
+  --color-error-200: #f5c4b9;
+  --color-error-300: #eea08f;
+  --color-error-400: #e67a63;
+  --color-error-500: #d95a3f;
+  --color-error-600: #c7432c;
+  --color-error-700: #a33624;
+
+  /* ============================================================
+     Radius tokens
+     ============================================================ */
+  --radius-page: 28px;
+  --radius-card: 20px;
+  --radius-control: 14px;
+  --radius-pill: 9999px;
+
+  /* ============================================================
+     Shadow tokens (subtle, low-opacity, large-blur)
+     ============================================================ */
+  --shadow-soft: 0 1px 2px 0 rgb(31 58 46 / 0.04),
+    0 4px 12px -2px rgb(31 58 46 / 0.06);
+  --shadow-card: 0 2px 4px 0 rgb(31 58 46 / 0.04),
+    0 12px 32px -8px rgb(31 58 46 / 0.1);
+  --shadow-float: 0 4px 8px 0 rgb(31 58 46 / 0.06),
+    0 24px 64px -16px rgb(31 58 46 / 0.18);
 }
 
 /* Ensure the app fills the viewport and respects safe areas when

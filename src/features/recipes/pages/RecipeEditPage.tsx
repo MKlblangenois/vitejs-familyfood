@@ -9,6 +9,11 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 import { TextInput } from '../../../shared/components/TextInput'
+import TextField from '../../../shared/components/TextField'
+import SelectField from '../../../shared/components/SelectField'
+import TextareaField from '../../../shared/components/TextareaField'
+import Button from '../../../shared/components/Button'
+import Card from '../../../shared/components/Card'
 import { useRecipe, useUpdateRecipe } from '../hooks'
 import RecipeImageUpload from '../components/RecipeImageUpload'
 import { deleteRecipeImage, extractStoragePath } from '../lib/imageUpload'
@@ -166,107 +171,6 @@ function toFormErrors(
 }
 
 // ============================================================
-// Local styled components (consistent with TextInput patterns)
-// ============================================================
-
-function SelectInput({
-  label,
-  id,
-  error,
-  required = false,
-  className,
-  children,
-  ...props
-}: {
-  label?: string
-  id: string
-  error?: string
-  required?: boolean
-  className?: string
-  children: React.ReactNode
-} & React.SelectHTMLAttributes<HTMLSelectElement>) {
-  const errorId = `${id}-error`
-
-  return (
-    <div>
-      {label && (
-        <label
-          htmlFor={id}
-          className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-        >
-          {label}
-        </label>
-      )}
-      <select
-        id={id}
-        aria-describedby={error ? errorId : undefined}
-        aria-invalid={error ? 'true' : undefined}
-        required={required}
-        {...props}
-        className={`block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:focus:outline-indigo-500 sm:text-sm/6 ${label ? 'mt-1' : ''} ${className ?? ''}`}
-      >
-        {children}
-      </select>
-      {error && (
-        <p
-          id={errorId}
-          className="mt-1 text-sm text-red-600 dark:text-red-400"
-          role="alert"
-        >
-          {error}
-        </p>
-      )}
-    </div>
-  )
-}
-
-function TextareaInput({
-  label,
-  id,
-  error,
-  required = false,
-  className,
-  ...props
-}: {
-  label: string
-  id: string
-  error?: string
-  required?: boolean
-  className?: string
-} & React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
-  const errorId = `${id}-error`
-
-  return (
-    <div>
-      <label
-        htmlFor={id}
-        className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-      >
-        {label}
-      </label>
-      <textarea
-        id={id}
-        aria-describedby={error ? errorId : undefined}
-        aria-invalid={error ? 'true' : undefined}
-        required={required}
-        rows={3}
-        {...props}
-        className={`mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-xs placeholder:text-gray-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:focus:outline-indigo-500 sm:text-sm/6 ${className ?? ''}`}
-      />
-      {error && (
-        <p
-          id={errorId}
-          className="mt-1 text-sm text-red-600 dark:text-red-400"
-          role="alert"
-        >
-          {error}
-        </p>
-      )}
-    </div>
-  )
-}
-
-// ============================================================
 // IngredientGroupCard — sub-component
 // ============================================================
 
@@ -297,7 +201,7 @@ function IngredientGroupCard({
   const groupError = formErrors.ingredient_groups?.[groupIdx]
 
   return (
-    <div className="rounded-lg border border-gray-200 p-4 dark:border-white/10">
+    <Card className="p-5">
       {/* Group header */}
       <div className="mb-4 flex items-start gap-3">
         <div className="flex-1">
@@ -314,7 +218,7 @@ function IngredientGroupCard({
           <button
             type="button"
             onClick={onRemoveGroup}
-            className="mt-6 inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 dark:text-gray-500 dark:hover:bg-red-500/10 dark:hover:text-red-400 dark:focus-visible:outline-red-500"
+            className="mt-6 inline-flex items-center justify-center rounded-control p-2 text-error transition-colors hover:bg-error-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error-600 dark:text-error-400 dark:hover:bg-error-500/10 dark:focus-visible:outline-error-400"
             aria-label={`Supprimer le groupe d’ingrédients ${groupIdx + 1}`}
           >
             <TrashIcon aria-hidden="true" className="size-4" />
@@ -325,7 +229,7 @@ function IngredientGroupCard({
       {groupError?.ingredients?.message && (
         <p
           role="alert"
-          className="mb-3 text-sm text-red-600 dark:text-red-400"
+          className="mb-3 text-sm text-error dark:text-error-400"
         >
           {groupError.ingredients.message}
         </p>
@@ -365,7 +269,7 @@ function IngredientGroupCard({
                 />
               </div>
               <div className="w-28 shrink-0">
-                <SelectInput
+                <SelectField
                   id={`ing-unit-${groupIdx}-${ingIdx}`}
                   label={ingIdx === 0 ? 'Unité' : undefined}
                   {...register(
@@ -378,13 +282,13 @@ function IngredientGroupCard({
                       {u}
                     </option>
                   ))}
-                </SelectInput>
+                </SelectField>
               </div>
               <button
                 type="button"
                 onClick={() => removeIngredient(ingIdx)}
                 aria-label={`Supprimer l’ingrédient ${ingIdx + 1}`}
-                className="mb-0.5 inline-flex shrink-0 items-center justify-center rounded-md p-2 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 dark:text-gray-500 dark:hover:bg-red-500/10 dark:hover:text-red-400 dark:focus-visible:outline-red-500"
+                className="mb-0.5 inline-flex shrink-0 items-center justify-center rounded-control p-2 text-error transition-colors hover:bg-error-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error-600 dark:text-error-400 dark:hover:bg-error-500/10 dark:focus-visible:outline-error-400"
               >
                 <XMarkIcon aria-hidden="true" className="size-4" />
               </button>
@@ -396,12 +300,12 @@ function IngredientGroupCard({
       <button
         type="button"
         onClick={() => appendIngredient({ name: '', quantity: 0, unit: '' })}
-        className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 transition-colors hover:text-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 dark:focus-visible:outline-indigo-500"
+        className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-sage-600 transition-colors hover:text-sage-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 dark:text-sage-300 dark:hover:text-sage-200 dark:focus-visible:outline-forest-400"
       >
         <PlusIcon aria-hidden="true" className="size-3.5" />
         Ajouter un ingrédient
       </button>
-    </div>
+    </Card>
   )
 }
 
@@ -431,7 +335,7 @@ function StepsSection({
     <section aria-labelledby="steps-heading">
       <h2
         id="steps-heading"
-        className="mb-4 font-display text-lg font-semibold text-gray-900 dark:text-white"
+        className="mb-4 font-display text-lg font-semibold text-ink dark:text-white"
       >
         Étapes
       </h2>
@@ -441,7 +345,7 @@ function StepsSection({
           const stepError = formErrors.steps?.[stepIdx]
           return (
             <div key={stepField.id} className="flex items-start gap-3">
-              <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white dark:bg-indigo-500">
+              <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-forest text-xs font-bold text-white dark:bg-forest-500">
                 {stepIdx + 1}
               </span>
               <div className="min-w-0 flex-1">
@@ -461,13 +365,13 @@ function StepsSection({
                     stepError?.instruction?.message ? 'true' : undefined
                   }
                   {...register(`steps.${stepIdx}.instruction`)}
-                  className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-xs placeholder:text-gray-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:focus:outline-indigo-500"
+                  className="block w-full rounded-control border border-sand-200 bg-white px-3 py-2 text-sm text-ink shadow-soft placeholder:text-ink-400 focus:border-forest-500 focus:ring-1 focus:ring-forest-500 focus:outline-2 focus:outline-offset-2 focus:outline-forest-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-ink-400 dark:focus:border-forest-400 dark:focus:ring-forest-400 dark:focus:outline-forest-400"
                 />
                 {stepError?.instruction?.message && (
                   <p
                     id={`step-${stepIdx}-error`}
                     role="alert"
-                    className="mt-1 text-sm text-red-600 dark:text-red-400"
+                    className="mt-1 text-sm text-error dark:text-error-400"
                   >
                     {stepError.instruction.message}
                   </p>
@@ -477,7 +381,7 @@ function StepsSection({
                 type="button"
                 onClick={() => removeStep(stepIdx)}
                 aria-label={`Supprimer l’étape ${stepIdx + 1}`}
-                className="mt-1 inline-flex shrink-0 items-center justify-center rounded-md p-2 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 dark:text-gray-500 dark:hover:bg-red-500/10 dark:hover:text-red-400 dark:focus-visible:outline-red-500"
+                className="mt-1 inline-flex shrink-0 items-center justify-center rounded-control p-2 text-error transition-colors hover:bg-error-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error-600 dark:text-error-400 dark:hover:bg-error-500/10 dark:focus-visible:outline-error-400"
               >
                 <XMarkIcon aria-hidden="true" className="size-4" />
               </button>
@@ -489,7 +393,7 @@ function StepsSection({
       <button
         type="button"
         onClick={() => appendStep({ instruction: '' })}
-        className="mt-4 inline-flex items-center gap-2 rounded-lg border border-dashed border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:border-indigo-400 hover:text-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:border-white/20 dark:text-gray-400 dark:hover:border-indigo-400 dark:hover:text-indigo-400 dark:focus-visible:outline-indigo-500"
+        className="mt-4 inline-flex items-center gap-2 rounded-card border border-dashed border-sand-200 px-4 py-2.5 text-sm font-medium text-ink-600 transition-colors hover:border-sage hover:text-sage focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 dark:border-white/20 dark:text-ink-300 dark:hover:border-sage-400 dark:hover:text-sage-300 dark:focus-visible:outline-forest-400"
       >
         <PlusIcon aria-hidden="true" className="size-4" />
         Ajouter une étape
@@ -505,13 +409,13 @@ function StepsSection({
 function LoadingState() {
   return (
     <div className="animate-pulse space-y-6">
-      <div className="h-4 w-24 rounded bg-gray-200 dark:bg-gray-700" />
-      <div className="h-8 w-1/2 rounded bg-gray-200 dark:bg-gray-700" />
+      <div className="h-4 w-24 rounded bg-sand-200 dark:bg-ink-700" />
+      <div className="h-8 w-1/2 rounded bg-sand-200 dark:bg-ink-700" />
       <div className="space-y-4 pt-4">
         {Array.from({ length: 3 }).map((_, i) => (
           <div
             key={i}
-            className="h-10 rounded bg-gray-100 dark:bg-gray-600"
+            className="h-10 rounded bg-sand-100 dark:bg-ink-600"
             style={{ width: `${90 - i * 15}%` }}
           />
         ))}
@@ -527,15 +431,15 @@ function LoadingState() {
 function NotFoundState() {
   return (
     <div className="flex min-h-[40vh] flex-col items-center justify-center text-center">
-      <h2 className="font-display text-2xl font-bold text-gray-900 dark:text-white">
+      <h2 className="font-display text-2xl font-bold text-ink dark:text-white">
         Recette introuvable
       </h2>
-      <p className="mt-2 max-w-sm text-sm/6 text-gray-500 dark:text-gray-400">
+      <p className="mt-2 max-w-sm text-sm/6 text-ink-500 dark:text-ink-300">
         Cette recette a peut-être été supprimée ou n&apos;existe pas.
       </p>
       <Link
         to="/recipes"
-        className="mt-6 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
+        className="mt-6 inline-flex items-center gap-2 rounded-control bg-forest px-4 py-2.5 text-sm font-semibold text-white shadow-soft transition-colors hover:bg-forest-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-700 dark:bg-forest-600 dark:hover:bg-forest-500 dark:focus-visible:outline-forest-400"
       >
         <ArrowLeftIcon aria-hidden="true" className="size-4" />
         Retour aux recettes
@@ -629,13 +533,13 @@ const RecipeEditPage = () => {
       {/* Back link */}
       <Link
         to={id ? `/recipes/${id}` : '/recipes'}
-        className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+        className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-ink-500 transition-colors hover:text-ink dark:text-ink-300 dark:hover:text-white"
       >
         <ArrowLeftIcon aria-hidden="true" className="size-4" />
         Retour à la recette
       </Link>
 
-      <h1 className="mb-6 font-display text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
+      <h1 className="mb-6 font-display text-2xl font-bold text-ink dark:text-white sm:text-3xl">
         Modifier la recette
       </h1>
 
@@ -643,7 +547,7 @@ const RecipeEditPage = () => {
       {updateRecipe.isError && (
         <div
           role="alert"
-          className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-400"
+          className="mb-6 rounded-card border border-error-200 bg-error-50 p-4 text-sm text-error-700 dark:border-error-500/20 dark:bg-error-500/10 dark:text-error-400"
         >
           Une erreur est survenue lors de l&apos;enregistrement de votre recette.
           Veuillez réessayer.
@@ -656,13 +560,13 @@ const RecipeEditPage = () => {
           <section aria-labelledby="basic-heading">
             <h2
               id="basic-heading"
-              className="mb-4 font-display text-lg font-semibold text-gray-900 dark:text-white"
+              className="mb-4 font-display text-lg font-semibold text-ink dark:text-white"
             >
               Informations de base
             </h2>
 
-            <div className="space-y-4">
-              <TextInput
+            <Card className="space-y-4 p-5">
+              <TextField
                 id="recipe-title"
                 label="Titre"
                 required
@@ -671,16 +575,17 @@ const RecipeEditPage = () => {
                 {...register('title')}
               />
 
-              <TextareaInput
+              <TextareaField
                 id="recipe-description"
                 label="Description"
                 placeholder="Une courte description de cette recette…"
                 error={formErrors.description?.message}
+                rows={3}
                 {...register('description')}
               />
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <TextInput
+                <TextField
                   id="recipe-servings"
                   label="Portions"
                   type="number"
@@ -689,7 +594,7 @@ const RecipeEditPage = () => {
                   error={formErrors.servings?.message}
                   {...register('servings', { valueAsNumber: true })}
                 />
-                <TextInput
+                <TextField
                   id="recipe-prep-time"
                   label="Temps de préparation (min)"
                   type="number"
@@ -698,7 +603,7 @@ const RecipeEditPage = () => {
                   error={formErrors.prep_time_minutes?.message}
                   {...register('prep_time_minutes', { valueAsNumber: true })}
                 />
-                <TextInput
+                <TextField
                   id="recipe-cook-time"
                   label="Temps de cuisson (min)"
                   type="number"
@@ -729,14 +634,14 @@ const RecipeEditPage = () => {
                 recipeId={id}
                 error={formErrors.image_url?.message}
               />
-            </div>
+            </Card>
           </section>
 
           {/* ── Ingredient groups ── */}
           <section aria-labelledby="ingredients-heading">
             <h2
               id="ingredients-heading"
-              className="mb-4 font-display text-lg font-semibold text-gray-900 dark:text-white"
+              className="mb-4 font-display text-lg font-semibold text-ink dark:text-white"
             >
               Ingrédients
             </h2>
@@ -744,7 +649,7 @@ const RecipeEditPage = () => {
             {formErrors.ingredient_groups?.message && (
               <p
                 role="alert"
-                className="mb-4 text-sm text-red-600 dark:text-red-400"
+                className="mb-4 text-sm text-error dark:text-error-400"
               >
                 {formErrors.ingredient_groups.message}
               </p>
@@ -772,7 +677,7 @@ const RecipeEditPage = () => {
                   ingredients: [{ name: '', quantity: 0, unit: '' }],
                 })
               }
-              className="mt-4 inline-flex items-center gap-2 rounded-lg border border-dashed border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:border-indigo-400 hover:text-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:border-white/20 dark:text-gray-400 dark:hover:border-indigo-400 dark:hover:text-indigo-400 dark:focus-visible:outline-indigo-500"
+              className="mt-4 inline-flex items-center gap-2 rounded-card border border-dashed border-sand-200 px-4 py-2.5 text-sm font-medium text-ink-600 transition-colors hover:border-sage hover:text-sage focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 dark:border-white/20 dark:text-ink-300 dark:hover:border-sage-400 dark:hover:text-sage-300 dark:focus-visible:outline-forest-400"
             >
               <PlusIcon aria-hidden="true" className="size-4" />
               Ajouter un groupe d’ingrédients
@@ -787,27 +692,23 @@ const RecipeEditPage = () => {
           />
 
           {/* ── Submit ── */}
-          <div className="flex items-center justify-end gap-3 border-t border-gray-200 pt-6 dark:border-white/10">
+          <div className="flex items-center justify-end gap-3 border-t border-sand-200 pt-6 dark:border-white/10">
             <Link
               to={id ? `/recipes/${id}` : '/recipes'}
-              className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-indigo-500"
+              className="inline-flex items-center justify-center rounded-control border border-sand-200 bg-cream px-4 py-2.5 text-sm font-semibold text-ink-700 shadow-soft transition-colors hover:bg-sand-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 dark:border-white/10 dark:bg-white/5 dark:text-ink-200 dark:hover:bg-white/10 dark:focus-visible:outline-forest-400"
             >
               Annuler
             </Link>
-            <button
+            <Button
               type="submit"
-              disabled={updateRecipe.isPending}
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
+              variant="primary"
+              size="md"
+              isLoading={updateRecipe.isPending}
             >
-              {updateRecipe.isPending ? (
-                <>
-                  <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                  Enregistrement…
-                </>
-              ) : (
-                'Enregistrer les modifications'
-              )}
-            </button>
+              {updateRecipe.isPending
+                ? 'Enregistrement…'
+                : 'Enregistrer les modifications'}
+            </Button>
           </div>
         </div>
       </form>

@@ -5,20 +5,11 @@ import {
   PencilIcon,
   TrashIcon,
   PlusIcon,
-  ExclamationTriangleIcon,
-  ArrowPathIcon,
   CheckIcon,
   XMarkIcon,
   UserGroupIcon,
   ShoppingBagIcon,
-  UserPlusIcon,
 } from '@heroicons/react/24/outline'
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  DialogTitle,
-} from '@headlessui/react'
 import { useAuth } from '../../auth/hooks/useAuth'
 import {
   useShoppingList,
@@ -33,6 +24,14 @@ import {
   useRealtimeSync,
 } from '../hooks'
 import type { ShoppingListItem, ShoppingListMember } from '../types'
+import Button from '../../../shared/components/Button'
+import Badge from '../../../shared/components/Badge'
+import Modal from '../../../shared/components/Modal'
+import TextField from '../../../shared/components/TextField'
+import ProgressBar from '../../../shared/components/ProgressBar'
+import EmptyState from '../../../shared/components/EmptyState'
+import ErrorState from '../../../shared/components/ErrorState'
+import LoadingSkeleton from '../../../shared/components/LoadingSkeleton'
 
 // ============================================================
 // Sub-components
@@ -61,10 +60,10 @@ function ItemRow({
 
   return (
     <li
-      className={`flex items-center gap-3 rounded-lg border px-3 py-2.5 transition-colors ${
+      className={`flex items-center gap-3 rounded-control border px-3 py-2.5 transition-colors ${
         item.checked
-          ? 'border-gray-100 bg-gray-50 dark:border-white/5 dark:bg-white/[0.02]'
-          : 'border-gray-200 bg-white dark:border-white/10 dark:bg-gray-800'
+          ? 'border-sand-200/60 bg-sand-50/50 dark:border-white/5 dark:bg-white/[0.02]'
+          : 'border-sand-200 bg-white dark:border-white/10 dark:bg-forest-900'
       }`}
     >
       <button
@@ -72,31 +71,31 @@ function ItemRow({
         onClick={handleToggle}
         disabled={toggleMutation.isPending}
         aria-label={item.checked ? `Décocher « ${item.name} »` : `Cocher « ${item.name} »`}
-        className={`flex size-6 shrink-0 items-center justify-center rounded-md border-2 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:focus-visible:outline-indigo-500 ${
+        className={`flex size-7 shrink-0 items-center justify-center rounded-control border-2 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 dark:focus-visible:outline-forest-400 ${
           item.checked
-            ? 'border-indigo-600 bg-indigo-600 text-white dark:border-indigo-400 dark:bg-indigo-400'
-            : 'border-gray-300 bg-white text-transparent hover:border-indigo-400 dark:border-gray-600 dark:bg-transparent dark:hover:border-indigo-400'
+            ? 'border-forest bg-forest text-white dark:border-forest-400 dark:bg-forest-400'
+            : 'border-sand-300 bg-cream text-transparent hover:border-forest-400 dark:border-white/20 dark:bg-transparent dark:hover:border-forest-400'
         }`}
       >
-        {item.checked && <CheckIcon aria-hidden="true" className="size-3.5" />}
+        {item.checked && <CheckIcon aria-hidden="true" className="size-4" />}
       </button>
 
-      <div className="flex-1 min-w-0">
+      <div className="flex min-w-0 flex-1 items-baseline gap-2">
         <span
-          className={`text-sm font-medium ${
+          className={`text-sm font-medium transition-colors ${
             item.checked
-              ? 'text-gray-400 line-through dark:text-gray-500'
-              : 'text-gray-900 dark:text-white'
+              ? 'text-ink-400 line-through dark:text-ink-500'
+              : 'text-ink dark:text-white'
           }`}
         >
           {item.name}
         </span>
         {(item.quantity !== null || item.unit !== null) && (
           <span
-            className={`ml-2 text-xs ${
+            className={`shrink-0 text-xs ${
               item.checked
-                ? 'text-gray-300 dark:text-gray-600'
-                : 'text-gray-400 dark:text-gray-500'
+                ? 'text-ink-400 dark:text-ink-600'
+                : 'text-ink-400 dark:text-ink-300'
             }`}
           >
             {item.quantity ?? ''} {item.unit ?? ''}
@@ -104,12 +103,12 @@ function ItemRow({
         )}
       </div>
 
-      <div className="flex items-center gap-1">
+      <div className="flex shrink-0 items-center gap-1">
         <button
           type="button"
           onClick={() => onEdit(item)}
           aria-label={`Modifier « ${item.name} »`}
-          className="rounded-md p-1 text-gray-400 transition-colors hover:text-gray-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:text-gray-500 dark:hover:text-gray-300 dark:focus-visible:outline-indigo-500"
+          className="rounded-control p-1.5 text-ink-400 transition-colors hover:bg-sand-100 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 dark:text-ink-300 dark:hover:bg-white/10 dark:hover:text-white dark:focus-visible:outline-forest-400"
         >
           <PencilIcon aria-hidden="true" className="size-4" />
         </button>
@@ -117,7 +116,7 @@ function ItemRow({
           type="button"
           onClick={() => onDelete(item)}
           aria-label={`Supprimer « ${item.name} »`}
-          className="rounded-md p-1 text-gray-400 transition-colors hover:text-red-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 dark:text-gray-500 dark:hover:text-red-400 dark:focus-visible:outline-red-500"
+          className="rounded-control p-1.5 text-ink-400 transition-colors hover:bg-error-50 hover:text-error focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error-600 dark:text-ink-300 dark:hover:bg-error-500/10 dark:hover:text-error-400 dark:focus-visible:outline-error-500"
         >
           <TrashIcon aria-hidden="true" className="size-4" />
         </button>
@@ -163,7 +162,7 @@ function AddItemRow({ listId }: { listId: string }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-2 rounded-lg border border-dashed border-gray-300 bg-gray-50 p-3 dark:border-white/10 dark:bg-white/[0.02]"
+      className="flex flex-col gap-2 rounded-card border border-dashed border-sand-300 bg-sand-50 p-3 dark:border-white/10 dark:bg-white/[0.02]"
     >
       <div className="flex gap-2">
         <input
@@ -172,7 +171,7 @@ function AddItemRow({ listId }: { listId: string }) {
           onChange={(e) => setName(e.target.value)}
           placeholder="Nom de l’article"
           aria-label="Nom de l’article"
-          className="flex-1 min-w-0 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-xs placeholder:text-gray-400 focus:border-indigo-500 focus:outline-2 focus:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:outline-indigo-500"
+          className="min-w-0 flex-1 rounded-control border border-sand-200 bg-white px-3 py-2 text-sm text-ink shadow-soft placeholder:text-ink-400 focus:border-forest-500 focus:ring-1 focus:ring-forest-500 focus:outline-2 focus:outline-offset-2 focus:outline-forest-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-ink-300 dark:focus:border-forest-400 dark:focus:ring-forest-400 dark:focus:outline-forest-400"
         />
         <input
           type="number"
@@ -182,7 +181,7 @@ function AddItemRow({ listId }: { listId: string }) {
           aria-label="Quantité"
           min="0"
           step="any"
-          className="w-20 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-xs placeholder:text-gray-400 focus:border-indigo-500 focus:outline-2 focus:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:outline-indigo-500"
+          className="w-20 rounded-control border border-sand-200 bg-white px-3 py-2 text-sm text-ink shadow-soft placeholder:text-ink-400 focus:border-forest-500 focus:ring-1 focus:ring-forest-500 focus:outline-2 focus:outline-offset-2 focus:outline-forest-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-ink-300 dark:focus:border-forest-400 dark:focus:ring-forest-400 dark:focus:outline-forest-400"
         />
         <input
           type="text"
@@ -190,40 +189,36 @@ function AddItemRow({ listId }: { listId: string }) {
           onChange={(e) => setUnit(e.target.value)}
           placeholder="Unité"
           aria-label="Unité"
-          className="w-20 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-xs placeholder:text-gray-400 focus:border-indigo-500 focus:outline-2 focus:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:outline-indigo-500"
+          className="w-20 rounded-control border border-sand-200 bg-white px-3 py-2 text-sm text-ink shadow-soft placeholder:text-ink-400 focus:border-forest-500 focus:ring-1 focus:ring-forest-500 focus:outline-2 focus:outline-offset-2 focus:outline-forest-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-ink-300 dark:focus:border-forest-400 dark:focus:ring-forest-400 dark:focus:outline-forest-400"
         />
       </div>
-      <button
+      <Button
         type="submit"
+        variant="primary"
+        isLoading={addItemMutation.isPending}
         disabled={addItemMutation.isPending || !name.trim()}
-        className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
+        icon={!addItemMutation.isPending ? <PlusIcon aria-hidden="true" className="size-4" /> : undefined}
       >
-        {addItemMutation.isPending ? (
-          <>
-            <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-            Ajout…
-          </>
-        ) : (
-          <>
-            <PlusIcon aria-hidden="true" className="size-4" />
-            Ajouter un article
-          </>
-        )}
-      </button>
+        {addItemMutation.isPending ? 'Ajout…' : 'Ajouter un article'}
+      </Button>
     </form>
   )
 }
 
-function LoadingState() {
+function DetailLoadingState() {
   return (
-    <div className="animate-pulse space-y-6">
-      <div className="h-8 w-2/3 rounded bg-gray-200 dark:bg-gray-700" />
-      <div className="h-4 w-full rounded bg-gray-100 dark:bg-gray-600" />
+    <div className="mx-auto max-w-3xl animate-pulse space-y-6">
+      <div className="h-5 w-24 animate-pulse rounded-control bg-sand-200 dark:bg-white/10" />
+      <div className="space-y-3">
+        <LoadingSkeleton className="h-8 w-2/3" />
+        <LoadingSkeleton lines={2} className="w-1/3" />
+      </div>
+      <LoadingSkeleton className="h-3 w-full rounded-pill" />
       <div className="space-y-3 pt-4">
         {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}
-            className="h-12 rounded-lg bg-gray-100 dark:bg-gray-600"
+            className="h-12 animate-pulse rounded-control bg-sand-200 dark:bg-white/10"
             style={{ width: `${90 - i * 5}%` }}
           />
         ))}
@@ -232,48 +227,21 @@ function LoadingState() {
   )
 }
 
-function ErrorState({ onRetry }: { onRetry: () => void }) {
+function DetailNotFoundState() {
   return (
     <div className="flex min-h-[40vh] flex-col items-center justify-center text-center">
-      <ExclamationTriangleIcon
-        aria-hidden="true"
-        className="size-12 text-red-500 dark:text-red-400"
-      />
-      <h2 className="mt-4 font-display text-xl font-semibold text-gray-900 dark:text-white">
-        Impossible de charger la liste de courses
-      </h2>
-      <p className="mt-2 max-w-sm text-sm/6 text-gray-500 dark:text-gray-400">
-        Une erreur est survenue lors du chargement de cette liste. Vérifiez
-        votre connexion et réessayez.
-      </p>
-      <button
-        type="button"
-        onClick={onRetry}
-        className="mt-6 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
-      >
-        <ArrowPathIcon aria-hidden="true" className="size-4" />
-        Réessayer
-      </button>
-    </div>
-  )
-}
-
-function NotFoundState() {
-  return (
-    <div className="flex min-h-[40vh] flex-col items-center justify-center text-center">
-      <ShoppingBagIcon
-        aria-hidden="true"
-        className="size-16 text-gray-300 dark:text-gray-600"
-      />
-      <h2 className="mt-6 font-display text-2xl font-bold text-gray-900 dark:text-white">
+      <div className="mb-5 flex size-14 items-center justify-center rounded-full bg-sand-100 text-ink-400 dark:bg-white/10 dark:text-ink-300">
+        <ShoppingBagIcon aria-hidden="true" className="size-7" />
+      </div>
+      <h2 className="font-display text-2xl font-semibold text-ink dark:text-white">
         Liste introuvable
       </h2>
-      <p className="mt-2 max-w-sm text-sm/6 text-gray-500 dark:text-gray-400">
+      <p className="mt-2 max-w-sm text-sm/6 text-ink-500 dark:text-ink-300">
         Cette liste de courses a peut-être été supprimée ou n&apos;existe pas.
       </p>
       <Link
         to="/shopping-lists"
-        className="mt-6 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
+        className="mt-6 inline-flex items-center justify-center gap-2 rounded-control bg-forest px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-forest-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-700 dark:bg-forest-600 dark:hover:bg-forest-500 dark:focus-visible:outline-forest-400"
       >
         <ArrowLeftIcon aria-hidden="true" className="size-4" />
         Retour aux listes
@@ -337,6 +305,11 @@ const ShoppingListDetailPage = () => {
     () => list?.shopping_list_items ?? [],
     [list?.shopping_list_items],
   )
+
+  const completionPercent = useMemo(() => {
+    if (items.length === 0) return 0
+    return Math.round((checkedItems.length / items.length) * 100)
+  }, [items.length, checkedItems.length])
 
   // Title editing
   const startEditTitle = useCallback(() => {
@@ -435,10 +408,10 @@ const ShoppingListDetailPage = () => {
     })
   }, [list, deleteListMutation, navigate])
 
-  if (!id) return <NotFoundState />
-  if (isLoading) return <LoadingState />
-  if (isError) return <ErrorState onRetry={() => void refetch()} />
-  if (isFetched && !list) return <NotFoundState />
+  if (!id) return <DetailNotFoundState />
+  if (isLoading) return <DetailLoadingState />
+  if (isError) return <ErrorState title="Impossible de charger la liste de courses" description="Une erreur est survenue lors du chargement de cette liste. Vérifiez votre connexion et réessayez." onRetry={() => void refetch()} />
+  if (isFetched && !list) return <DetailNotFoundState />
   if (!list) return null
 
   return (
@@ -446,7 +419,7 @@ const ShoppingListDetailPage = () => {
       {/* Back link */}
       <Link
         to="/shopping-lists"
-        className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+        className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-ink-500 transition-colors hover:text-ink dark:text-ink-300 dark:hover:text-white"
       >
         <ArrowLeftIcon aria-hidden="true" className="size-4" />
         Toutes les listes
@@ -466,54 +439,48 @@ const ShoppingListDetailPage = () => {
                   if (e.key === 'Escape') setIsTitleEditing(false)
                 }}
                 autoFocus
-                className="flex-1 rounded-lg border border-indigo-500 bg-white px-3 py-2 text-xl font-bold text-gray-900 shadow-xs focus:outline-2 focus:outline-indigo-600 dark:border-indigo-400 dark:bg-white/5 dark:text-white dark:focus:outline-indigo-500 sm:text-2xl"
+                className="flex-1 rounded-control border border-forest-500 bg-white px-3 py-2 text-xl font-bold text-ink shadow-soft focus:ring-1 focus:ring-forest-500 focus:outline-2 focus:outline-offset-2 focus:outline-forest-600 dark:border-forest-400 dark:bg-white/5 dark:text-white dark:focus:ring-forest-400 dark:focus:outline-forest-400 sm:text-2xl"
               />
-              <button
-                type="button"
+              <Button
+                variant="primary"
+                size="sm"
                 onClick={saveTitle}
                 disabled={updateListMutation.isPending}
                 aria-label="Enregistrer le titre"
-                className="inline-flex size-10 items-center justify-center rounded-lg bg-indigo-600 text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
               >
                 <CheckIcon aria-hidden="true" className="size-5" />
-              </button>
-              <button
-                type="button"
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
                 onClick={() => setIsTitleEditing(false)}
                 aria-label="Annuler la modification du titre"
-                className="inline-flex size-10 items-center justify-center rounded-lg border border-gray-300 bg-white text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-indigo-500"
               >
                 <XMarkIcon aria-hidden="true" className="size-5" />
-              </button>
+              </Button>
             </div>
           ) : (
             <div className="flex items-start gap-3">
-              <h1 className="font-display text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
+              <h1 className="font-display text-2xl font-bold text-ink dark:text-white sm:text-3xl">
                 {list.title}
               </h1>
               <button
                 type="button"
                 onClick={startEditTitle}
                 aria-label="Modifier le titre"
-                className="mt-1 rounded-md p-1 text-gray-400 transition-colors hover:text-gray-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:text-gray-500 dark:hover:text-gray-300 dark:focus-visible:outline-indigo-500"
+                className="mt-1 rounded-control p-1 text-ink-400 transition-colors hover:bg-sand-100 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 dark:text-ink-300 dark:hover:bg-white/10 dark:hover:text-white dark:focus-visible:outline-forest-400"
               >
                 <PencilIcon aria-hidden="true" className="size-5" />
               </button>
             </div>
           )}
 
-          {/* Owner/member badge + member avatars */}
+          {/* Owner/member badge + member count */}
           <div className="mt-2 flex items-center gap-3">
-            <span
-              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                isOwner
-                  ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300'
-                  : 'bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-400'
-              }`}
-            >
+            <Badge variant={isOwner ? 'forest' : 'neutral'}>
               {isOwner ? 'Propriétaire' : 'Éditeur'}
-            </span>
-            <span className="text-xs text-gray-400 dark:text-gray-500">
+            </Badge>
+            <span className="text-xs text-ink-500 dark:text-ink-300">
               {members.length} membre{members.length !== 1 ? 's' : ''}
             </span>
           </div>
@@ -521,20 +488,19 @@ const ShoppingListDetailPage = () => {
 
         <div className="flex items-center gap-2">
           {isOwner && (
-            <button
-              type="button"
+            <Button
+              variant="secondary"
               onClick={() => setIsShareOpen(true)}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-indigo-500"
+              icon={<UserGroupIcon aria-hidden="true" className="size-4" />}
             >
-              <UserGroupIcon aria-hidden="true" className="size-4" />
               Partager
-            </button>
+            </Button>
           )}
           {isOwner && (
             <button
               type="button"
               onClick={() => setIsDeleteListOpen(true)}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-600 shadow-xs transition-colors hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 dark:border-red-500/20 dark:bg-white/5 dark:text-red-400 dark:hover:bg-red-500/10 dark:focus-visible:outline-red-500"
+              className="inline-flex items-center justify-center gap-1.5 rounded-control border border-error-200 bg-white px-3 py-2 text-sm font-semibold text-error transition-colors hover:bg-error-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error-600 dark:border-error-500/20 dark:bg-white/5 dark:text-error-400 dark:hover:bg-error-500/10 dark:focus-visible:outline-error-500"
             >
               <TrashIcon aria-hidden="true" className="size-4" />
               Supprimer
@@ -542,6 +508,16 @@ const ShoppingListDetailPage = () => {
           )}
         </div>
       </div>
+
+      {/* Progress */}
+      {items.length > 0 && (
+        <div className="mb-6">
+          <ProgressBar value={completionPercent} />
+          <p className="mt-1.5 text-xs text-ink-500 dark:text-ink-300">
+            {checkedItems.length} sur {items.length} article{items.length !== 1 ? 's' : ''} terminé{checkedItems.length !== 1 ? 's' : ''}
+          </p>
+        </div>
+      )}
 
       {/* Add item */}
       <section aria-labelledby="add-item-heading" className="mb-6">
@@ -555,27 +531,22 @@ const ShoppingListDetailPage = () => {
       <section aria-labelledby="items-heading" className="mb-8">
         <h2
           id="items-heading"
-          className="mb-4 font-display text-xl font-bold text-gray-900 dark:text-white"
+          className="mb-4 font-display text-xl font-bold text-ink dark:text-white"
         >
           Articles
           {items.length > 0 && (
-            <span className="ml-2 text-sm font-normal text-gray-400 dark:text-gray-500">
+            <span className="ml-2 text-sm font-normal text-ink-400 dark:text-ink-300">
               {checkedItems.length}/{items.length}
             </span>
           )}
         </h2>
 
         {items.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-gray-200 py-8 text-center dark:border-white/10">
-            <ShoppingBagIcon
-              aria-hidden="true"
-              className="mx-auto size-10 text-gray-300 dark:text-gray-600"
-            />
-            <p className="mt-3 text-sm/6 text-gray-500 dark:text-gray-400">
-              Aucun article pour le moment. Ajoutez votre premier article
-              ci-dessus.
-            </p>
-          </div>
+          <EmptyState
+            icon={<ShoppingBagIcon aria-hidden="true" className="size-7" />}
+            title="Aucun article pour le moment"
+            description="Ajoutez votre premier article ci-dessus."
+          />
         ) : (
           <div className="space-y-6">
             {/* Unchecked items */}
@@ -596,7 +567,7 @@ const ShoppingListDetailPage = () => {
             {/* Checked items */}
             {checkedItems.length > 0 && (
               <div>
-                <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+                <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500">
                   Terminés
                 </h3>
                 <ul className="space-y-2" role="list">
@@ -617,360 +588,215 @@ const ShoppingListDetailPage = () => {
       </section>
 
       {/* Share / member management dialog */}
-      <Dialog
+      <Modal
         open={isShareOpen}
         onClose={() => {
           setIsShareOpen(false)
           setShareUserId('')
         }}
-        className="relative z-50"
+        title="Partager la liste"
+        footer={
+          <Button
+            variant="secondary"
+            onClick={() => setIsShareOpen(false)}
+          >
+            Terminé
+          </Button>
+        }
       >
-        <DialogBackdrop
-          transition
-          className="fixed inset-0 bg-gray-950/50 transition-opacity data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-gray-950/80"
-        />
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-            <DialogPanel
-              transition
-              className="relative w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left shadow-xl transition-all data-closed:scale-95 data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-gray-800 sm:p-8"
-            >
-              <DialogTitle className="font-display text-lg font-semibold text-gray-900 dark:text-white">
-                Partager la liste
-              </DialogTitle>
-              <p className="mt-2 text-sm/6 text-gray-500 dark:text-gray-400">
-                Ajoutez des membres avec leur identifiant utilisateur.
-                L&apos;ajout par e-mail n&apos;est actuellement pas pris en charge
-                (l&apos;e-mail n&apos;est pas accessible via RLS).
-              </p>
+        <p className="text-sm/6 text-ink-500 dark:text-ink-300">
+          Ajoutez des membres avec leur identifiant utilisateur.
+          L&apos;ajout par e-mail n&apos;est actuellement pas pris en charge
+          (l&apos;e-mail n&apos;est pas accessible via RLS).
+        </p>
 
-              {/* Add member form */}
-              <div className="mt-4 flex gap-2">
-                <input
-                  type="text"
-                  value={shareUserId}
-                  onChange={(e) => setShareUserId(e.target.value)}
-                  placeholder="Identifiant utilisateur"
-                  aria-label="Identifiant utilisateur à ajouter comme membre"
-                  className="flex-1 min-w-0 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-xs placeholder:text-gray-400 focus:border-indigo-500 focus:outline-2 focus:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:outline-indigo-500"
-                />
-                <button
-                  type="button"
-                  onClick={handleAddMember}
-                  disabled={addMemberMutation.isPending || !shareUserId.trim()}
-                  className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
-                >
-                  {addMemberMutation.isPending ? (
-                    <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                  ) : (
-                    <>
-                      <UserPlusIcon aria-hidden="true" className="size-4" />
-                      Ajouter
-                    </>
-                  )}
-                </button>
-              </div>
-
-              {addMemberMutation.isError && (
-                <p className="mt-2 text-sm text-red-600 dark:text-red-400">
-                  Échec de l&apos;ajout du membre. Vérifiez l&apos;identifiant
-                  utilisateur et réessayez.
-                </p>
-              )}
-
-              {/* Current members */}
-              <div className="mt-6">
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Membres actuels
-                </h3>
-                <ul className="mt-2 divide-y divide-gray-100 dark:divide-white/10" role="list">
-                  {members.map((member) => (
-                    <li
-                      key={member.id}
-                      className="flex items-center justify-between py-2.5"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="flex size-8 items-center justify-center rounded-full bg-gray-100 text-xs font-medium text-gray-600 dark:bg-white/10 dark:text-gray-400">
-                          {member.user_id.slice(0, 2).toUpperCase()}
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-gray-900 dark:text-white">
-                            {member.user_id.slice(0, 8)}…
-                          </p>
-                          <p className="text-xs text-gray-400 dark:text-gray-500">
-                            {member.role}
-                          </p>
-                        </div>
-                      </div>
-                      {member.role !== 'owner' && (
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveMember(member)}
-                          disabled={removeMemberMutation.isPending}
-                          aria-label={`Retirer le membre ${member.user_id.slice(0, 8)}`}
-                          className="rounded-md p-1 text-gray-400 transition-colors hover:text-red-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-500 dark:hover:text-red-400 dark:focus-visible:outline-red-500"
-                        >
-                          <XMarkIcon aria-hidden="true" className="size-4" />
-                        </button>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="mt-6 flex justify-end">
-                <button
-                  type="button"
-                  onClick={() => setIsShareOpen(false)}
-                  className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-indigo-500"
-                >
-                  Terminé
-                </button>
-              </div>
-            </DialogPanel>
-          </div>
+        {/* Add member form */}
+        <div className="mt-4 flex gap-2">
+          <input
+            type="text"
+            value={shareUserId}
+            onChange={(e) => setShareUserId(e.target.value)}
+            placeholder="Identifiant utilisateur"
+            aria-label="Identifiant utilisateur à ajouter comme membre"
+            className="min-w-0 flex-1 rounded-control border border-sand-200 bg-white px-3 py-2 text-sm text-ink shadow-soft placeholder:text-ink-400 focus:border-forest-500 focus:ring-1 focus:ring-forest-500 focus:outline-2 focus:outline-offset-2 focus:outline-forest-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-ink-300 dark:focus:border-forest-400 dark:focus:ring-forest-400 dark:focus:outline-forest-400"
+          />
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={handleAddMember}
+            isLoading={addMemberMutation.isPending}
+            disabled={addMemberMutation.isPending || !shareUserId.trim()}
+          >
+            {addMemberMutation.isPending ? undefined : 'Ajouter'}
+          </Button>
         </div>
-      </Dialog>
+
+        {addMemberMutation.isError && (
+          <p className="mt-2 text-sm text-error dark:text-error-400">
+            Échec de l&apos;ajout du membre. Vérifiez l&apos;identifiant
+            utilisateur et réessayez.
+          </p>
+        )}
+
+        {/* Current members */}
+        <div className="mt-6">
+          <h3 className="text-sm font-medium text-ink-700 dark:text-ink-200">
+            Membres actuels
+          </h3>
+          <ul className="mt-2 divide-y divide-sand-200 dark:divide-white/10" role="list">
+            {members.map((member) => (
+              <li
+                key={member.id}
+                className="flex items-center justify-between py-2.5"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex size-8 items-center justify-center rounded-full bg-sand-100 text-xs font-medium text-ink-600 dark:bg-white/10 dark:text-ink-300">
+                    {member.user_id.slice(0, 2).toUpperCase()}
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-ink dark:text-white">
+                      {member.user_id.slice(0, 8)}…
+                    </p>
+                    <p className="text-xs text-ink-400 dark:text-ink-300">
+                      {member.role}
+                    </p>
+                  </div>
+                </div>
+                {member.role !== 'owner' && (
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveMember(member)}
+                    disabled={removeMemberMutation.isPending}
+                    aria-label={`Retirer le membre ${member.user_id.slice(0, 8)}`}
+                    className="rounded-control p-1 text-ink-400 transition-colors hover:bg-error-50 hover:text-error focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-ink-300 dark:hover:bg-error-500/10 dark:hover:text-error-400 dark:focus-visible:outline-error-500"
+                  >
+                    <XMarkIcon aria-hidden="true" className="size-4" />
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </Modal>
 
       {/* Edit item dialog */}
-      <Dialog
+      <Modal
         open={editingItem !== null}
         onClose={() => setEditingItem(null)}
-        className="relative z-50"
-      >
-        <DialogBackdrop
-          transition
-          className="fixed inset-0 bg-gray-950/50 transition-opacity data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-gray-950/80"
-        />
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-            <DialogPanel
-              transition
-              className="relative w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left shadow-xl transition-all data-closed:scale-95 data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-gray-800 sm:p-8"
+        title="Modifier l'article"
+        footer={
+          <>
+            <Button
+              variant="secondary"
+              onClick={() => setEditingItem(null)}
+              disabled={updateItemMutation.isPending}
             >
-              <DialogTitle className="font-display text-lg font-semibold text-gray-900 dark:text-white">
-                Modifier l&apos;article
-              </DialogTitle>
-
-              <div className="mt-4 space-y-3">
-                <div>
-                  <label
-                    htmlFor="edit-item-name"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
-                    Nom
-                  </label>
-                  <input
-                    id="edit-item-name"
-                    type="text"
-                    value={editItemName}
-                    onChange={(e) => setEditItemName(e.target.value)}
-                    className="mt-1.5 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 shadow-xs placeholder:text-gray-400 focus:border-indigo-500 focus:outline-2 focus:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:outline-indigo-500"
-                  />
-                </div>
-                <div className="flex gap-3">
-                  <div className="flex-1">
-                    <label
-                      htmlFor="edit-item-quantity"
-                      className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                    >
-                      Quantité
-                    </label>
-                    <input
-                      id="edit-item-quantity"
-                      type="number"
-                      value={editItemQuantity}
-                      onChange={(e) => setEditItemQuantity(e.target.value)}
-                      min="0"
-                      step="any"
-                      className="mt-1.5 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 shadow-xs placeholder:text-gray-400 focus:border-indigo-500 focus:outline-2 focus:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:outline-indigo-500"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label
-                      htmlFor="edit-item-unit"
-                      className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                    >
-                      Unité
-                    </label>
-                    <input
-                      id="edit-item-unit"
-                      type="text"
-                      value={editItemUnit}
-                      onChange={(e) => setEditItemUnit(e.target.value)}
-                      className="mt-1.5 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 shadow-xs placeholder:text-gray-400 focus:border-indigo-500 focus:outline-2 focus:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:outline-indigo-500"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6 flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setEditingItem(null)}
-                  disabled={updateItemMutation.isPending}
-                  className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-indigo-500"
-                >
-                  Annuler
-                </button>
-                <button
-                  type="button"
-                  onClick={saveItem}
-                  disabled={updateItemMutation.isPending || !editItemName.trim()}
-                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
-                >
-                  {updateItemMutation.isPending ? (
-                    <>
-                      <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                      Enregistrement…
-                    </>
-                  ) : (
-                    <>
-                      <CheckIcon aria-hidden="true" className="size-4" />
-                      Enregistrer
-                    </>
-                  )}
-                </button>
-              </div>
-            </DialogPanel>
+              Annuler
+            </Button>
+            <Button
+              variant="primary"
+              onClick={saveItem}
+              isLoading={updateItemMutation.isPending}
+              disabled={updateItemMutation.isPending || !editItemName.trim()}
+            >
+              {updateItemMutation.isPending ? 'Enregistrement…' : 'Enregistrer'}
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-3">
+          <TextField
+            id="edit-item-name"
+            label="Nom"
+            value={editItemName}
+            onChange={(e) => setEditItemName(e.target.value)}
+          />
+          <div className="flex gap-3">
+            <div className="flex-1">
+              <TextField
+                id="edit-item-quantity"
+                label="Quantité"
+                type="number"
+                value={editItemQuantity}
+                onChange={(e) => setEditItemQuantity(e.target.value)}
+                min="0"
+                step="any"
+              />
+            </div>
+            <div className="flex-1">
+              <TextField
+                id="edit-item-unit"
+                label="Unité"
+                value={editItemUnit}
+                onChange={(e) => setEditItemUnit(e.target.value)}
+              />
+            </div>
           </div>
         </div>
-      </Dialog>
+      </Modal>
 
       {/* Delete item confirmation dialog */}
-      <Dialog
+      <Modal
         open={deletingItem !== null}
         onClose={() => setDeletingItem(null)}
-        className="relative z-50"
-      >
-        <DialogBackdrop
-          transition
-          className="fixed inset-0 bg-gray-950/50 transition-opacity data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-gray-950/80"
-        />
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-            <DialogPanel
-              transition
-              className="relative w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left shadow-xl transition-all data-closed:scale-95 data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-gray-800 sm:p-8"
+        title="Supprimer l'article ?"
+        footer={
+          <>
+            <Button
+              variant="secondary"
+              onClick={() => setDeletingItem(null)}
+              disabled={deleteItemMutation.isPending}
             >
-              <div className="flex items-start gap-4">
-                <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-500/10">
-                  <ExclamationTriangleIcon
-                    aria-hidden="true"
-                    className="size-5 text-red-600 dark:text-red-400"
-                  />
-                </div>
-                <div className="flex-1">
-                  <DialogTitle className="font-display text-lg font-semibold text-gray-900 dark:text-white">
-                    Supprimer l&apos;article ?
-                  </DialogTitle>
-                  <p className="mt-2 text-sm/6 text-gray-500 dark:text-gray-400">
-                    Voulez-vous vraiment supprimer « {deletingItem?.name} » ?
-                    Cette action est irréversible.
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-6 flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setDeletingItem(null)}
-                  disabled={deleteItemMutation.isPending}
-                  className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-indigo-500"
-                >
-                  Annuler
-                </button>
-                <button
-                  type="button"
-                  onClick={confirmDeleteItem}
-                  disabled={deleteItemMutation.isPending}
-                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-red-500 dark:hover:bg-red-400 dark:focus-visible:outline-red-500"
-                >
-                  {deleteItemMutation.isPending ? (
-                    <>
-                      <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                      Suppression…
-                    </>
-                  ) : (
-                    <>
-                      <TrashIcon aria-hidden="true" className="size-4" />
-                      Supprimer l&apos;article
-                    </>
-                  )}
-                </button>
-              </div>
-            </DialogPanel>
-          </div>
-        </div>
-      </Dialog>
+              Annuler
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={confirmDeleteItem}
+              isLoading={deleteItemMutation.isPending}
+              disabled={deleteItemMutation.isPending}
+            >
+              {deleteItemMutation.isPending ? 'Suppression…' : 'Supprimer l\'article'}
+            </Button>
+          </>
+        }
+      >
+        <p className="text-sm/6 text-ink-500 dark:text-ink-300">
+          Voulez-vous vraiment supprimer « {deletingItem?.name} » ?
+          Cette action est irréversible.
+        </p>
+      </Modal>
 
       {/* Delete list confirmation dialog */}
-      <Dialog
+      <Modal
         open={isDeleteListOpen}
         onClose={() => setIsDeleteListOpen(false)}
-        className="relative z-50"
-      >
-        <DialogBackdrop
-          transition
-          className="fixed inset-0 bg-gray-950/50 transition-opacity data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-gray-950/80"
-        />
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-            <DialogPanel
-              transition
-              className="relative w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left shadow-xl transition-all data-closed:scale-95 data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-gray-800 sm:p-8"
+        title="Supprimer la liste ?"
+        footer={
+          <>
+            <Button
+              variant="secondary"
+              onClick={() => setIsDeleteListOpen(false)}
+              disabled={deleteListMutation.isPending}
             >
-              <div className="flex items-start gap-4">
-                <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-500/10">
-                  <ExclamationTriangleIcon
-                    aria-hidden="true"
-                    className="size-5 text-red-600 dark:text-red-400"
-                  />
-                </div>
-                <div className="flex-1">
-                  <DialogTitle className="font-display text-lg font-semibold text-gray-900 dark:text-white">
-                    Supprimer la liste ?
-                  </DialogTitle>
-                  <p className="mt-2 text-sm/6 text-gray-500 dark:text-gray-400">
-                    Voulez-vous vraiment supprimer « {list.title} » ? Tous les
-                    articles et membres seront supprimés. Cette action est
-                    irréversible.
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-6 flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setIsDeleteListOpen(false)}
-                  disabled={deleteListMutation.isPending}
-                  className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-indigo-500"
-                >
-                  Annuler
-                </button>
-                <button
-                  type="button"
-                  onClick={handleDeleteList}
-                  disabled={deleteListMutation.isPending}
-                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-red-500 dark:hover:bg-red-400 dark:focus-visible:outline-red-500"
-                >
-                  {deleteListMutation.isPending ? (
-                    <>
-                      <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                      Suppression…
-                    </>
-                  ) : (
-                    <>
-                      <TrashIcon aria-hidden="true" className="size-4" />
-                      Supprimer la liste
-                    </>
-                  )}
-                </button>
-              </div>
-            </DialogPanel>
-          </div>
-        </div>
-      </Dialog>
+              Annuler
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteList}
+              isLoading={deleteListMutation.isPending}
+              disabled={deleteListMutation.isPending}
+            >
+              {deleteListMutation.isPending ? 'Suppression…' : 'Supprimer la liste'}
+            </Button>
+          </>
+        }
+      >
+        <p className="text-sm/6 text-ink-500 dark:text-ink-300">
+          Voulez-vous vraiment supprimer « {list.title} » ? Tous les
+          articles et membres seront supprimés. Cette action est
+          irréversible.
+        </p>
+      </Modal>
     </div>
   )
 }

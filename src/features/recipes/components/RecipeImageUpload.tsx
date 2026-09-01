@@ -68,13 +68,13 @@ const RecipeImageUpload = ({
 
   return (
     <div>
-      <span className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+      <span className="block text-sm font-medium text-ink-700 dark:text-ink-200">
         Image
       </span>
 
       <div className="mt-1">
         {value ? (
-          <div className="relative overflow-hidden rounded-lg border border-gray-200 dark:border-white/10">
+          <div className="relative overflow-hidden rounded-card border border-sand-200 dark:border-white/10">
             <img
               src={value}
               alt="Aperçu de la recette"
@@ -86,7 +86,7 @@ const RecipeImageUpload = ({
                 onClick={() => inputRef.current?.click()}
                 disabled={isUploading}
                 aria-label="Remplacer l’image"
-                className="inline-flex items-center justify-center rounded-full bg-gray-950/60 p-1.5 text-white transition-colors hover:bg-gray-950/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex items-center justify-center rounded-full bg-ink-950/60 p-1.5 text-white transition-colors hover:bg-ink-950/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <ArrowPathIcon aria-hidden="true" className="size-4" />
               </button>
@@ -95,7 +95,7 @@ const RecipeImageUpload = ({
                 onClick={handleRemove}
                 disabled={isUploading}
                 aria-label="Supprimer l’image"
-                className="inline-flex items-center justify-center rounded-full bg-gray-950/60 p-1.5 text-white transition-colors hover:bg-gray-950/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex items-center justify-center rounded-full bg-ink-950/60 p-1.5 text-white transition-colors hover:bg-ink-950/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <XMarkIcon aria-hidden="true" className="size-4" />
               </button>
@@ -106,13 +106,13 @@ const RecipeImageUpload = ({
             type="button"
             onClick={() => inputRef.current?.click()}
             disabled={isUploading}
-            className="flex w-full flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-8 text-gray-500 transition-colors hover:border-indigo-400 hover:text-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/15 dark:bg-white/5 dark:text-gray-400 dark:hover:border-indigo-400 dark:hover:text-indigo-400 dark:focus-visible:outline-indigo-500"
+            className="flex w-full flex-col items-center justify-center gap-2 rounded-card border-2 border-dashed border-sand-200 bg-sand-50 px-4 py-8 text-ink-500 transition-colors hover:border-forest-400 hover:text-forest-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/15 dark:bg-white/5 dark:text-ink-300 dark:hover:border-forest-400 dark:hover:text-forest-300 dark:focus-visible:outline-forest-400"
           >
             <PhotoIcon aria-hidden="true" className="size-8" />
             <span className="text-sm font-medium">
               {isUploading ? 'Téléversement…' : 'Choisir une image'}
             </span>
-            <span className="text-xs text-gray-400 dark:text-gray-500">
+            <span className="text-xs text-ink-400 dark:text-ink-400">
               JPEG, PNG ou WebP · jusqu&apos;à 5 Mo
             </span>
           </button>
@@ -120,8 +120,8 @@ const RecipeImageUpload = ({
 
         {/* Uploading spinner overlay */}
         {isUploading && (
-          <div className="mt-2 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-            <span className="size-4 animate-spin rounded-full border-2 border-indigo-600/30 border-t-indigo-600 dark:border-indigo-400/30 dark:border-t-indigo-400" />
+          <div className="mt-2 flex items-center gap-2 text-sm text-ink-500 dark:text-ink-300">
+            <span className="size-4 animate-spin rounded-full border-2 border-forest-600/30 border-t-forest-600 dark:border-forest-400/30 dark:border-t-forest-400" />
             Téléversement…
           </div>
         )}
@@ -131,7 +131,7 @@ const RecipeImageUpload = ({
       {(uploadError || error) && (
         <p
           role="alert"
-          className="mt-1 text-sm text-red-600 dark:text-red-400"
+          className="mt-1 text-sm text-error dark:text-error-400"
         >
           {uploadError ?? error}
         </p>

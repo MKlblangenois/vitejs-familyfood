@@ -3,19 +3,11 @@ import { Link } from 'react-router-dom'
 import {
   PlusIcon,
   ShoppingBagIcon,
-  ExclamationTriangleIcon,
-  ArrowPathIcon,
+  MagnifyingGlassIcon,
   TrashIcon,
   PencilIcon,
-  CheckIcon,
   UserGroupIcon,
 } from '@heroicons/react/24/outline'
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  DialogTitle,
-} from '@headlessui/react'
 import { useAuth } from '../../auth/hooks/useAuth'
 import {
   useShoppingLists,
@@ -24,6 +16,12 @@ import {
   useDeleteShoppingList,
   useRealtimeSync,
 } from '../hooks'
+import Button from '../../../shared/components/Button'
+import Badge from '../../../shared/components/Badge'
+import Modal from '../../../shared/components/Modal'
+import TextField from '../../../shared/components/TextField'
+import EmptyState from '../../../shared/components/EmptyState'
+import ErrorState from '../../../shared/components/ErrorState'
 
 // ============================================================
 // Sub-components
@@ -45,60 +43,49 @@ function ListCard({
   return (
     <Link
       to={`/shopping-lists/${list.id}`}
-      className="group relative flex flex-col overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-200 transition-all hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-gray-800 dark:ring-white/10 dark:hover:shadow-none dark:focus-visible:outline-indigo-500"
+      className="group relative flex flex-col overflow-hidden rounded-card border border-sand-200 bg-white shadow-card transition-shadow hover:shadow-float focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 dark:border-white/10 dark:bg-forest-900 dark:focus-visible:outline-forest-400"
     >
-      {/* Icon header */}
-      <div className="flex items-center justify-between bg-indigo-50 px-4 py-3 dark:bg-indigo-500/10">
-        <ShoppingBagIcon
-          aria-hidden="true"
-          className="size-6 text-indigo-600 dark:text-indigo-400"
-        />
-        <div className="flex items-center gap-1">
-          <span
-            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
-              isOwner
-                ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300'
-                : 'bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-400'
-            }`}
-          >
-            {isOwner ? 'Propriétaire' : 'Membre'}
-          </span>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              onRename(list)
-            }}
-            aria-label={`Renommer « ${list.title} »`}
-            className="rounded-md p-1 text-gray-400 opacity-0 transition-opacity hover:text-gray-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 group-hover:opacity-100 dark:text-gray-500 dark:hover:text-gray-300 dark:focus-visible:outline-indigo-500"
-          >
-            <PencilIcon aria-hidden="true" className="size-4" />
-          </button>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              onDelete(list)
-            }}
-            aria-label={`Supprimer « ${list.title} »`}
-            className="rounded-md p-1 text-gray-400 opacity-0 transition-opacity hover:text-red-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 group-hover:opacity-100 dark:text-gray-500 dark:hover:text-red-400 dark:focus-visible:outline-red-500"
-          >
-            <TrashIcon aria-hidden="true" className="size-4" />
-          </button>
-        </div>
-      </div>
-
       {/* Content */}
-      <div className="flex flex-1 flex-col gap-2 p-4">
-        <h3 className="font-display text-lg font-semibold text-gray-900 dark:text-white sm:text-xl">
-          {list.title}
-        </h3>
+      <div className="flex flex-1 flex-col gap-3 p-5">
+        <div className="flex items-start justify-between gap-3">
+          <h3 className="font-display text-lg font-semibold text-ink dark:text-white sm:text-xl">
+            {list.title}
+          </h3>
+          <div className="flex shrink-0 items-center gap-0.5">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                onRename(list)
+              }}
+              aria-label={`Renommer « ${list.title} »`}
+              className="rounded-control p-1.5 text-ink-400 opacity-0 transition-opacity hover:bg-sand-100 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 group-hover:opacity-100 dark:text-ink-300 dark:hover:bg-white/10 dark:hover:text-white dark:focus-visible:outline-forest-400"
+            >
+              <PencilIcon aria-hidden="true" className="size-4" />
+            </button>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                onDelete(list)
+              }}
+              aria-label={`Supprimer « ${list.title} »`}
+              className="rounded-control p-1.5 text-ink-400 opacity-0 transition-opacity hover:bg-error-50 hover:text-error focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error-600 group-hover:opacity-100 dark:text-ink-300 dark:hover:bg-error-500/10 dark:hover:text-error-400 dark:focus-visible:outline-error-500"
+            >
+              <TrashIcon aria-hidden="true" className="size-4" />
+            </button>
+          </div>
+        </div>
 
-        <div className="mt-auto flex items-center gap-3 pt-2 text-xs text-gray-400 dark:text-gray-500">
-          <span className="inline-flex items-center gap-1">
-            <UserGroupIcon aria-hidden="true" className="size-4" />
+        {/* Badge + meta */}
+        <div className="mt-auto flex items-center gap-2 pt-1">
+          <Badge variant={isOwner ? 'forest' : 'neutral'}>
+            {isOwner ? 'Propriétaire' : 'Membre'}
+          </Badge>
+          <span className="inline-flex items-center gap-1 text-xs text-ink-500 dark:text-ink-300">
+            <UserGroupIcon aria-hidden="true" className="size-3.5" />
             Partagée
           </span>
         </div>
@@ -107,78 +94,23 @@ function ListCard({
   )
 }
 
-function LoadingSkeleton() {
+function ListsLoadingSkeleton() {
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: 6 }).map((_, i) => (
         <div
           key={i}
-          className="overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-white/10"
+          className="animate-pulse overflow-hidden rounded-card border border-sand-200 bg-white dark:border-white/10 dark:bg-forest-900"
         >
-          <div className="flex items-center justify-between bg-indigo-50 px-4 py-3 dark:bg-indigo-500/10">
-            <div className="size-6 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-            <div className="h-5 w-16 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700" />
-          </div>
-          <div className="space-y-3 p-4">
-            <div className="h-5 w-3/4 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-            <div className="h-4 w-1/3 animate-pulse rounded bg-gray-100 dark:bg-gray-600" />
+          <div className="space-y-3 p-5">
+            <div className="h-5 w-3/4 animate-pulse rounded-control bg-sand-200 dark:bg-white/10" />
+            <div className="flex gap-2 pt-1">
+              <div className="h-5 w-20 animate-pulse rounded-pill bg-sand-200 dark:bg-white/10" />
+              <div className="h-5 w-16 animate-pulse rounded-pill bg-sand-200 dark:bg-white/10" />
+            </div>
           </div>
         </div>
       ))}
-    </div>
-  )
-}
-
-function ErrorState({ onRetry }: { onRetry: () => void }) {
-  return (
-    <div className="flex min-h-[40vh] flex-col items-center justify-center text-center">
-      <ExclamationTriangleIcon
-        aria-hidden="true"
-        className="size-12 text-red-500 dark:text-red-400"
-      />
-      <h2 className="mt-4 font-display text-xl font-semibold text-gray-900 dark:text-white">
-        Une erreur est survenue
-      </h2>
-      <p className="mt-2 max-w-sm text-sm/6 text-gray-500 dark:text-gray-400">
-        Nous n&apos;avons pas pu charger vos listes de courses. Veuillez vérifier
-        votre connexion et réessayer.
-      </p>
-      <button
-        type="button"
-        onClick={onRetry}
-        className="mt-6 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
-      >
-        <ArrowPathIcon aria-hidden="true" className="size-4" />
-        Réessayer
-      </button>
-    </div>
-  )
-}
-
-function EmptyState({ onCreate }: { onCreate: () => void }) {
-  return (
-    <div className="flex min-h-[40vh] flex-col items-center justify-center text-center">
-      <div className="rounded-2xl bg-indigo-50 p-4 dark:bg-indigo-500/10">
-        <ShoppingBagIcon
-          aria-hidden="true"
-          className="size-12 text-indigo-600 dark:text-indigo-400"
-        />
-      </div>
-      <h2 className="mt-6 font-display text-2xl font-bold text-gray-900 dark:text-white">
-        Aucune liste de courses pour le moment
-      </h2>
-      <p className="mt-2 max-w-sm text-sm/6 text-gray-500 dark:text-gray-400">
-        Créez votre première liste de courses pour commencer à suivre vos
-        ingrédients et collaborer avec d&apos;autres.
-      </p>
-      <button
-        type="button"
-        onClick={onCreate}
-        className="mt-6 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
-      >
-        <PlusIcon aria-hidden="true" className="size-5" />
-        Créer votre première liste
-      </button>
     </div>
   )
 }
@@ -274,18 +206,17 @@ const ShoppingListsPage = () => {
     <div>
       {/* Header */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="font-display text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
+        <h1 className="font-display text-3xl font-bold text-ink dark:text-white sm:text-4xl">
           Listes de courses
         </h1>
 
-        <button
-          type="button"
+        <Button
+          variant="primary"
+          icon={<PlusIcon aria-hidden="true" className="size-5" />}
           onClick={openCreateDialog}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
         >
-          <PlusIcon aria-hidden="true" className="size-5" />
           Nouvelle liste
-        </button>
+        </Button>
       </div>
 
       {/* Search — only show when there are lists or loading */}
@@ -294,9 +225,9 @@ const ShoppingListsPage = () => {
           <label htmlFor="list-search" className="sr-only">
             Rechercher des listes de courses
           </label>
-          <ShoppingBagIcon
+          <MagnifyingGlassIcon
             aria-hidden="true"
-            className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-gray-400 dark:text-gray-500"
+            className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-ink-400 dark:text-ink-300"
           />
           <input
             id="list-search"
@@ -304,18 +235,37 @@ const ShoppingListsPage = () => {
             placeholder="Rechercher des listes…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="block w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-4 text-sm text-gray-900 shadow-xs placeholder:text-gray-400 focus:border-indigo-500 focus:outline-2 focus:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:outline-indigo-500"
+            className="block w-full rounded-control border border-sand-200 bg-cream py-3 pl-11 pr-4 text-sm text-ink shadow-soft placeholder:text-ink-400 focus:border-forest-500 focus:ring-1 focus:ring-forest-500 focus:outline-2 focus:outline-offset-2 focus:outline-forest-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-ink-300 dark:focus:border-forest-400 dark:focus:ring-forest-400 dark:focus:outline-forest-400"
           />
         </div>
       )}
 
       {/* Content */}
-      {isLoading && <LoadingSkeleton />}
+      {isLoading && <ListsLoadingSkeleton />}
 
-      {isError && <ErrorState onRetry={() => void refetch()} />}
+      {isError && (
+        <ErrorState
+          title="Une erreur est survenue"
+          description="Nous n'avons pas pu charger vos listes de courses. Veuillez vérifier votre connexion et réessayer."
+          onRetry={() => void refetch()}
+        />
+      )}
 
       {!isLoading && !isError && filteredLists.length === 0 && (
-        <EmptyState onCreate={openCreateDialog} />
+        <EmptyState
+          icon={<ShoppingBagIcon aria-hidden="true" className="size-7" />}
+          title="Aucune liste de courses pour le moment"
+          description="Créez votre première liste de courses pour commencer à suivre vos ingrédients et collaborer avec d'autres."
+          action={
+            <Button
+              variant="primary"
+              icon={<PlusIcon aria-hidden="true" className="size-5" />}
+              onClick={openCreateDialog}
+            >
+              Créer votre première liste
+            </Button>
+          }
+        />
       )}
 
       {!isLoading && !isError && filteredLists.length > 0 && (
@@ -339,243 +289,138 @@ const ShoppingListsPage = () => {
         lists.length > 0 &&
         filteredLists.length === 0 && (
           <div className="flex min-h-[30vh] flex-col items-center justify-center text-center">
-            <ShoppingBagIcon
-              aria-hidden="true"
-              className="size-10 text-gray-300 dark:text-gray-600"
-            />
-            <p className="mt-4 text-sm/6 text-gray-500 dark:text-gray-400">
+            <div className="flex size-14 items-center justify-center rounded-full bg-sand-100 text-ink-400 dark:bg-white/10 dark:text-ink-300">
+              <MagnifyingGlassIcon aria-hidden="true" className="size-6" />
+            </div>
+            <p className="mt-4 text-sm/6 text-ink-500 dark:text-ink-300">
               Aucune liste ne correspond à « {search} »
             </p>
           </div>
         )}
 
       {/* Mobile FAB */}
-      <button
-        type="button"
-        onClick={openCreateDialog}
+      <Button
+        variant="primary"
         aria-label="Nouvelle liste"
-        className="fixed bottom-20 right-5 z-30 flex size-14 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:hidden dark:bg-indigo-500 dark:focus-visible:outline-indigo-400"
-      >
-        <PlusIcon aria-hidden="true" className="size-6" />
-      </button>
+        onClick={openCreateDialog}
+        icon={<PlusIcon aria-hidden="true" className="size-6" />}
+        className="fixed bottom-20 right-5 z-30 flex size-14 !rounded-full !p-0 shadow-float transition-transform hover:scale-105 sm:hidden"
+      />
 
       {/* Create list dialog */}
-      <Dialog
+      <Modal
         open={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
-        className="relative z-50"
-      >
-        <DialogBackdrop
-          transition
-          className="fixed inset-0 bg-gray-950/50 transition-opacity data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-gray-950/80"
-        />
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-            <DialogPanel
-              transition
-              className="relative w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left shadow-xl transition-all data-closed:scale-95 data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-gray-800 sm:p-8"
+        title="Nouvelle liste de courses"
+        footer={
+          <>
+            <Button
+              variant="secondary"
+              onClick={() => setIsCreateOpen(false)}
+              disabled={createMutation.isPending}
             >
-              <DialogTitle className="font-display text-lg font-semibold text-gray-900 dark:text-white">
-                Nouvelle liste de courses
-              </DialogTitle>
-              <p className="mt-2 text-sm/6 text-gray-500 dark:text-gray-400">
-                Donnez un nom à votre liste pour commencer.
-              </p>
-
-              <div className="mt-4">
-                <label
-                  htmlFor="new-list-title"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                >
-                  Nom de la liste
-                </label>
-                <input
-                  id="new-list-title"
-                  type="text"
-                  value={newListTitle}
-                  onChange={(e) => setNewListTitle(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleCreate()
-                  }}
-                  placeholder="p. ex. Courses de la semaine"
-                  autoFocus
-                  className="mt-1.5 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 shadow-xs placeholder:text-gray-400 focus:border-indigo-500 focus:outline-2 focus:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:outline-indigo-500"
-                />
-              </div>
-
-              <div className="mt-6 flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setIsCreateOpen(false)}
-                  disabled={createMutation.isPending}
-                  className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-indigo-500"
-                >
-                  Annuler
-                </button>
-                <button
-                  type="button"
-                  onClick={handleCreate}
-                  disabled={createMutation.isPending || !newListTitle.trim()}
-                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
-                >
-                  {createMutation.isPending ? (
-                    <>
-                      <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                      Création…
-                    </>
-                  ) : (
-                    'Créer la liste'
-                  )}
-                </button>
-              </div>
-            </DialogPanel>
-          </div>
+              Annuler
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleCreate}
+              isLoading={createMutation.isPending}
+              disabled={createMutation.isPending || !newListTitle.trim()}
+            >
+              {createMutation.isPending ? 'Création…' : 'Créer la liste'}
+            </Button>
+          </>
+        }
+      >
+        <p className="text-sm/6 text-ink-500 dark:text-ink-300">
+          Donnez un nom à votre liste pour commencer.
+        </p>
+        <div className="mt-4">
+          <TextField
+            id="new-list-title"
+            label="Nom de la liste"
+            value={newListTitle}
+            onChange={(e) => setNewListTitle(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleCreate()
+            }}
+            placeholder="p. ex. Courses de la semaine"
+            autoFocus
+          />
         </div>
-      </Dialog>
+      </Modal>
 
       {/* Rename list dialog */}
-      <Dialog
+      <Modal
         open={renameTarget !== null}
         onClose={() => setRenameTarget(null)}
-        className="relative z-50"
-      >
-        <DialogBackdrop
-          transition
-          className="fixed inset-0 bg-gray-950/50 transition-opacity data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-gray-950/80"
-        />
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-            <DialogPanel
-              transition
-              className="relative w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left shadow-xl transition-all data-closed:scale-95 data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-gray-800 sm:p-8"
+        title="Renommer la liste"
+        footer={
+          <>
+            <Button
+              variant="secondary"
+              onClick={() => setRenameTarget(null)}
+              disabled={updateMutation.isPending}
             >
-              <DialogTitle className="font-display text-lg font-semibold text-gray-900 dark:text-white">
-                Renommer la liste
-              </DialogTitle>
-
-              <div className="mt-4">
-                <label
-                  htmlFor="rename-list-title"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                >
-                  Nom de la liste
-                </label>
-                <input
-                  id="rename-list-title"
-                  type="text"
-                  value={renameValue}
-                  onChange={(e) => setRenameValue(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleRename()
-                  }}
-                  autoFocus
-                  className="mt-1.5 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 shadow-xs placeholder:text-gray-400 focus:border-indigo-500 focus:outline-2 focus:outline-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:outline-indigo-500"
-                />
-              </div>
-
-              <div className="mt-6 flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setRenameTarget(null)}
-                  disabled={updateMutation.isPending}
-                  className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-indigo-500"
-                >
-                  Annuler
-                </button>
-                <button
-                  type="button"
-                  onClick={handleRename}
-                  disabled={
-                    updateMutation.isPending ||
-                    !renameValue.trim() ||
-                    renameValue.trim() === renameTarget?.title
-                  }
-                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
-                >
-                  {updateMutation.isPending ? (
-                    <>
-                      <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                      Renommage…
-                    </>
-                  ) : (
-                    <>
-                      <CheckIcon aria-hidden="true" className="size-4" />
-                      Renommer
-                    </>
-                  )}
-                </button>
-              </div>
-            </DialogPanel>
-          </div>
-        </div>
-      </Dialog>
+              Annuler
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleRename}
+              isLoading={updateMutation.isPending}
+              disabled={
+                updateMutation.isPending ||
+                !renameValue.trim() ||
+                renameValue.trim() === renameTarget?.title
+              }
+            >
+              {updateMutation.isPending ? 'Renommage…' : 'Renommer'}
+            </Button>
+          </>
+        }
+      >
+        <TextField
+          id="rename-list-title"
+          label="Nom de la liste"
+          value={renameValue}
+          onChange={(e) => setRenameValue(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') handleRename()
+          }}
+          autoFocus
+        />
+      </Modal>
 
       {/* Delete list confirmation dialog */}
-      <Dialog
+      <Modal
         open={deleteTarget !== null}
         onClose={() => setDeleteTarget(null)}
-        className="relative z-50"
-      >
-        <DialogBackdrop
-          transition
-          className="fixed inset-0 bg-gray-950/50 transition-opacity data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-gray-950/80"
-        />
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-            <DialogPanel
-              transition
-              className="relative w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left shadow-xl transition-all data-closed:scale-95 data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-gray-800 sm:p-8"
+        title="Supprimer la liste ?"
+        footer={
+          <>
+            <Button
+              variant="secondary"
+              onClick={() => setDeleteTarget(null)}
+              disabled={deleteMutation.isPending}
             >
-              <div className="flex items-start gap-4">
-                <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-500/10">
-                  <ExclamationTriangleIcon
-                    aria-hidden="true"
-                    className="size-5 text-red-600 dark:text-red-400"
-                  />
-                </div>
-                <div className="flex-1">
-                  <DialogTitle className="font-display text-lg font-semibold text-gray-900 dark:text-white">
-                    Supprimer la liste ?
-                  </DialogTitle>
-                  <p className="mt-2 text-sm/6 text-gray-500 dark:text-gray-400">
-                    Voulez-vous vraiment supprimer « {deleteTarget?.title} » ?
-                    Cette action est irréversible.
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-6 flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setDeleteTarget(null)}
-                  disabled={deleteMutation.isPending}
-                  className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-indigo-500"
-                >
-                  Annuler
-                </button>
-                <button
-                  type="button"
-                  onClick={handleDelete}
-                  disabled={deleteMutation.isPending}
-                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-red-500 dark:hover:bg-red-400 dark:focus-visible:outline-red-500"
-                >
-                  {deleteMutation.isPending ? (
-                    <>
-                      <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                      Suppression…
-                    </>
-                  ) : (
-                    <>
-                      <TrashIcon aria-hidden="true" className="size-4" />
-                      Supprimer la liste
-                    </>
-                  )}
-                </button>
-              </div>
-            </DialogPanel>
-          </div>
-        </div>
-      </Dialog>
+              Annuler
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              isLoading={deleteMutation.isPending}
+              disabled={deleteMutation.isPending}
+            >
+              {deleteMutation.isPending ? 'Suppression…' : 'Supprimer la liste'}
+            </Button>
+          </>
+        }
+      >
+        <p className="text-sm/6 text-ink-500 dark:text-ink-300">
+          Voulez-vous vraiment supprimer « {deleteTarget?.title} » ?
+          Cette action est irréversible.
+        </p>
+      </Modal>
     </div>
   )
 }
