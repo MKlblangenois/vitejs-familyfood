@@ -20,7 +20,37 @@ const fetchShoppingList = async (
     throw new Error(`Failed to load shopping list: ${error.message}`)
   }
 
-  return data as ShoppingListWithRelations
+  if (!data) {
+    return data as ShoppingListWithRelations
+  }
+
+  const list = data as ShoppingListWithRelations
+
+  const memberIds = list.shopping_list_members.map((member) => member.user_id)
+  if (memberIds.length === 0) {
+    return list
+  }
+
+  const { data: profiles, error: profilesError } = await supabase
+    .from('profiles')
+    .select('id, display_name, avatar_url')
+    .in('id', memberIds)
+
+  if (profilesError) {
+    throw new Error(`Failed to load member profiles: ${profilesError.message}`)
+  }
+
+  const profileById = new Map(
+    (profiles ?? []).map((profile) => [profile.id, profile]),
+  )
+
+  return {
+    ...list,
+    shopping_list_members: list.shopping_list_members.map((member) => ({
+      ...member,
+      profile: profileById.get(member.user_id) ?? null,
+    })),
+  }
 }
 
 export const useShoppingList = (id: string) => {

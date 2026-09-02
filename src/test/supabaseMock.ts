@@ -14,6 +14,7 @@ export interface Chain {
   select: ReturnType<typeof vi.fn>
   order: ReturnType<typeof vi.fn>
   eq: ReturnType<typeof vi.fn>
+  in: ReturnType<typeof vi.fn>
   insert: ReturnType<typeof vi.fn>
   update: ReturnType<typeof vi.fn>
   delete: ReturnType<typeof vi.fn>
@@ -30,6 +31,7 @@ const BUILDER_METHODS = [
   'select',
   'order',
   'eq',
+  'in',
   'insert',
   'update',
   'delete',
@@ -50,6 +52,7 @@ export function createChain({
     select: vi.fn(),
     order: vi.fn(),
     eq: vi.fn(),
+    in: vi.fn(),
     insert: vi.fn(),
     update: vi.fn(),
     delete: vi.fn(),

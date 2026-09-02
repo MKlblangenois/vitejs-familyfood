@@ -24,6 +24,7 @@ import {
   useRealtimeSync,
 } from '../hooks'
 import type { ShoppingListItem, ShoppingListMember } from '../types'
+import { ROLE_LABELS } from '../lib/roleLabels'
 import Button from '../../../shared/components/Button'
 import Badge from '../../../shared/components/Badge'
 import Modal from '../../../shared/components/Modal'
@@ -254,6 +255,11 @@ function DetailNotFoundState() {
 // Main component
 // ============================================================
 
+/** Display name for a member, falling back to the truncated UUID. */
+function getMemberDisplayName(member: ShoppingListMember): string {
+  return member.profile?.display_name || member.user_id.slice(0, 8)
+}
+
 const ShoppingListDetailPage = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -478,7 +484,7 @@ const ShoppingListDetailPage = () => {
           {/* Owner/member badge + member count */}
           <div className="mt-2 flex items-center gap-3">
             <Badge variant={isOwner ? 'forest' : 'neutral'}>
-              {isOwner ? 'Propriétaire' : 'Éditeur'}
+              {isOwner ? ROLE_LABELS.owner : ROLE_LABELS.editor}
             </Badge>
             <span className="text-xs text-ink-500 dark:text-ink-300">
               {members.length} membre{members.length !== 1 ? 's' : ''}
@@ -644,37 +650,48 @@ const ShoppingListDetailPage = () => {
             Membres actuels
           </h3>
           <ul className="mt-2 divide-y divide-sand-200 dark:divide-white/10" role="list">
-            {members.map((member) => (
-              <li
-                key={member.id}
-                className="flex items-center justify-between py-2.5"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="flex size-8 items-center justify-center rounded-full bg-sand-100 text-xs font-medium text-ink-600 dark:bg-white/10 dark:text-ink-300">
-                    {member.user_id.slice(0, 2).toUpperCase()}
+            {members.map((member) => {
+              const memberName = getMemberDisplayName(member)
+              return (
+                <li
+                  key={member.id}
+                  className="flex items-center justify-between py-2.5"
+                >
+                  <div className="flex items-center gap-3">
+                    {member.profile?.avatar_url ? (
+                      <img
+                        src={member.profile.avatar_url}
+                        alt=""
+                        className="size-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex size-8 items-center justify-center rounded-full bg-sand-100 text-xs font-medium text-ink-600 dark:bg-white/10 dark:text-ink-300">
+                        {memberName.slice(0, 2).toUpperCase()}
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-sm font-medium text-ink dark:text-white">
+                        {member.profile?.display_name || `${memberName}…`}
+                      </p>
+                      <p className="text-xs text-ink-400 dark:text-ink-300">
+                        {ROLE_LABELS[member.role]}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-medium text-ink dark:text-white">
-                      {member.user_id.slice(0, 8)}…
-                    </p>
-                    <p className="text-xs text-ink-400 dark:text-ink-300">
-                      {member.role}
-                    </p>
-                  </div>
-                </div>
-                {member.role !== 'owner' && (
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveMember(member)}
-                    disabled={removeMemberMutation.isPending}
-                    aria-label={`Retirer le membre ${member.user_id.slice(0, 8)}`}
-                    className="rounded-control p-1 text-ink-400 transition-colors hover:bg-error-50 hover:text-error focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-ink-300 dark:hover:bg-error-500/10 dark:hover:text-error-400 dark:focus-visible:outline-error-500"
-                  >
-                    <XMarkIcon aria-hidden="true" className="size-4" />
-                  </button>
-                )}
-              </li>
-            ))}
+                  {member.role !== 'owner' && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveMember(member)}
+                      disabled={removeMemberMutation.isPending}
+                      aria-label={`Retirer le membre ${memberName}`}
+                      className="rounded-control p-1 text-ink-400 transition-colors hover:bg-error-50 hover:text-error focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-ink-300 dark:hover:bg-error-500/10 dark:hover:text-error-400 dark:focus-visible:outline-error-500"
+                    >
+                      <XMarkIcon aria-hidden="true" className="size-4" />
+                    </button>
+                  )}
+                </li>
+              )
+            })}
           </ul>
         </div>
       </Modal>

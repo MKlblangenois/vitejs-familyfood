@@ -18,6 +18,12 @@ export interface ShoppingListMember {
   user_id: string
   role: 'owner' | 'editor'
   created_at: string
+  /** Embedded profile (display_name, avatar_url) via the profiles join. */
+  profile?: {
+    id: string
+    display_name: string
+    avatar_url: string | null
+  } | null
 }
 
 /** Row type for the `shopping_list_items` table. */

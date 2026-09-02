@@ -52,12 +52,19 @@ const shoppingList: ShoppingList = {
   updated_at: '2026-01-01T00:00:00Z',
 }
 
+const profile = {
+  id: 'u1',
+  display_name: 'Alice',
+  avatar_url: null,
+}
+
 const member: ShoppingListMember = {
   id: 'm1',
   list_id: 'sl1',
   user_id: 'u1',
   role: 'owner',
   created_at: '2026-01-01T00:00:00Z',
+  profile,
 }
 
 const item: ShoppingListItem = {
@@ -189,6 +196,10 @@ describe('useShoppingList', () => {
       data: listWithRelations,
       error: null,
     })
+    chain('profiles').setResult({
+      data: [profile],
+      error: null,
+    })
 
     const queryClient = createQueryClient()
     const { result } = renderHook(() => useShoppingList('sl1'), {
@@ -203,6 +214,10 @@ describe('useShoppingList', () => {
     )
     expect(chain('shopping_lists').eq).toHaveBeenCalledWith('id', 'sl1')
     expect(chain('shopping_lists').single).toHaveBeenCalled()
+    expect(chain('profiles').select).toHaveBeenCalledWith(
+      'id, display_name, avatar_url',
+    )
+    expect(chain('profiles').in).toHaveBeenCalledWith('id', ['u1'])
   })
 
   it('throws on error', async () => {
