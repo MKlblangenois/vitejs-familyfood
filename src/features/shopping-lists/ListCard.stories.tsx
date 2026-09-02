@@ -26,8 +26,9 @@ const ListCardHarness = () => {
         onRename={() => setRenamed(true)}
         onDelete={() => setDeleted(true)}
       />
-      <p className="text-sm text-ink-500 dark:text-ink-300">
-        Renommée : {renamed ? 'oui' : 'non'} · Supprimée : {deleted ? 'oui' : 'non'}
+      <p className="text-ink-500 dark:text-ink-300 text-sm">
+        Renommée : {renamed ? 'oui' : 'non'} · Supprimée :{' '}
+        {deleted ? 'oui' : 'non'}
       </p>
     </div>
   )
@@ -62,12 +63,12 @@ export const WithCallbacks: Story = {
       name: `Renommer « ${mockShoppingList.title} »`,
     })
     await userEvent.click(renameButton)
-    await expect(canvas.getByText('Renommée : oui')).toBeInTheDocument()
+    await expect(canvas.getByText(/Renommée : oui/)).toBeInTheDocument()
 
     const deleteButton = canvas.getByRole('button', {
       name: `Supprimer « ${mockShoppingList.title} »`,
     })
     await userEvent.click(deleteButton)
-    await expect(canvas.getByText('Supprimée : oui')).toBeInTheDocument()
+    await expect(canvas.getByText(/Supprimée : oui/)).toBeInTheDocument()
   },
 }

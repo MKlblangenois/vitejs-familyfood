@@ -44,20 +44,18 @@ export const Uploading: Story = {
   render: () => (
     <RecipeImageUpload value="" onChange={() => {}} recipeId="recipe-1" />
   ),
-  play: async ({ canvas }) => {
+  play: async ({ canvas, container }) => {
     // Make the upload hang so the uploading state stays visible.
-    mocked(uploadRecipeImage).mockImplementation(
-      () => new Promise(() => {}),
-    )
+    mocked(uploadRecipeImage).mockImplementation(() => new Promise(() => {}))
 
-    const fileInput = canvas.getByLabelText('Choisir une image')
+    const fileInput =
+      container.querySelector<HTMLInputElement>('input[type="file"]')
+    if (!fileInput) throw new Error('File input not found')
     const file = new File(['x'.repeat(1000)], 'photo.jpg', {
       type: 'image/jpeg',
     })
     await userEvent.upload(fileInput, file)
 
-    await expect(
-      canvas.getByText('Téléversement…'),
-    ).toBeInTheDocument()
+    await expect(canvas.getByText('Téléversement…')).toBeInTheDocument()
   },
 }

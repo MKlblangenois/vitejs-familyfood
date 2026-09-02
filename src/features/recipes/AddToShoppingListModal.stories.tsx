@@ -50,10 +50,10 @@ export const Open: Story = {
     await expect(
       within(dialog).getByRole('heading', {
         name: 'Ajouter à la liste de courses',
-      })
+      }),
     ).toBeInTheDocument()
     await expect(
-      within(dialog).getByLabelText('Liste de courses')
+      within(dialog).getByLabelText('Liste de courses'),
     ).toBeInTheDocument()
   },
 }
@@ -70,7 +70,7 @@ export const WithServings: Story = {
   play: async ({ canvas }) => {
     const dialog = await canvas.findByRole('dialog')
     const servingsInput = within(dialog).getByLabelText('Portions')
-    await expect(servingsInput).toHaveValue('8')
+    await expect(servingsInput).toHaveValue(8)
   },
 }
 
@@ -103,8 +103,6 @@ export const WithError: Story = {
     await userEvent.click(submit)
 
     const alert = await within(dialog).findByRole('alert')
-    await expect(alert).toHaveTextContent(
-      'Échec de l’ajout des articles.',
-    )
+    await expect(alert).toHaveTextContent('Échec de l’ajout des articles.')
   },
 }

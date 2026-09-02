@@ -24,5 +24,12 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],
-  "exclude": ["src/**/*.stories.tsx", "src/**/*.stories.ts", "src/**/*.mdx"]
+  "exclude": [
+    "src/**/*.stories.tsx",
+    "src/**/*.stories.ts",
+    "src/**/*.mdx",
+    "src/features/mockData.ts",
+    "src/features/storybookHelpers.tsx",
+    "src/shared/lib/__mocks__"
+  ]
 }

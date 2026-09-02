@@ -50,7 +50,9 @@ function createChain(_table) {
         onRejected?.(rejectReason)
         return
       }
-      resolve(singleCalled && singleResult !== undefined ? singleResult : result)
+      resolve(
+        singleCalled && singleResult !== undefined ? singleResult : result,
+      )
     }),
     setResult: (r) => {
       result = r
