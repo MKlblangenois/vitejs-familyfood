@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
+import { supabase } from '../../../shared/lib/supabase'
 import { useAddCardMember, useRemoveCardMember } from '../hooks'
 import type { LoyaltyCardMember } from '../types'
 import { ROLE_LABELS } from '../lib/roleLabels'
@@ -22,19 +23,50 @@ const ShareCardDialog = ({
   members,
   currentUserId,
 }: ShareCardDialogProps) => {
-  const [userId, setUserId] = useState('')
+  const [email, setEmail] = useState('')
+  const [error, setError] = useState<string | null>(null)
   const addMemberMutation = useAddCardMember()
   const removeMemberMutation = useRemoveCardMember()
 
-  const handleAddMember = useCallback(() => {
-    const trimmed = userId.trim()
+  const handleAddMember = useCallback(async () => {
+    const trimmed = email.trim()
     if (!trimmed) return
+    setError(null)
+
+    // Look up user ID by email via RPC
+    const { data: userId, error: lookupError } = await supabase.rpc(
+      'lookup_user_by_email',
+      { lookup_email: trimmed },
+    )
+
+    if (lookupError) {
+      setError('Erreur lors de la recherche utilisateur.')
+      return
+    }
+
+    if (!userId) {
+      setError('Aucun utilisateur trouvé avec cet email.')
+      return
+    }
+
+    if (userId === currentUserId) {
+      setError('Vous ne pouvez pas vous ajouter vous-même.')
+      return
+    }
 
     addMemberMutation.mutate(
-      { card_id: cardId, user_id: trimmed },
-      { onSuccess: () => setUserId('') },
+      { card_id: cardId, user_id: userId as string },
+      {
+        onSuccess: () => {
+          setEmail('')
+          setError(null)
+        },
+        onError: (err) => {
+          setError(err.message || 'Échec de l\'ajout du membre.')
+        },
+      },
     )
-  }, [userId, cardId, addMemberMutation])
+  }, [email, cardId, currentUserId, addMemberMutation])
 
   const handleRemoveMember = useCallback(
     (member: LoyaltyCardMember) => {
@@ -47,7 +79,8 @@ const ShareCardDialog = ({
   )
 
   const handleClose = useCallback(() => {
-    setUserId('')
+    setEmail('')
+    setError(null)
     onClose()
   }, [onClose])
 
@@ -63,20 +96,23 @@ const ShareCardDialog = ({
       }
     >
       <p className="text-sm/6 text-ink-500 dark:text-ink-300">
-        Ajoutez des membres avec leur identifiant utilisateur.
+        Entrez l&apos;email d&apos;un utilisateur pour lui donner accès à cette carte.
       </p>
 
       {/* Add member form */}
       <div className="mt-4 flex gap-2">
         <input
-          type="text"
-          value={userId}
-          onChange={(e) => setUserId(e.target.value)}
+          type="email"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value)
+            setError(null)
+          }}
           onKeyDown={(e) => {
             if (e.key === 'Enter') handleAddMember()
           }}
-          placeholder="Identifiant utilisateur"
-          aria-label="Identifiant utilisateur à ajouter comme membre"
+          placeholder="email@exemple.com"
+          aria-label="Email de l'utilisateur à ajouter"
           className="min-w-0 flex-1 rounded-control border border-sand-200 bg-white px-3 py-2 text-sm text-ink shadow-soft placeholder:text-ink-400 focus:border-forest-500 focus:ring-1 focus:ring-forest-500 focus:outline-2 focus:outline-offset-2 focus:outline-forest-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-ink-300 dark:focus:border-forest-400 dark:focus:ring-forest-400 dark:focus:outline-forest-400"
         />
         <Button
@@ -84,16 +120,15 @@ const ShareCardDialog = ({
           size="sm"
           onClick={handleAddMember}
           isLoading={addMemberMutation.isPending}
-          disabled={addMemberMutation.isPending || !userId.trim()}
+          disabled={addMemberMutation.isPending || !email.trim()}
         >
           {addMemberMutation.isPending ? undefined : 'Ajouter'}
         </Button>
       </div>
 
-      {addMemberMutation.isError && (
+      {error && (
         <p className="mt-2 text-sm text-error dark:text-error-400">
-          Échec de l&apos;ajout du membre. Vérifiez l&apos;identifiant
-          utilisateur et réessayez.
+          {error}
         </p>
       )}
 
@@ -142,7 +177,7 @@ const ShareCardDialog = ({
                     type="button"
                     onClick={() => handleRemoveMember(member)}
                     disabled={removeMemberMutation.isPending}
-                    aria-label={`Quitter cette carte`}
+                    aria-label="Quitter cette carte"
                     className="rounded-control p-1 text-ink-400 transition-colors hover:bg-error-50 hover:text-error focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-ink-300 dark:hover:bg-error-500/10 dark:hover:text-error-400 dark:focus-visible:outline-error-500"
                   >
                     <XMarkIcon aria-hidden="true" className="size-4" />

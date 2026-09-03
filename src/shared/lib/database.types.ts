@@ -90,6 +90,7 @@ export type Database = {
           avatar_url: string | null
           created_at: string
           display_name: string
+          email: string
           id: string
           updated_at: string
         }
@@ -97,6 +98,7 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           display_name: string
+          email: string
           id: string
           updated_at?: string
         }
@@ -104,6 +106,7 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           display_name?: string
+          email?: string
           id?: string
           updated_at?: string
         }
@@ -358,6 +361,7 @@ export type Database = {
     Functions: {
       is_card_member: { Args: { card_id: string }; Returns: boolean }
       is_list_member: { Args: { list_id: string }; Returns: boolean }
+      lookup_user_by_email: { Args: { lookup_email: string }; Returns: string }
     }
     Enums: {
       [_ in never]: never
