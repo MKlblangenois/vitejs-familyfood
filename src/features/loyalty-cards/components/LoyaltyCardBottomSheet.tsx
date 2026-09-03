@@ -1,13 +1,16 @@
 import { useState, useCallback, useEffect } from 'react'
-import { PencilIcon } from '@heroicons/react/24/outline'
+import { PencilIcon, TrashIcon, UserGroupIcon } from '@heroicons/react/24/outline'
 import { useAuth } from '../../auth/hooks/useAuth'
 import {
   useLoyaltyCard,
   useUpdateLoyaltyCard,
+  useDeleteLoyaltyCard,
 } from '../hooks'
 import BarcodeRenderer from './BarcodeRenderer'
 import LoyaltyCardForm from './LoyaltyCardForm'
+import ShareCardDialog from './ShareCardDialog'
 import Button from '../../../shared/components/Button'
+import Modal from '../../../shared/components/Modal'
 import LoadingSkeleton from '../../../shared/components/LoadingSkeleton'
 import type { LoyaltyCard } from '../types'
 
@@ -28,8 +31,11 @@ const LoyaltyCardBottomSheet = ({
     refetch,
   } = useLoyaltyCard(card?.id ?? '')
   const updateMutation = useUpdateLoyaltyCard()
+  const deleteMutation = useDeleteLoyaltyCard()
 
   const [isEditMode, setIsEditMode] = useState(false)
+  const [isShareOpen, setIsShareOpen] = useState(false)
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
 
   const isOwner = fullCard ? fullCard.user_id === user?.id : false
 
@@ -53,9 +59,13 @@ const LoyaltyCardBottomSheet = ({
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [card, onClose])
 
-  // Reset edit mode when the sheet closes
+  // Reset states when the sheet closes
   useEffect(() => {
-    if (!card) setIsEditMode(false)
+    if (!card) {
+      setIsEditMode(false)
+      setIsShareOpen(false)
+      setIsDeleteOpen(false)
+    }
   }, [card])
 
   const handleUpdate = useCallback(
@@ -73,6 +83,16 @@ const LoyaltyCardBottomSheet = ({
     },
     [fullCard, updateMutation],
   )
+
+  const handleDelete = useCallback(() => {
+    if (!fullCard) return
+    deleteMutation.mutate(fullCard.id, {
+      onSuccess: () => {
+        setIsDeleteOpen(false)
+        onClose()
+      },
+    })
+  }, [fullCard, deleteMutation, onClose])
 
   if (!card) return null
 
@@ -133,6 +153,29 @@ const LoyaltyCardBottomSheet = ({
                     onCancel={() => setIsEditMode(false)}
                     isPending={updateMutation.isPending}
                   />
+
+                  {/* Divider */}
+                  <div className="my-6 border-t border-sand-200 dark:border-white/10" />
+
+                  {/* Share + Delete actions */}
+                  <div className="space-y-2">
+                    <Button
+                      variant="secondary"
+                      className="w-full"
+                      onClick={() => setIsShareOpen(true)}
+                      icon={<UserGroupIcon aria-hidden="true" className="size-5" />}
+                    >
+                      Partager
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      className="w-full"
+                      onClick={() => setIsDeleteOpen(true)}
+                      icon={<TrashIcon aria-hidden="true" className="size-5" />}
+                    >
+                      Supprimer la carte
+                    </Button>
+                  </div>
                 </div>
               ) : (
                 <>
@@ -182,6 +225,50 @@ const LoyaltyCardBottomSheet = ({
           )}
         </div>
       </div>
+
+      {/* Share dialog */}
+      {isShareOpen && fullCard && (
+        <ShareCardDialog
+          open={isShareOpen}
+          onClose={() => setIsShareOpen(false)}
+          cardId={fullCard.id}
+          members={fullCard.loyalty_card_members ?? []}
+          currentUserId={user?.id ?? ''}
+        />
+      )}
+
+      {/* Delete confirmation */}
+      <Modal
+        open={isDeleteOpen}
+        onClose={() => setIsDeleteOpen(false)}
+        title="Supprimer la carte ?"
+        footer={
+          <>
+            <Button
+              variant="secondary"
+              onClick={() => setIsDeleteOpen(false)}
+              disabled={deleteMutation.isPending}
+            >
+              Annuler
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              isLoading={deleteMutation.isPending}
+              disabled={deleteMutation.isPending}
+            >
+              {deleteMutation.isPending
+                ? 'Suppression…'
+                : 'Supprimer la carte'}
+            </Button>
+          </>
+        }
+      >
+        <p className="text-sm/6 text-ink-500 dark:text-ink-300">
+          Voulez-vous vraiment supprimer la carte de « {fullCard?.store_name} » ?
+          Cette action est irréversible.
+        </p>
+      </Modal>
     </div>
   )
 }
