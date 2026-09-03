@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -8,6 +8,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { getStoreLogoUrl } from '../lib/logo'
 import { DEFAULT_CARD_COLORS } from '../lib/logo'
+import { extractDominantColor } from '../lib/extractColor'
 import { BARCODE_FORMATS } from '../types'
 import type { LoyaltyCard } from '../types'
 import Button from '../../../shared/components/Button'
@@ -75,6 +76,23 @@ const LoyaltyCardForm = ({
     () => (storeName.trim() ? getStoreLogoUrl(storeName.trim(), 64) : null),
     [storeName],
   )
+
+  // Auto-detect the card color from the logo when creating a new card
+  useEffect(() => {
+    if (!logoPreviewUrl) return
+    let cancelled = false
+    extractDominantColor(logoPreviewUrl)
+      .then((color) => {
+        if (!cancelled && !card) {
+          // Only auto-set for new cards
+          setValue('card_color', color)
+        }
+      })
+      .catch(() => {}) // Ignore errors, keep current color
+    return () => {
+      cancelled = true
+    }
+  }, [logoPreviewUrl, card, setValue])
 
   const handleFormSubmit = useCallback(
     (data: CardFormData) => {

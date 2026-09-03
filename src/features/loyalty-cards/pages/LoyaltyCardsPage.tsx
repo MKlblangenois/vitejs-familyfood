@@ -4,14 +4,10 @@ import {
   MagnifyingGlassIcon,
   CreditCardIcon,
 } from '@heroicons/react/24/outline'
-import {
-  useLoyaltyCards,
-  useCreateLoyaltyCard,
-  useUpdateLoyaltyCard,
-  useDeleteLoyaltyCard,
-} from '../hooks'
+import { useLoyaltyCards, useCreateLoyaltyCard } from '../hooks'
 import type { LoyaltyCard } from '../types'
 import LoyaltyCardItem from '../components/LoyaltyCardItem'
+import LoyaltyCardBottomSheet from '../components/LoyaltyCardBottomSheet'
 import LoyaltyCardForm from '../components/LoyaltyCardForm'
 import Button from '../../../shared/components/Button'
 import Modal from '../../../shared/components/Modal'
@@ -24,20 +20,12 @@ import ErrorState from '../../../shared/components/ErrorState'
 
 function CardsLoadingSkeleton() {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {Array.from({ length: 6 }).map((_, i) => (
+    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+      {Array.from({ length: 8 }).map((_, i) => (
         <div
           key={i}
-          className="animate-pulse overflow-hidden rounded-card border border-sand-200 bg-sand-200 dark:border-white/10 dark:bg-white/10"
-        >
-          <div className="space-y-3 p-4">
-            <div className="flex items-center gap-3">
-              <div className="size-10 animate-pulse rounded-control bg-white/20" />
-              <div className="h-4 w-3/4 animate-pulse rounded-control bg-white/20" />
-            </div>
-            <div className="h-3 w-1/2 animate-pulse rounded-control bg-white/20" />
-          </div>
-        </div>
+          className="aspect-square animate-pulse overflow-hidden rounded-card border border-sand-200 bg-sand-200 dark:border-white/10 dark:bg-white/10"
+        />
       ))}
     </div>
   )
@@ -55,13 +43,10 @@ const LoyaltyCardsPage = () => {
     refetch,
   } = useLoyaltyCards()
   const createMutation = useCreateLoyaltyCard()
-  const updateMutation = useUpdateLoyaltyCard()
-  const deleteMutation = useDeleteLoyaltyCard()
 
   const [search, setSearch] = useState('')
   const [isCreateOpen, setIsCreateOpen] = useState(false)
-  const [editingCard, setEditingCard] = useState<LoyaltyCard | null>(null)
-  const [deletingCard, setDeletingCard] = useState<LoyaltyCard | null>(null)
+  const [selectedCard, setSelectedCard] = useState<LoyaltyCard | null>(null)
 
   const filteredCards = useMemo(() => {
     if (!cards) return []
@@ -73,7 +58,6 @@ const LoyaltyCardsPage = () => {
   }, [cards, search])
 
   const openCreateDialog = useCallback(() => {
-    setEditingCard(null)
     setIsCreateOpen(true)
   }, [])
 
@@ -92,32 +76,6 @@ const LoyaltyCardsPage = () => {
     },
     [createMutation],
   )
-
-  const handleUpdate = useCallback(
-    (data: {
-      store_name: string
-      barcode_value: string | null
-      barcode_format: string | null
-      card_color: string
-    }) => {
-      if (!editingCard) return
-      updateMutation.mutate(
-        {
-          id: editingCard.id,
-          ...data,
-        },
-        { onSuccess: () => setEditingCard(null) },
-      )
-    },
-    [editingCard, updateMutation],
-  )
-
-  const handleDelete = useCallback(() => {
-    if (!deletingCard) return
-    deleteMutation.mutate(deletingCard.id, {
-      onSuccess: () => setDeletingCard(null),
-    })
-  }, [deletingCard, deleteMutation])
 
   return (
     <div>
@@ -186,9 +144,13 @@ const LoyaltyCardsPage = () => {
       )}
 
       {!isLoading && !isError && filteredCards.length > 0 && (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {filteredCards.map((card) => (
-            <LoyaltyCardItem key={card.id} card={card} />
+            <LoyaltyCardItem
+              key={card.id}
+              card={card}
+              onClick={setSelectedCard}
+            />
           ))}
         </div>
       )}
@@ -232,53 +194,11 @@ const LoyaltyCardsPage = () => {
         />
       </Modal>
 
-      {/* Edit card dialog */}
-      <Modal
-        open={editingCard !== null}
-        onClose={() => setEditingCard(null)}
-        title="Modifier la carte"
-        size="lg"
-      >
-        <LoyaltyCardForm
-          card={editingCard}
-          onSubmit={handleUpdate}
-          onCancel={() => setEditingCard(null)}
-          isPending={updateMutation.isPending}
-        />
-      </Modal>
-
-      {/* Delete card confirmation dialog */}
-      <Modal
-        open={deletingCard !== null}
-        onClose={() => setDeletingCard(null)}
-        title="Supprimer la carte ?"
-        footer={
-          <>
-            <Button
-              variant="secondary"
-              onClick={() => setDeletingCard(null)}
-              disabled={deleteMutation.isPending}
-            >
-              Annuler
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={handleDelete}
-              isLoading={deleteMutation.isPending}
-              disabled={deleteMutation.isPending}
-            >
-              {deleteMutation.isPending
-                ? 'Suppression…'
-                : 'Supprimer la carte'}
-            </Button>
-          </>
-        }
-      >
-        <p className="text-sm/6 text-ink-500 dark:text-ink-300">
-          Voulez-vous vraiment supprimer la carte de « {deletingCard?.store_name} » ?
-          Cette action est irréversible.
-        </p>
-      </Modal>
+      {/* Card bottom sheet */}
+      <LoyaltyCardBottomSheet
+        card={selectedCard}
+        onClose={() => setSelectedCard(null)}
+      />
     </div>
   )
 }
