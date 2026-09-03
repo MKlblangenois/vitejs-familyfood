@@ -39,7 +39,7 @@ export const useAddCardMember = () => {
     mutationFn: addCardMember,
     onSuccess: (_data, variables) => {
       void queryClient.invalidateQueries({
-        queryKey: loyaltyCardKeys.members(variables.card_id),
+        queryKey: loyaltyCardKeys.detail(variables.card_id),
       })
     },
   })

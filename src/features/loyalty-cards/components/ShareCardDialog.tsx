@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { supabase } from '../../../shared/lib/supabase'
 import { useAddCardMember, useRemoveCardMember } from '../hooks'
@@ -25,8 +25,19 @@ const ShareCardDialog = ({
 }: ShareCardDialogProps) => {
   const [email, setEmail] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
+  const successTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const addMemberMutation = useAddCardMember()
   const removeMemberMutation = useRemoveCardMember()
+
+  // Clean up timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (successTimeoutRef.current) {
+        clearTimeout(successTimeoutRef.current)
+      }
+    }
+  }, [])
 
   const handleAddMember = useCallback(async () => {
     const trimmed = email.trim()
@@ -60,6 +71,14 @@ const ShareCardDialog = ({
         onSuccess: () => {
           setEmail('')
           setError(null)
+          setSuccess('Membre ajout\u00e9 avec succ\u00e8s !')
+          if (successTimeoutRef.current) {
+            clearTimeout(successTimeoutRef.current)
+          }
+          successTimeoutRef.current = setTimeout(() => {
+            setSuccess(null)
+            successTimeoutRef.current = null
+          }, 3000)
         },
         onError: (err) => {
           setError(err.message || 'Échec de l\'ajout du membre.')
@@ -81,6 +100,11 @@ const ShareCardDialog = ({
   const handleClose = useCallback(() => {
     setEmail('')
     setError(null)
+    setSuccess(null)
+    if (successTimeoutRef.current) {
+      clearTimeout(successTimeoutRef.current)
+      successTimeoutRef.current = null
+    }
     onClose()
   }, [onClose])
 
@@ -107,6 +131,7 @@ const ShareCardDialog = ({
           onChange={(e) => {
             setEmail(e.target.value)
             setError(null)
+            setSuccess(null)
           }}
           onKeyDown={(e) => {
             if (e.key === 'Enter') handleAddMember()
@@ -129,6 +154,12 @@ const ShareCardDialog = ({
       {error && (
         <p className="mt-2 text-sm text-error dark:text-error-400">
           {error}
+        </p>
+      )}
+
+      {success && (
+        <p className="mt-2 text-sm text-forest-600 dark:text-forest-300">
+          {success}
         </p>
       )}
 
