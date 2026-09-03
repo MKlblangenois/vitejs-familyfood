@@ -1,6 +1,6 @@
-# Tablee
+# FamilyFood
 
-**Your kitchen companion.** Tablee is a progressive web app (PWA) for planning meals, storing recipes, and building collaborative shopping lists. It works on your phone, tablet, and desktop — and can be installed to your home screen for an app-like experience that works offline.
+**Your kitchen companion.** FamilyFood is a progressive web app (PWA) for planning meals, storing recipes, and building collaborative shopping lists. It works on your phone, tablet, and desktop — and can be installed to your home screen for an app-like experience that works offline.
 
 ## Features
 
@@ -13,17 +13,17 @@
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|------------|
-| Framework | [React 19](https://react.dev) + [Vite 8](https://vite.dev) + [TypeScript](https://www.typescriptlang.org) |
-| Styling | [Tailwind CSS 4](https://tailwindcss.com) |
-| Routing | [React Router 7](https://reactrouter.com) |
-| Data fetching | [TanStack Query 5](https://tanstack.com/query) |
-| Forms & validation | [React Hook Form](https://react-hook-form.com) + [Zod](https://zod.dev) |
-| Backend | [Supabase](https://supabase.com) (Postgres, Auth, Storage, Realtime) |
-| PWA | [vite-plugin-pwa](https://vite-pwa-org.netlify.app) + Workbox |
-| Testing | [Vitest](https://vitest.dev) + [Testing Library](https://testing-library.com) |
-| Linting | [Oxlint](https://oxc.rs/docs/guide/usage/linter) |
+| Layer              | Technology                                                                                                |
+| ------------------ | --------------------------------------------------------------------------------------------------------- |
+| Framework          | [React 19](https://react.dev) + [Vite 8](https://vite.dev) + [TypeScript](https://www.typescriptlang.org) |
+| Styling            | [Tailwind CSS 4](https://tailwindcss.com)                                                                 |
+| Routing            | [React Router 7](https://reactrouter.com)                                                                 |
+| Data fetching      | [TanStack Query 5](https://tanstack.com/query)                                                            |
+| Forms & validation | [React Hook Form](https://react-hook-form.com) + [Zod](https://zod.dev)                                   |
+| Backend            | [Supabase](https://supabase.com) (Postgres, Auth, Storage, Realtime)                                      |
+| PWA                | [vite-plugin-pwa](https://vite-pwa-org.netlify.app) + Workbox                                             |
+| Testing            | [Vitest](https://vitest.dev) + [Testing Library](https://testing-library.com)                             |
+| Linting            | [Oxlint](https://oxc.rs/docs/guide/usage/linter)                                                          |
 
 ## Getting Started
 
@@ -76,13 +76,13 @@ Open http://localhost:5173.
 
 ## Development Workflow
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start the Vite dev server with HMR |
-| `npm run build` | Type-check (`tsc -b`) and build for production |
-| `npm run preview` | Preview the production build locally |
-| `npm run lint` | Run Oxlint |
-| `npm run test` | Run the Vitest test suite |
+| Command           | Description                                    |
+| ----------------- | ---------------------------------------------- |
+| `npm run dev`     | Start the Vite dev server with HMR             |
+| `npm run build`   | Type-check (`tsc -b`) and build for production |
+| `npm run preview` | Preview the production build locally           |
+| `npm run lint`    | Run Oxlint                                     |
+| `npm run test`    | Run the Vitest test suite                      |
 
 ### PWA in development
 

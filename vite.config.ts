@@ -11,8 +11,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icons.svg', 'icons/apple-touch-icon.png'],
       manifest: {
-        name: 'Tablee',
-        short_name: 'Tablee',
+        name: 'FamilyFood',
+        short_name: 'FamilyFood',
         description:
           'Plan meals, store recipes, and build collaborative shopping lists — your kitchen companion.',
         theme_color: '#1F3A2E',

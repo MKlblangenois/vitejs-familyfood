@@ -73,23 +73,23 @@ export function ServingsStepper({
   onIncrement: () => void
 }) {
   return (
-    <div className="inline-flex items-center gap-1 rounded-control bg-sand-100 p-1 dark:bg-white/5">
+    <div className="rounded-control bg-sand-100 inline-flex items-center gap-1 p-1 dark:bg-white/5">
       <button
         type="button"
         onClick={onDecrement}
         aria-label="Diminuer les portions"
-        className="flex size-8 items-center justify-center rounded-[10px] text-ink-600 transition-colors hover:bg-white hover:text-forest-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 dark:text-ink-300 dark:hover:bg-white/10 dark:hover:text-white dark:focus-visible:outline-forest-400"
+        className="text-ink-600 hover:text-forest-700 focus-visible:outline-forest-600 dark:text-ink-300 dark:focus-visible:outline-forest-400 flex size-8 items-center justify-center rounded-[10px] transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 dark:hover:bg-white/10 dark:hover:text-white"
       >
         <MinusIcon aria-hidden="true" className="size-4" />
       </button>
-      <span className="min-w-[3ch] text-center text-sm font-semibold text-ink dark:text-white">
+      <span className="text-ink min-w-[3ch] text-center text-sm font-semibold dark:text-white">
         {servings}
       </span>
       <button
         type="button"
         onClick={onIncrement}
         aria-label="Augmenter les portions"
-        className="flex size-8 items-center justify-center rounded-[10px] text-ink-600 transition-colors hover:bg-white hover:text-forest-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 dark:text-ink-300 dark:hover:bg-white/10 dark:hover:text-white dark:focus-visible:outline-forest-400"
+        className="text-ink-600 hover:text-forest-700 focus-visible:outline-forest-600 dark:text-ink-300 dark:focus-visible:outline-forest-400 flex size-8 items-center justify-center rounded-[10px] transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 dark:hover:bg-white/10 dark:hover:text-white"
       >
         <PlusIcon aria-hidden="true" className="size-4" />
       </button>
@@ -109,7 +109,7 @@ export function IngredientGroupSection({
   return (
     <div>
       {group.name && (
-        <h3 className="mb-4 font-display text-lg font-semibold text-ink dark:text-white">
+        <h3 className="font-display text-ink mb-4 text-lg font-semibold dark:text-white">
           {group.name}
         </h3>
       )}
@@ -123,9 +123,9 @@ export function IngredientGroupSection({
           return (
             <li
               key={ingredient.id}
-              className="flex items-baseline gap-4 text-sm/6 text-ink-700 dark:text-ink-200 sm:text-base/7"
+              className="text-ink-700 dark:text-ink-200 flex items-baseline gap-4 text-sm/6 sm:text-base/7"
             >
-              <span className="min-w-[5rem] font-medium text-ink tabular-nums dark:text-white">
+              <span className="text-ink min-w-[5rem] font-medium tabular-nums dark:text-white">
                 {quantity} {unit}
               </span>
               <span>{ingredient.name}</span>
@@ -137,15 +137,19 @@ export function IngredientGroupSection({
   )
 }
 
-export function StepList({ steps }: { steps: RecipeWithRelations['recipe_steps'] }) {
+export function StepList({
+  steps,
+}: {
+  steps: RecipeWithRelations['recipe_steps']
+}) {
   return (
     <ol className="space-y-6" role="list">
       {steps.map((step, index) => (
         <li
           key={step.id}
-          className="flex gap-4 text-sm/6 text-ink-700 dark:text-ink-200 sm:text-base/7"
+          className="text-ink-700 dark:text-ink-200 flex gap-4 text-sm/6 sm:text-base/7"
         >
-          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-forest text-xs font-bold text-white dark:bg-forest-600">
+          <span className="bg-forest dark:bg-forest-600 flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white">
             {index + 1}
           </span>
           <p className="pt-1">{step.instruction}</p>
@@ -158,7 +162,7 @@ export function StepList({ steps }: { steps: RecipeWithRelations['recipe_steps']
 function LoadingState() {
   return (
     <div className="space-y-6">
-      <div className="aspect-[16/9] w-full overflow-hidden rounded-page">
+      <div className="rounded-page aspect-[16/9] w-full overflow-hidden">
         <LoadingSkeleton className="h-full w-full" />
       </div>
       <div className="space-y-3">
@@ -166,7 +170,7 @@ function LoadingState() {
         <LoadingSkeleton className="h-4 w-full" />
         <LoadingSkeleton className="h-4 w-3/4" />
       </div>
-      <div className="rounded-card border border-sand-200 p-6 dark:border-white/10">
+      <div className="rounded-card border-sand-200 border p-6 dark:border-white/10">
         <LoadingSkeleton lines={4} />
       </div>
     </div>
@@ -195,7 +199,7 @@ function NotFoundState() {
         action={
           <Link
             to="/recipes"
-            className="inline-flex items-center gap-2 rounded-control bg-forest px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-forest-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-700 dark:bg-forest-600 dark:hover:bg-forest-500 dark:focus-visible:outline-forest-400"
+            className="rounded-control bg-forest hover:bg-forest-700 focus-visible:outline-forest-700 dark:bg-forest-600 dark:hover:bg-forest-500 dark:focus-visible:outline-forest-400 inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
           >
             <ArrowLeftIcon aria-hidden="true" className="size-4" />
             Retour aux recettes
@@ -253,7 +257,7 @@ const RecipeDetailPage = () => {
       if (imagePath) {
         void deleteRecipeImage(imagePath).catch(() => {
           // Best-effort: log and continue.
-          console.error('[Tablee] Failed to delete recipe image', imagePath)
+          console.error('[FamilyFood] Failed to delete recipe image', imagePath)
         })
       }
     }
@@ -286,7 +290,7 @@ const RecipeDetailPage = () => {
       {/* Back link */}
       <Link
         to="/recipes"
-        className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-sage-600 transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 dark:text-sage-300 dark:hover:text-white dark:focus-visible:outline-forest-400"
+        className="text-sage-600 hover:text-ink focus-visible:outline-forest-600 dark:text-sage-300 dark:focus-visible:outline-forest-400 mb-6 inline-flex items-center gap-1.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 dark:hover:text-white"
       >
         <ArrowLeftIcon aria-hidden="true" className="size-4" />
         Toutes les recettes
@@ -294,7 +298,7 @@ const RecipeDetailPage = () => {
 
       {/* Hero image */}
       {hasImage && (
-        <div className="relative mb-6 -mx-4 sm:mx-0 sm:overflow-hidden sm:rounded-page sm:shadow-card">
+        <div className="sm:rounded-page sm:shadow-card relative -mx-4 mb-6 sm:mx-0 sm:overflow-hidden">
           <img
             src={recipe.image_url!}
             alt=""
@@ -308,11 +312,11 @@ const RecipeDetailPage = () => {
             className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/25 to-transparent sm:hidden"
           />
           {/* Mobile floating glass actions */}
-          <div className="absolute right-3 top-3 flex items-center gap-2 sm:hidden">
+          <div className="absolute top-3 right-3 flex items-center gap-2 sm:hidden">
             <Link
               to={`/recipes/${recipe.id}/edit`}
               aria-label="Modifier la recette"
-              className="flex size-10 items-center justify-center rounded-pill border border-white/40 bg-white/70 text-ink shadow-float backdrop-blur transition-colors hover:bg-white/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 dark:border-white/20 dark:bg-ink-900/70 dark:text-white dark:hover:bg-ink-900/90 dark:focus-visible:outline-forest-400"
+              className="rounded-pill text-ink shadow-float focus-visible:outline-forest-600 dark:bg-ink-900/70 dark:hover:bg-ink-900/90 dark:focus-visible:outline-forest-400 flex size-10 items-center justify-center border border-white/40 bg-white/70 backdrop-blur transition-colors hover:bg-white/90 focus-visible:outline-2 focus-visible:outline-offset-2 dark:border-white/20 dark:text-white"
             >
               <PencilIcon aria-hidden="true" className="size-4" />
             </Link>
@@ -320,7 +324,7 @@ const RecipeDetailPage = () => {
               type="button"
               onClick={() => setIsDeleteOpen(true)}
               aria-label="Supprimer la recette"
-              className="flex size-10 items-center justify-center rounded-pill border border-white/40 bg-white/70 text-error-600 shadow-float backdrop-blur transition-colors hover:bg-white/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error-600 dark:border-white/20 dark:bg-ink-900/70 dark:text-error-400 dark:hover:bg-ink-900/90 dark:focus-visible:outline-error-400"
+              className="rounded-pill text-error-600 shadow-float focus-visible:outline-error-600 dark:bg-ink-900/70 dark:text-error-400 dark:hover:bg-ink-900/90 dark:focus-visible:outline-error-400 flex size-10 items-center justify-center border border-white/40 bg-white/70 backdrop-blur transition-colors hover:bg-white/90 focus-visible:outline-2 focus-visible:outline-offset-2 dark:border-white/20"
             >
               <TrashIcon aria-hidden="true" className="size-4" />
             </button>
@@ -331,11 +335,11 @@ const RecipeDetailPage = () => {
       {/* Title + description + desktop actions */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex-1">
-          <h1 className="font-display text-3xl font-bold text-ink dark:text-white sm:text-4xl">
+          <h1 className="font-display text-ink text-3xl font-bold sm:text-4xl dark:text-white">
             {recipe.title}
           </h1>
           {recipe.description && (
-            <p className="mt-3 text-base/7 text-ink-500 dark:text-ink-300">
+            <p className="text-ink-500 dark:text-ink-300 mt-3 text-base/7">
               {recipe.description}
             </p>
           )}
@@ -357,7 +361,7 @@ const RecipeDetailPage = () => {
           </Button>
           <Link
             to={`/recipes/${recipe.id}/edit`}
-            className="inline-flex items-center gap-1.5 rounded-control border border-sand-200 bg-cream px-3 py-1.5 text-sm font-medium text-ink transition-colors hover:bg-sand-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10 dark:focus-visible:outline-forest-400"
+            className="rounded-control border-sand-200 bg-cream text-ink hover:bg-sand-100 focus-visible:outline-forest-600 dark:focus-visible:outline-forest-400 inline-flex items-center gap-1.5 border px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10"
           >
             <PencilIcon aria-hidden="true" className="size-4" />
             Modifier
@@ -365,7 +369,7 @@ const RecipeDetailPage = () => {
           <button
             type="button"
             onClick={() => setIsDeleteOpen(true)}
-            className="inline-flex items-center gap-1.5 rounded-control border border-error-200 bg-cream px-3 py-1.5 text-sm font-medium text-error-600 transition-colors hover:bg-error-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error-600 dark:border-error-500/20 dark:bg-white/5 dark:text-error-400 dark:hover:bg-error-500/10 dark:focus-visible:outline-error-400"
+            className="rounded-control border-error-200 bg-cream text-error-600 hover:bg-error-50 focus-visible:outline-error-600 dark:border-error-500/20 dark:text-error-400 dark:hover:bg-error-500/10 dark:focus-visible:outline-error-400 inline-flex items-center gap-1.5 border px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 dark:bg-white/5"
           >
             <TrashIcon aria-hidden="true" className="size-4" />
             Supprimer
@@ -374,42 +378,40 @@ const RecipeDetailPage = () => {
       </div>
 
       {/* Meta: time + servings */}
-      <div className="mb-8 flex flex-wrap items-center gap-x-6 gap-y-3 rounded-card border border-sand-200 bg-cream px-5 py-4 dark:border-white/10 dark:bg-white/5">
-        {recipe.prep_time_minutes !== null &&
-          recipe.prep_time_minutes > 0 && (
-            <div className="flex items-center gap-2 text-sm text-ink-600 dark:text-ink-300">
-              <ClockIcon
-                aria-hidden="true"
-                className="size-4 text-sage-500 dark:text-sage-400"
-              />
-              Préparation : {formatTime(recipe.prep_time_minutes)}
-            </div>
-          )}
-        {recipe.cook_time_minutes !== null &&
-          recipe.cook_time_minutes > 0 && (
-            <div className="flex items-center gap-2 text-sm text-ink-600 dark:text-ink-300">
-              <ClockIcon
-                aria-hidden="true"
-                className="size-4 text-sage-500 dark:text-sage-400"
-              />
-              Cuisson : {formatTime(recipe.cook_time_minutes)}
-            </div>
-          )}
-        {totalMinutes && (
-          <div className="flex items-center gap-2 text-sm font-medium text-ink dark:text-white">
+      <div className="rounded-card border-sand-200 bg-cream mb-8 flex flex-wrap items-center gap-x-6 gap-y-3 border px-5 py-4 dark:border-white/10 dark:bg-white/5">
+        {recipe.prep_time_minutes !== null && recipe.prep_time_minutes > 0 && (
+          <div className="text-ink-600 dark:text-ink-300 flex items-center gap-2 text-sm">
             <ClockIcon
               aria-hidden="true"
-              className="size-4 text-forest-600 dark:text-forest-400"
+              className="text-sage-500 dark:text-sage-400 size-4"
+            />
+            Préparation : {formatTime(recipe.prep_time_minutes)}
+          </div>
+        )}
+        {recipe.cook_time_minutes !== null && recipe.cook_time_minutes > 0 && (
+          <div className="text-ink-600 dark:text-ink-300 flex items-center gap-2 text-sm">
+            <ClockIcon
+              aria-hidden="true"
+              className="text-sage-500 dark:text-sage-400 size-4"
+            />
+            Cuisson : {formatTime(recipe.cook_time_minutes)}
+          </div>
+        )}
+        {totalMinutes && (
+          <div className="text-ink flex items-center gap-2 text-sm font-medium dark:text-white">
+            <ClockIcon
+              aria-hidden="true"
+              className="text-forest-600 dark:text-forest-400 size-4"
             />
             Total : {totalMinutes}
           </div>
         )}
 
         <div className="ml-auto flex items-center gap-3">
-          <div className="flex items-center gap-2 text-sm text-ink-600 dark:text-ink-300">
+          <div className="text-ink-600 dark:text-ink-300 flex items-center gap-2 text-sm">
             <UsersIcon
               aria-hidden="true"
-              className="size-4 text-sage-500 dark:text-sage-400"
+              className="text-sage-500 dark:text-sage-400 size-4"
             />
             Portions
           </div>
@@ -426,11 +428,11 @@ const RecipeDetailPage = () => {
         <section aria-labelledby="ingredients-heading" className="mb-10">
           <h2
             id="ingredients-heading"
-            className="mb-5 font-display text-2xl font-bold text-ink dark:text-white"
+            className="font-display text-ink mb-5 text-2xl font-bold dark:text-white"
           >
             Ingrédients
           </h2>
-          <div className="space-y-8 rounded-card border border-sand-200 bg-white p-6 shadow-soft dark:border-white/10 dark:bg-forest-900 sm:p-8">
+          <div className="rounded-card border-sand-200 shadow-soft dark:bg-forest-900 space-y-8 border bg-white p-6 sm:p-8 dark:border-white/10">
             {recipe.recipe_ingredient_groups.map((group) => (
               <IngredientGroupSection
                 key={group.id}
@@ -448,11 +450,11 @@ const RecipeDetailPage = () => {
         <section aria-labelledby="steps-heading" className="mb-10">
           <h2
             id="steps-heading"
-            className="mb-5 font-display text-2xl font-bold text-ink dark:text-white"
+            className="font-display text-ink mb-5 text-2xl font-bold dark:text-white"
           >
             Instructions
           </h2>
-          <div className="rounded-card border border-sand-200 bg-white p-6 shadow-soft dark:border-white/10 dark:bg-forest-900 sm:p-8">
+          <div className="rounded-card border-sand-200 shadow-soft dark:bg-forest-900 border bg-white p-6 sm:p-8 dark:border-white/10">
             <StepList steps={recipe.recipe_steps} />
           </div>
         </section>
@@ -493,15 +495,15 @@ const RecipeDetailPage = () => {
         }
       >
         <div className="flex items-start gap-4">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-error-100 dark:bg-error-500/10">
+          <div className="bg-error-100 dark:bg-error-500/10 flex size-10 shrink-0 items-center justify-center rounded-full">
             <ExclamationTriangleIcon
               aria-hidden="true"
-              className="size-5 text-error-600 dark:text-error-400"
+              className="text-error-600 dark:text-error-400 size-5"
             />
           </div>
-          <p className="text-sm/6 text-ink-600 dark:text-ink-300">
-            Voulez-vous vraiment supprimer « {recipe.title} » ? Cette action
-            est irréversible.
+          <p className="text-ink-600 dark:text-ink-300 text-sm/6">
+            Voulez-vous vraiment supprimer « {recipe.title} » ? Cette action est
+            irréversible.
           </p>
         </div>
       </Modal>
@@ -511,7 +513,7 @@ const RecipeDetailPage = () => {
         type="button"
         onClick={() => setIsAddToListOpen(true)}
         aria-label="Ajouter à la liste de courses"
-        className="fixed bottom-24 right-5 z-30 flex size-14 items-center justify-center rounded-full bg-forest text-white shadow-float transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 sm:hidden dark:bg-forest-600 dark:focus-visible:outline-forest-400"
+        className="bg-forest shadow-float focus-visible:outline-forest-600 dark:bg-forest-600 dark:focus-visible:outline-forest-400 fixed right-5 bottom-24 z-30 flex size-14 items-center justify-center rounded-full text-white transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 sm:hidden"
       >
         <ShoppingBagIcon aria-hidden="true" className="size-6" />
       </button>

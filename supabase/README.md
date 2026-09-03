@@ -1,6 +1,6 @@
-# Tablee — Supabase Migrations
+# FamilyFood — Supabase Migrations
 
-SQL migrations for the Tablee cooking app database schema, RLS policies, and seed data.
+SQL migrations for the FamilyFood cooking app database schema, RLS policies, and seed data.
 
 ## Structure
 
@@ -73,10 +73,10 @@ supabase gen types typescript --project-id <your-project-id> > src/types/databas
 
 The seed migration (`000007_seed.sql`) creates:
 
-| User  | Email              | Password    |
-|-------|--------------------|-------------|
-| Alice | alice@example.com  | Password123! |
-| Bob   | bob@example.com    | Password123! |
+| User  | Email             | Password     |
+| ----- | ----------------- | ------------ |
+| Alice | alice@example.com | Password123! |
+| Bob   | bob@example.com   | Password123! |
 
 **Alice** has 3 recipes and 2 shopping lists. **Bob** is an editor on one of Alice's lists.
 
@@ -93,6 +93,7 @@ psql "postgresql://postgres:<password>@<host>:5432/postgres" \
 ```
 
 Tests use `set local role` and `set request.jwt.claim.sub` to simulate different users and verify:
+
 - Unauthenticated users see nothing
 - Users can only see their own data
 - Members can access shared lists
@@ -103,16 +104,16 @@ Tests use `set local role` and `set request.jwt.claim.sub` to simulate different
 
 ### Tables
 
-| Table | Purpose |
-|-------|---------|
-| `profiles` | User profiles (auto-created on signup) |
-| `recipes` | Recipe headers (title, description, servings, times) |
+| Table                      | Purpose                                                 |
+| -------------------------- | ------------------------------------------------------- |
+| `profiles`                 | User profiles (auto-created on signup)                  |
+| `recipes`                  | Recipe headers (title, description, servings, times)    |
 | `recipe_ingredient_groups` | Named groups within a recipe (e.g., "Chicken", "Sauce") |
-| `recipe_ingredients` | Individual ingredients with quantity/unit/position |
-| `recipe_steps` | Numbered cooking instructions |
-| `shopping_lists` | Collaborative shopping list headers |
-| `shopping_list_members` | List membership with roles (owner/editor) |
-| `shopping_list_items` | Individual items with checked state |
+| `recipe_ingredients`       | Individual ingredients with quantity/unit/position      |
+| `recipe_steps`             | Numbered cooking instructions                           |
+| `shopping_lists`           | Collaborative shopping list headers                     |
+| `shopping_list_members`    | List membership with roles (owner/editor)               |
+| `shopping_list_items`      | Individual items with checked state                     |
 
 ### Security Model
 
