@@ -2,6 +2,7 @@ import { NavLink, useLocation } from 'react-router-dom'
 import {
   HomeIcon,
   ShoppingBagIcon,
+  CreditCardIcon,
   UserIcon,
 } from '@heroicons/react/24/outline'
 import NetworkStatus from './NetworkStatus'
@@ -15,6 +16,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { to: '/recipes', label: 'Recettes', icon: HomeIcon },
   { to: '/shopping-lists', label: 'Listes de courses', icon: ShoppingBagIcon },
+  { to: '/loyalty-cards', label: 'Cartes', icon: CreditCardIcon },
   { to: '/profile', label: 'Profil', icon: UserIcon },
 ]
 

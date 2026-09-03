@@ -10,6 +10,8 @@ import RecipeCreatePage from './features/recipes/pages/RecipeCreatePage'
 import RecipeEditPage from './features/recipes/pages/RecipeEditPage'
 import ShoppingListsPage from './features/shopping-lists/pages/ShoppingListsPage'
 import ShoppingListDetailPage from './features/shopping-lists/pages/ShoppingListDetailPage'
+import LoyaltyCardsPage from './features/loyalty-cards/pages/LoyaltyCardsPage'
+import LoyaltyCardDetailPage from './features/loyalty-cards/pages/LoyaltyCardDetailPage'
 import ProfilePage from './features/profile/pages/ProfilePage'
 import AppShell from './shared/components/AppShell'
 
@@ -86,6 +88,26 @@ function App() {
           <AuthGuard>
             <AppShell>
               <ShoppingListDetailPage />
+            </AppShell>
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/loyalty-cards"
+        element={
+          <AuthGuard>
+            <AppShell>
+              <LoyaltyCardsPage />
+            </AppShell>
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/loyalty-cards/:id"
+        element={
+          <AuthGuard>
+            <AppShell>
+              <LoyaltyCardDetailPage />
             </AppShell>
           </AuthGuard>
         }
