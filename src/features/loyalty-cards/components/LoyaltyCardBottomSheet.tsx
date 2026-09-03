@@ -1,23 +1,13 @@
 import { useState, useCallback, useEffect } from 'react'
-import {
-  PencilIcon,
-  TrashIcon,
-  UserGroupIcon,
-  ArrowsPointingOutIcon,
-} from '@heroicons/react/24/outline'
+import { PencilIcon } from '@heroicons/react/24/outline'
 import { useAuth } from '../../auth/hooks/useAuth'
 import {
   useLoyaltyCard,
   useUpdateLoyaltyCard,
-  useDeleteLoyaltyCard,
 } from '../hooks'
-import { getStoreLogoUrl, getStoreInitial } from '../lib/logo'
 import BarcodeRenderer from './BarcodeRenderer'
-import LoyaltyCardFullscreen from './LoyaltyCardFullscreen'
 import LoyaltyCardForm from './LoyaltyCardForm'
-import ShareCardDialog from './ShareCardDialog'
 import Button from '../../../shared/components/Button'
-import Modal from '../../../shared/components/Modal'
 import LoadingSkeleton from '../../../shared/components/LoadingSkeleton'
 import type { LoyaltyCard } from '../types'
 
@@ -38,15 +28,10 @@ const LoyaltyCardBottomSheet = ({
     refetch,
   } = useLoyaltyCard(card?.id ?? '')
   const updateMutation = useUpdateLoyaltyCard()
-  const deleteMutation = useDeleteLoyaltyCard()
 
   const [isEditMode, setIsEditMode] = useState(false)
-  const [isFullscreenOpen, setIsFullscreenOpen] = useState(false)
-  const [isShareOpen, setIsShareOpen] = useState(false)
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
 
   const isOwner = fullCard ? fullCard.user_id === user?.id : false
-  const logoUrl = fullCard ? getStoreLogoUrl(fullCard.store_name, 128) : null
 
   // Prevent body scroll while the sheet is open
   useEffect(() => {
@@ -68,14 +53,9 @@ const LoyaltyCardBottomSheet = ({
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [card, onClose])
 
-  // Reset all internal states when the sheet closes
+  // Reset edit mode when the sheet closes
   useEffect(() => {
-    if (!card) {
-      setIsEditMode(false)
-      setIsFullscreenOpen(false)
-      setIsShareOpen(false)
-      setIsDeleteOpen(false)
-    }
+    if (!card) setIsEditMode(false)
   }, [card])
 
   const handleUpdate = useCallback(
@@ -93,16 +73,6 @@ const LoyaltyCardBottomSheet = ({
     },
     [fullCard, updateMutation],
   )
-
-  const handleDelete = useCallback(() => {
-    if (!fullCard) return
-    deleteMutation.mutate(fullCard.id, {
-      onSuccess: () => {
-        setIsDeleteOpen(false)
-        onClose()
-      },
-    })
-  }, [fullCard, deleteMutation, onClose])
 
   if (!card) return null
 
@@ -125,8 +95,8 @@ const LoyaltyCardBottomSheet = ({
         <div className="px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
           {isLoading && (
             <div className="space-y-4">
-              <LoadingSkeleton className="h-40 w-full" />
-              <LoadingSkeleton lines={3} />
+              <LoadingSkeleton className="h-48 w-full" />
+              <LoadingSkeleton className="h-12 w-full" />
             </div>
           )}
 
@@ -149,170 +119,69 @@ const LoyaltyCardBottomSheet = ({
           {!isLoading && !isError && fullCard && (
             <>
               {isEditMode ? (
-                <LoyaltyCardForm
-                  card={fullCard}
-                  onSubmit={handleUpdate}
-                  onCancel={() => setIsEditMode(false)}
-                  isPending={updateMutation.isPending}
-                />
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setIsEditMode(false)}
+                    className="mb-4 text-sm font-medium text-forest-600 transition-colors hover:text-forest-700 dark:text-forest-300 dark:hover:text-forest-200"
+                  >
+                    ← Retour
+                  </button>
+                  <LoyaltyCardForm
+                    card={fullCard}
+                    onSubmit={handleUpdate}
+                    onCancel={() => setIsEditMode(false)}
+                    isPending={updateMutation.isPending}
+                  />
+                </div>
               ) : (
                 <>
-                  {/* Card preview */}
-                  <div
-                    className="flex aspect-[3/2] flex-col items-center justify-center overflow-hidden rounded-card border border-white/20 shadow-card"
-                    style={{ backgroundColor: fullCard.card_color }}
-                  >
-                    {logoUrl ? (
-                      <img
-                        src={logoUrl}
-                        alt={`Logo de ${fullCard.store_name}`}
-                        className="size-20 object-contain sm:size-24"
-                      />
-                    ) : (
-                      <span className="text-4xl font-bold text-white/90 sm:text-5xl">
-                        {getStoreInitial(fullCard.store_name)}
-                      </span>
-                    )}
-                    <span className="mt-3 max-w-[80%] truncate text-sm font-medium text-white/80">
-                      {fullCard.store_name}
-                    </span>
-                  </div>
+                  {/* Store name */}
+                  <h2 className="mb-4 text-center font-display text-xl font-bold text-ink dark:text-white">
+                    {fullCard.store_name}
+                  </h2>
 
-                  {/* Barcode */}
+                  {/* Barcode — large and centered */}
                   {fullCard.barcode_value && fullCard.barcode_format ? (
-                    <div className="mt-4 rounded-card border border-sand-200 bg-white p-4 dark:border-white/10 dark:bg-forest-950">
-                      <div className="flex flex-col items-center gap-3">
-                        <BarcodeRenderer
-                          value={fullCard.barcode_value}
-                          format={fullCard.barcode_format}
-                          className="flex items-center justify-center"
-                        />
-                        {fullCard.barcode_format !== 'QR_CODE' && (
-                          <p className="font-mono text-sm tracking-wider text-ink-500 dark:text-ink-300">
-                            {fullCard.barcode_value}
-                          </p>
-                        )}
-                      </div>
+                    <div className="flex flex-col items-center gap-3 rounded-card border border-sand-200 bg-white p-6 dark:border-white/10 dark:bg-forest-950">
+                      <BarcodeRenderer
+                        value={fullCard.barcode_value}
+                        format={fullCard.barcode_format}
+                        className="flex items-center justify-center"
+                      />
+                      {fullCard.barcode_format !== 'QR_CODE' && (
+                        <p className="font-mono text-sm tracking-wider text-ink-500 dark:text-ink-300">
+                          {fullCard.barcode_value}
+                        </p>
+                      )}
                     </div>
                   ) : (
-                    <p className="mt-4 text-center text-sm text-ink-400 dark:text-ink-300">
-                      Aucun code-barres enregistré
-                    </p>
+                    <div className="rounded-card border border-dashed border-sand-300 bg-sand-50 py-8 text-center dark:border-white/10 dark:bg-white/[0.02]">
+                      <p className="text-sm text-ink-400 dark:text-ink-300">
+                        Aucun code-barres enregistré
+                      </p>
+                    </div>
                   )}
 
-                  {/* Actions */}
-                  <div className="mt-5 space-y-2">
-                    <Button
-                      variant="primary"
-                      className="w-full"
-                      onClick={() => setIsFullscreenOpen(true)}
-                      icon={
-                        <ArrowsPointingOutIcon
-                          aria-hidden="true"
-                          className="size-5"
-                        />
-                      }
-                    >
-                      Afficher en plein écran
-                    </Button>
-
-                    {isOwner && (
-                      <>
-                        <Button
-                          variant="secondary"
-                          className="w-full"
-                          onClick={() => setIsEditMode(true)}
-                          icon={
-                            <PencilIcon aria-hidden="true" className="size-5" />
-                          }
-                        >
-                          Modifier
-                        </Button>
-                        <Button
-                          variant="secondary"
-                          className="w-full"
-                          onClick={() => setIsShareOpen(true)}
-                          icon={
-                            <UserGroupIcon
-                              aria-hidden="true"
-                              className="size-5"
-                            />
-                          }
-                        >
-                          Partager
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          className="w-full"
-                          onClick={() => setIsDeleteOpen(true)}
-                          icon={
-                            <TrashIcon aria-hidden="true" className="size-5" />
-                          }
-                        >
-                          Supprimer
-                        </Button>
-                      </>
-                    )}
-                  </div>
+                  {/* Modifier button */}
+                  {isOwner && (
+                    <div className="mt-4">
+                      <Button
+                        variant="secondary"
+                        className="w-full"
+                        onClick={() => setIsEditMode(true)}
+                        icon={<PencilIcon aria-hidden="true" className="size-5" />}
+                      >
+                        Modifier
+                      </Button>
+                    </div>
+                  )}
                 </>
               )}
             </>
           )}
         </div>
       </div>
-
-      {/* Fullscreen barcode */}
-      {isFullscreenOpen && fullCard && (
-        <LoyaltyCardFullscreen
-          card={fullCard}
-          onClose={() => setIsFullscreenOpen(false)}
-        />
-      )}
-
-      {/* Share dialog */}
-      {isShareOpen && fullCard && (
-        <ShareCardDialog
-          open={isShareOpen}
-          onClose={() => setIsShareOpen(false)}
-          cardId={fullCard.id}
-          members={fullCard.loyalty_card_members ?? []}
-          currentUserId={user?.id ?? ''}
-        />
-      )}
-
-      {/* Delete confirmation */}
-      <Modal
-        open={isDeleteOpen}
-        onClose={() => setIsDeleteOpen(false)}
-        title="Supprimer la carte ?"
-        footer={
-          <>
-            <Button
-              variant="secondary"
-              onClick={() => setIsDeleteOpen(false)}
-              disabled={deleteMutation.isPending}
-            >
-              Annuler
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={handleDelete}
-              isLoading={deleteMutation.isPending}
-              disabled={deleteMutation.isPending}
-            >
-              {deleteMutation.isPending
-                ? 'Suppression…'
-                : 'Supprimer la carte'}
-            </Button>
-          </>
-        }
-      >
-        <p className="text-sm/6 text-ink-500 dark:text-ink-300">
-          Voulez-vous vraiment supprimer la carte de « {fullCard?.store_name} » ?
-          Tous les membres associés seront retirés. Cette action est
-          irréversible.
-        </p>
-      </Modal>
     </div>
   )
 }
