@@ -174,3 +174,18 @@ Tests use Vitest with Testing Library and jsdom. The Supabase client is mocked i
 ```bash
 npm run test -- src/features/recipes/pages/RecipesPage.test.tsx
 ```
+
+## Supabase Keep-Alive
+
+Supabase pauses free-tier projects after a period of inactivity. The [`supabase-keepalive.yml`](.github/workflows/supabase-keepalive.yml) workflow uses the schedule `0 8 */2 * *`, which steps the day-of-month field so it runs at 08:00 UTC on odd days of the month (roughly every 2 days, with occasional 1- or 2-day gaps at month boundaries), and performs a lightweight `GET /rest/v1/profiles?select=id&limit=1` request to keep the project active.
+
+Scheduled runs only happen if GitHub Actions is enabled and the workflow is on the default branch (`main`).
+
+Before the first run, add these repository secrets under **Settings → Secrets and variables → Actions**:
+
+- `SUPABASE_URL` — same value as `VITE_SUPABASE_URL`
+- `SUPABASE_PUBLISHABLE_KEY` — same value as `VITE_SUPABASE_PUBLISHABLE_KEY`
+
+To run it manually, open the **Actions** tab, select **Supabase keep-alive**, and click **Run workflow**.
+
+> **Note:** GitHub disables scheduled workflows after 60 days of repository inactivity. If the repo goes dormant, re-enable the workflow from the Actions tab.

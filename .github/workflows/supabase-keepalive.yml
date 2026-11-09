@@ -1,0 +1,57 @@
+name: Supabase keep-alive
+
+# Runs every 2 days at 08:00 UTC. GitHub may delay scheduled runs during
+# periods of high load, so the actual start time can drift.
+on:
+  schedule:
+    - cron: '0 8 */2 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: supabase-keep-alive
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    name: Ping Supabase
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Validate secrets
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${SUPABASE_URL}" ]; then
+            echo "::error::Missing SUPABASE_URL repository secret."
+            exit 1
+          fi
+          if [ -z "${SUPABASE_PUBLISHABLE_KEY}" ]; then
+            echo "::error::Missing SUPABASE_PUBLISHABLE_KEY repository secret."
+            exit 1
+          fi
+
+      - name: Ping Supabase REST API
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          set -euo pipefail
+          SUPABASE_URL="${SUPABASE_URL%/}"
+          if ! status_code="$(curl -sS -o /dev/null -w '%{http_code}' \
+            --retry 3 --retry-delay 5 --max-time 30 \
+            -H "apikey: ${SUPABASE_PUBLISHABLE_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_PUBLISHABLE_KEY}" \
+            "${SUPABASE_URL}/rest/v1/profiles?select=id&limit=1")"; then
+            echo "::error::Supabase keep-alive request failed."
+            exit 1
+          fi
+          echo "Supabase keep-alive response status: ${status_code}"
+          if [ "${status_code}" -lt 200 ] || [ "${status_code}" -ge 300 ]; then
+            echo "::error::Supabase keep-alive failed with HTTP status ${status_code}."
+            exit 1
+          fi
