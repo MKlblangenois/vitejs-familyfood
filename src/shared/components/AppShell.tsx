@@ -32,18 +32,35 @@ const AppShell = ({ children }: AppShellProps) => {
     <div className="bg-cream dark:bg-ink-950 min-h-screen">
       <NetworkStatus />
 
-      <header className="relative z-50 border-b border-forest/10 bg-cream dark:border-white/10 dark:bg-ink-950">
+      <header className="border-forest/10 bg-cream dark:bg-ink-950 relative z-50 border-b dark:border-white/10">
         <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-12">
-          <Link to="/recipes" aria-label="FamilyFood, accueil" className="flex items-center gap-2.5 text-forest focus-visible:outline-2 focus-visible:outline-offset-4 dark:text-cream">
-            <BrandMark className="size-8 text-sage-500 dark:text-sage-300" />
-            <span className="text-[22px] leading-none font-bold tracking-[-0.06em]">family<span className="font-normal">food</span><span className="mt-1 block text-[7px] font-bold tracking-[0.15em]">LE PLAISIR DE PARTAGER</span></span>
+          <Link
+            to="/recipes"
+            aria-label="FamilyFood, accueil"
+            className="text-forest dark:text-cream flex items-center gap-2.5 focus-visible:outline-2 focus-visible:outline-offset-4"
+          >
+            <BrandMark className="text-sage-500 dark:text-sage-300 size-8" />
+            <span className="text-[22px] leading-none font-bold tracking-[-0.06em]">
+              family<span className="font-normal">food</span>
+              <span className="mt-1 block text-[7px] font-bold tracking-[0.15em]">
+                LE PLAISIR DE PARTAGER
+              </span>
+            </span>
           </Link>
-          <span className="hidden text-[10px] font-bold tracking-[0.18em] text-ink-500 md:block dark:text-ink-300">CUISINER · PARTAGER · SAVOURER</span>
-          <Link to="/profile" aria-label="Mon profil" className="flex size-10 items-center justify-center rounded-full bg-sage-100 text-forest focus-visible:outline-2 focus-visible:outline-offset-4 dark:bg-white/10 dark:text-sage-200"><UserIcon aria-hidden="true" className="size-5" /></Link>
+          <span className="text-ink-500 dark:text-ink-300 hidden text-[10px] font-bold tracking-[0.18em] md:block">
+            CUISINER · PARTAGER · SAVOURER
+          </span>
+          <Link
+            to="/profile"
+            aria-label="Mon profil"
+            className="bg-sage-100 text-forest dark:text-sage-200 flex size-10 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 dark:bg-white/10"
+          >
+            <UserIcon aria-hidden="true" className="size-5" />
+          </Link>
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-5 pt-0 pb-24 sm:px-8 sm:pt-14 sm:pb-8 lg:pr-12 lg:pl-72">
+      <main className="mx-auto max-w-7xl px-5 pt-0 pb-[calc(8rem+env(safe-area-inset-bottom,0px))] sm:px-8 sm:pt-14 sm:pb-8 lg:pr-12 lg:pl-72">
         {children}
       </main>
 

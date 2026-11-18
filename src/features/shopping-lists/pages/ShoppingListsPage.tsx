@@ -316,6 +316,14 @@ const ShoppingListsPage = () => {
           </div>
         )}
 
+      <Button
+        variant="primary"
+        aria-label="Nouvelle liste"
+        onClick={openCreateDialog}
+        icon={<PlusIcon aria-hidden="true" className="size-6" />}
+        className="shadow-float active:bg-forest-700 fixed right-5 bottom-[calc(6.5rem+env(safe-area-inset-bottom,0px))] z-30 flex size-14 !rounded-full !p-0 sm:hidden"
+      />
+
       {/* Create list dialog */}
       <Modal
         open={isCreateOpen}

@@ -34,7 +34,7 @@ const Modal = ({
       />
 
       <div className="fixed inset-0 z-50 overflow-y-auto">
-        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+        <div className="flex min-h-full items-end justify-center p-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] text-center sm:items-center sm:p-0">
           <DialogPanel
             transition
             className={`relative w-full transform overflow-hidden rounded-card bg-cream p-6 text-left shadow-float transition-all data-closed:scale-95 data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-forest-900 sm:p-8 ${sizeClasses[size]}`}
