@@ -1,4 +1,5 @@
-import { useState, useCallback, useMemo } from 'react'
+import { DetailDrawerContext } from '../../../shared/components/detailDrawerContext'
+import { useState, useCallback, useMemo, useContext } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import {
   ArrowLeftIcon,
@@ -267,6 +268,7 @@ function getMemberDisplayName(member: ShoppingListMember): string {
 }
 
 const ShoppingListDetailPage = () => {
+  const inDrawer = useContext(DetailDrawerContext)
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { user } = useAuth()
@@ -445,13 +447,15 @@ const ShoppingListDetailPage = () => {
   return (
     <div className="mx-auto max-w-3xl pt-8 sm:pt-12">
       {/* Back link */}
-      <Link
-        to="/shopping-lists"
-        className="text-ink-500 hover:text-ink dark:text-ink-300 mb-8 inline-flex min-h-11 items-center gap-2 text-sm font-medium transition-colors dark:hover:text-white"
-      >
-        <ArrowLeftIcon aria-hidden="true" className="size-4" />
-        Toutes les listes
-      </Link>
+      {!inDrawer && (
+        <Link
+          to="/shopping-lists"
+          className="text-ink-500 hover:text-ink dark:text-ink-300 mb-8 inline-flex min-h-11 items-center gap-2 text-sm font-medium transition-colors dark:hover:text-white"
+        >
+          <ArrowLeftIcon aria-hidden="true" className="size-4" />
+          Toutes les listes
+        </Link>
+      )}
 
       {/* Title + actions */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">

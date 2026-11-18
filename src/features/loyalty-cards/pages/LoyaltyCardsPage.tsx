@@ -43,6 +43,7 @@ const LoyaltyCardsPage = () => {
   const [search, setSearch] = useState('')
   const [isCreateOpen, setIsCreateOpen] = useState(false)
   const [selectedCard, setSelectedCard] = useState<LoyaltyCard | null>(null)
+  const [isCardOpen, setIsCardOpen] = useState(false)
 
   const filteredCards = useMemo(() => {
     if (!cards) return []
@@ -163,7 +164,10 @@ const LoyaltyCardsPage = () => {
               <LoyaltyCardItem
                 key={card.id}
                 card={card}
-                onClick={setSelectedCard}
+                onClick={(card) => {
+                  setSelectedCard(card)
+                  setIsCardOpen(true)
+                }}
               />
             ))}
           </div>
@@ -211,7 +215,9 @@ const LoyaltyCardsPage = () => {
       {/* Card bottom sheet */}
       <LoyaltyCardBottomSheet
         card={selectedCard}
-        onClose={() => setSelectedCard(null)}
+        open={isCardOpen}
+        onClose={() => setIsCardOpen(false)}
+        onClosed={() => setSelectedCard(null)}
       />
     </div>
   )

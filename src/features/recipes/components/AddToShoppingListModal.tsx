@@ -1,11 +1,6 @@
 import { useMemo, useState, useCallback, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  DialogTitle,
-} from '@headlessui/react'
+import * as Dialog from '@radix-ui/react-dialog'
 import {
   ShoppingBagIcon,
   CheckIcon,
@@ -53,9 +48,9 @@ const AddToShoppingListModal = ({
   )
 
   const [selectedListId, setSelectedListId] = useState('')
-  const [selectedIngredientIds, setSelectedIngredientIds] = useState<Set<string>>(
-    () => new Set(allIngredientIds),
-  )
+  const [selectedIngredientIds, setSelectedIngredientIds] = useState<
+    Set<string>
+  >(() => new Set(allIngredientIds))
   const [targetServings, setTargetServings] = useState(
     initialServings ?? recipe.servings,
   )
@@ -97,10 +92,9 @@ const AddToShoppingListModal = ({
 
   // Scale the selected ingredients to the target servings.
   const scaledIngredients = useMemo(() => {
-    const selected = flattenSelectedIngredients(
-      recipe,
-      [...selectedIngredientIds],
-    )
+    const selected = flattenSelectedIngredients(recipe, [
+      ...selectedIngredientIds,
+    ])
     return scaleIngredients(selected, recipe.servings, targetServings)
   }, [recipe, selectedIngredientIds, targetServings])
 
@@ -139,7 +133,14 @@ const AddToShoppingListModal = ({
         onSuccess: () => setSuccess(true),
       },
     )
-  }, [canSubmit, targetList, mutation, recipe, selectedIngredientIds, targetServings])
+  }, [
+    canSubmit,
+    targetList,
+    mutation,
+    recipe,
+    selectedIngredientIds,
+    targetServings,
+  ])
 
   const handleClose = useCallback(() => {
     if (mutation.isPending) return
@@ -149,33 +150,34 @@ const AddToShoppingListModal = ({
   const hasNoLists = !listsLoading && lists && lists.length === 0
 
   return (
-    <Dialog open={open} onClose={handleClose} className="relative z-50">
-      <DialogBackdrop
-        transition
-        className="fixed inset-0 bg-ink-950/50 transition-opacity data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-ink-950/80"
-      />
-
-      <div className="fixed inset-0 z-50 overflow-y-auto">
-        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-          <DialogPanel
-            transition
-            className="relative w-full max-w-lg transform overflow-hidden rounded-card bg-white p-6 text-left shadow-float transition-all data-closed:scale-95 data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-ink-900 sm:p-8"
+    <Dialog.Root
+      open={open}
+      onOpenChange={(next) => {
+        if (!next) handleClose()
+      }}
+    >
+      <Dialog.Portal>
+        <Dialog.Overlay className="bg-ink-950/50 dark:bg-ink-950/80 fixed inset-0 z-[60]" />
+        <div className="pointer-events-none fixed inset-0 z-[60] flex items-end justify-center overflow-y-auto p-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] sm:items-center sm:p-4">
+          <Dialog.Content
+            aria-describedby={undefined}
+            className="rounded-card shadow-float dark:bg-ink-900 pointer-events-auto w-full max-w-lg bg-white p-6 text-left outline-none sm:p-8"
           >
             {success ? (
               // ============================================================
               // Success state
               // ============================================================
               <div className="flex flex-col items-center py-6 text-center">
-                <div className="flex size-12 items-center justify-center rounded-full bg-sage-50 dark:bg-sage-500/10">
+                <div className="bg-sage-50 dark:bg-sage-500/10 flex size-12 items-center justify-center rounded-full">
                   <CheckIcon
                     aria-hidden="true"
-                    className="size-6 text-forest dark:text-sage-400"
+                    className="text-forest dark:text-sage-400 size-6"
                   />
                 </div>
-                <DialogTitle className="mt-4 font-display text-lg font-semibold text-ink dark:text-white">
+                <Dialog.Title className="font-display text-ink mt-4 text-lg font-semibold dark:text-white">
                   Ajouté à la liste de courses
-                </DialogTitle>
-                <p className="mt-2 text-sm/6 text-ink-500 dark:text-ink-400">
+                </Dialog.Title>
+                <p className="text-ink-500 dark:text-ink-400 mt-2 text-sm/6">
                   {summary.addedCount} article
                   {summary.addedCount !== 1 ? 's' : ''} ajouté
                   {summary.addedCount !== 1 ? 's' : ''}
@@ -186,7 +188,7 @@ const AddToShoppingListModal = ({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="mt-6 inline-flex items-center justify-center rounded-control bg-forest px-4 py-2.5 text-sm font-semibold text-white shadow-soft transition-colors hover:bg-forest-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest dark:bg-forest-600 dark:hover:bg-forest-500 dark:focus-visible:outline-forest-400"
+                  className="rounded-control bg-forest shadow-soft hover:bg-forest-600 focus-visible:outline-forest dark:bg-forest-600 dark:hover:bg-forest-500 dark:focus-visible:outline-forest-400 mt-6 inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
                 >
                   Terminé
                 </button>
@@ -196,10 +198,10 @@ const AddToShoppingListModal = ({
               // Form state
               // ============================================================
               <>
-                <DialogTitle className="font-display text-lg font-semibold text-ink dark:text-white">
+                <Dialog.Title className="font-display text-ink text-lg font-semibold dark:text-white">
                   Ajouter à la liste de courses
-                </DialogTitle>
-                <p className="mt-2 text-sm/6 text-ink-500 dark:text-ink-400">
+                </Dialog.Title>
+                <p className="text-ink-500 dark:text-ink-400 mt-2 text-sm/6">
                   Choisissez une liste, ajustez les portions et sélectionnez les
                   ingrédients à ajouter.
                 </p>
@@ -208,24 +210,24 @@ const AddToShoppingListModal = ({
                 <div className="mt-5">
                   <label
                     htmlFor="shopping-list-select"
-                    className="block text-sm font-medium text-ink-700 dark:text-ink-300"
+                    className="text-ink-700 dark:text-ink-300 block text-sm font-medium"
                   >
                     Liste de courses
                   </label>
 
                   {hasNoLists ? (
-                    <div className="mt-2 rounded-control border border-dashed border-sand-200 bg-sand-50 p-4 text-center dark:border-white/10 dark:bg-white/[0.02]">
+                    <div className="rounded-control border-sand-200 bg-sand-50 mt-2 border border-dashed p-4 text-center dark:border-white/10 dark:bg-white/[0.02]">
                       <ShoppingBagIcon
                         aria-hidden="true"
-                        className="mx-auto size-8 text-ink-300 dark:text-ink-400"
+                        className="text-ink-300 dark:text-ink-400 mx-auto size-8"
                       />
-                      <p className="mt-2 text-sm/6 text-ink-500 dark:text-ink-400">
+                      <p className="text-ink-500 dark:text-ink-400 mt-2 text-sm/6">
                         Vous n&apos;avez pas encore de liste de courses.
                       </p>
                       <Link
                         to="/shopping-lists"
                         onClick={onClose}
-                        className="mt-3 inline-flex items-center gap-1.5 rounded-control bg-forest px-3 py-2 text-sm font-semibold text-white shadow-soft transition-colors hover:bg-forest-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest dark:bg-forest-600 dark:hover:bg-forest-500 dark:focus-visible:outline-forest-400"
+                        className="rounded-control bg-forest shadow-soft hover:bg-forest-600 focus-visible:outline-forest dark:bg-forest-600 dark:hover:bg-forest-500 dark:focus-visible:outline-forest-400 mt-3 inline-flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
                       >
                         <PlusIcon aria-hidden="true" className="size-4" />
                         Créer une liste
@@ -237,7 +239,7 @@ const AddToShoppingListModal = ({
                       value={selectedListId}
                       onChange={(e) => setSelectedListId(e.target.value)}
                       disabled={listsLoading}
-                      className="mt-1.5 block w-full rounded-control border border-sand-200 bg-white px-3 py-2.5 text-sm text-ink shadow-soft focus:border-forest-500 focus:outline-2 focus:outline-forest-600 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10 dark:bg-ink-900 dark:text-white dark:focus:border-forest-400 dark:focus:outline-forest-500"
+                      className="rounded-control border-sand-200 text-ink shadow-soft focus:border-forest-500 focus:outline-forest-600 dark:bg-ink-900 dark:focus:border-forest-400 dark:focus:outline-forest-500 mt-1.5 block w-full border bg-white px-3 py-2.5 text-sm focus:outline-2 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10 dark:text-white"
                     >
                       <option value="">Sélectionner une liste…</option>
                       {(lists ?? []).map((list) => (
@@ -253,7 +255,7 @@ const AddToShoppingListModal = ({
                 <div className="mt-4">
                   <label
                     htmlFor="target-servings"
-                    className="block text-sm font-medium text-ink-700 dark:text-ink-300"
+                    className="text-ink-700 dark:text-ink-300 block text-sm font-medium"
                   >
                     Portions
                   </label>
@@ -269,20 +271,20 @@ const AddToShoppingListModal = ({
                         Number.isFinite(value) && value >= 1 ? value : 1,
                       )
                     }}
-                    className="mt-1.5 block w-28 rounded-control border border-sand-200 bg-white px-3 py-2.5 text-sm text-ink shadow-soft focus:border-forest-500 focus:outline-2 focus:outline-forest-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:border-forest-400 dark:focus:outline-forest-500"
+                    className="rounded-control border-sand-200 text-ink shadow-soft focus:border-forest-500 focus:outline-forest-600 dark:focus:border-forest-400 dark:focus:outline-forest-500 mt-1.5 block w-28 border bg-white px-3 py-2.5 text-sm focus:outline-2 dark:border-white/10 dark:bg-white/5 dark:text-white"
                   />
                 </div>
 
                 {/* Ingredient selection */}
                 <div className="mt-5">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-ink-700 dark:text-ink-300">
+                    <span className="text-ink-700 dark:text-ink-300 text-sm font-medium">
                       Ingrédients
                     </span>
                     <button
                       type="button"
                       onClick={toggleAll}
-                      className="text-xs font-medium text-forest transition-colors hover:text-forest-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest dark:text-sage-400 dark:hover:text-sage-300 dark:focus-visible:outline-forest-500"
+                      className="text-forest hover:text-forest-600 focus-visible:outline-forest dark:text-sage-400 dark:hover:text-sage-300 dark:focus-visible:outline-forest-500 text-xs font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
                     >
                       {selectedIngredientIds.size === allIngredientIds.length
                         ? 'Tout désélectionner'
@@ -290,11 +292,11 @@ const AddToShoppingListModal = ({
                     </button>
                   </div>
 
-                  <div className="mt-2 max-h-64 space-y-4 overflow-y-auto rounded-control border border-sand-200 p-3 dark:border-white/10">
+                  <div className="rounded-control border-sand-200 mt-2 max-h-64 space-y-4 overflow-y-auto border p-3 dark:border-white/10">
                     {recipe.recipe_ingredient_groups.map((group) => (
                       <div key={group.id}>
                         {group.name && (
-                          <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500">
+                          <h4 className="text-ink-400 dark:text-ink-500 mb-1.5 text-xs font-semibold tracking-wider uppercase">
                             {group.name}
                           </h4>
                         )}
@@ -310,7 +312,7 @@ const AddToShoppingListModal = ({
                                 : ''
                             return (
                               <li key={ingredient.id}>
-                                <label className="flex cursor-pointer items-center gap-3 rounded-control px-2 py-1.5 text-sm transition-colors hover:bg-sand-50 dark:hover:bg-white/5">
+                                <label className="rounded-control hover:bg-sand-50 flex cursor-pointer items-center gap-3 px-2 py-1.5 text-sm transition-colors dark:hover:bg-white/5">
                                   <input
                                     type="checkbox"
                                     checked={selectedIngredientIds.has(
@@ -319,9 +321,9 @@ const AddToShoppingListModal = ({
                                     onChange={() =>
                                       toggleIngredient(ingredient.id)
                                     }
-                                    className="size-4 rounded border-sand-200 text-forest focus:ring-forest-500 dark:border-ink-700 dark:bg-ink-700 dark:ring-offset-ink-900"
+                                    className="border-sand-200 text-forest focus:ring-forest-500 dark:border-ink-700 dark:bg-ink-700 dark:ring-offset-ink-900 size-4 rounded"
                                   />
-                                  <span className="min-w-[4.5rem] font-medium text-ink tabular-nums dark:text-white">
+                                  <span className="text-ink min-w-[4.5rem] font-medium tabular-nums dark:text-white">
                                     {quantityText} {ingredient.unit ?? ''}
                                   </span>
                                   <span className="text-ink-700 dark:text-ink-300">
@@ -339,7 +341,7 @@ const AddToShoppingListModal = ({
 
                 {/* Added vs merged summary */}
                 {selectedListId && (
-                  <p className="mt-3 text-sm text-ink-500 dark:text-ink-400">
+                  <p className="text-ink-500 dark:text-ink-400 mt-3 text-sm">
                     {summary.addedCount} article
                     {summary.addedCount !== 1 ? 's' : ''}{' '}
                     {summary.addedCount !== 1 ? 'seront' : 'sera'} ajouté
@@ -354,7 +356,7 @@ const AddToShoppingListModal = ({
                 {mutation.isError && (
                   <p
                     role="alert"
-                    className="mt-3 flex items-center gap-1.5 text-sm text-error dark:text-error-400"
+                    className="text-error dark:text-error-400 mt-3 flex items-center gap-1.5 text-sm"
                   >
                     <ExclamationTriangleIcon
                       aria-hidden="true"
@@ -362,7 +364,7 @@ const AddToShoppingListModal = ({
                     />
                     {mutation.error instanceof Error
                       ? mutation.error.message
-                      : "Échec de l\u2019ajout des articles. Veuillez réessayer."}
+                      : 'Échec de l\u2019ajout des articles. Veuillez réessayer.'}
                   </p>
                 )}
 
@@ -372,7 +374,7 @@ const AddToShoppingListModal = ({
                     type="button"
                     onClick={handleClose}
                     disabled={mutation.isPending}
-                    className="inline-flex items-center justify-center rounded-control border border-sand-200 bg-white px-4 py-2.5 text-sm font-semibold text-ink-700 shadow-soft transition-colors hover:bg-sand-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-white/5 dark:text-ink-300 dark:hover:bg-white/10 dark:focus-visible:outline-forest-500"
+                    className="rounded-control border-sand-200 text-ink-700 shadow-soft hover:bg-sand-50 focus-visible:outline-forest-600 dark:text-ink-300 dark:focus-visible:outline-forest-500 inline-flex items-center justify-center border bg-white px-4 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
                   >
                     Annuler
                   </button>
@@ -380,7 +382,7 @@ const AddToShoppingListModal = ({
                     type="button"
                     onClick={handleSubmit}
                     disabled={!canSubmit || mutation.isPending}
-                    className="inline-flex items-center justify-center gap-2 rounded-control bg-forest px-4 py-2.5 text-sm font-semibold text-white shadow-soft transition-colors hover:bg-forest-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest disabled:cursor-not-allowed disabled:opacity-50 dark:bg-forest-600 dark:hover:bg-forest-500 dark:focus-visible:outline-forest-400"
+                    className="rounded-control bg-forest shadow-soft hover:bg-forest-600 focus-visible:outline-forest dark:bg-forest-600 dark:hover:bg-forest-500 dark:focus-visible:outline-forest-400 inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {mutation.isPending ? (
                       <>
@@ -397,10 +399,10 @@ const AddToShoppingListModal = ({
                 </div>
               </>
             )}
-          </DialogPanel>
+          </Dialog.Content>
         </div>
-      </div>
-    </Dialog>
+      </Dialog.Portal>
+    </Dialog.Root>
   )
 }
 

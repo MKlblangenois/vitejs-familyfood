@@ -13,8 +13,13 @@ vi.mock('../../hooks', () => ({
   }),
 }))
 vi.mock('../../components/LoyaltyCardBottomSheet', () => ({
-  default: ({ card }: { card: { store_name: string } | null }) =>
-    card ? <p>Carte sélectionnée : {card.store_name}</p> : null,
+  default: ({
+    card,
+    open,
+  }: {
+    card: { store_name: string } | null
+    open: boolean
+  }) => (card && open ? <p>Carte sélectionnée : {card.store_name}</p> : null),
 }))
 vi.mock('../../components/LoyaltyCardForm', () => ({ default: () => null }))
 

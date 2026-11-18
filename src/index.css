@@ -148,3 +148,29 @@
     font-size: 16px;
   }
 }
+
+/* Card press feedback is intentionally brief; motion is optional. */
+@media (prefers-reduced-motion: no-preference) {
+  .loyalty-card-press {
+    transition:
+      transform 160ms cubic-bezier(0.23, 1, 0.32, 1),
+      background-color 160ms ease;
+  }
+  .loyalty-card-press:active {
+    transform: scale(0.97);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-vaul-drawer].loyalty-drawer,
+  [data-vaul-overlay] {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-vaul-drawer].detail-drawer {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+}

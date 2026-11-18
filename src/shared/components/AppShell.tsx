@@ -29,7 +29,10 @@ const AppShell = ({ children }: AppShellProps) => {
   const location = useLocation()
 
   return (
-    <div className="bg-cream dark:bg-ink-950 min-h-screen">
+    <div
+      data-vaul-drawer-wrapper=""
+      className="bg-cream dark:bg-ink-950 min-h-screen"
+    >
       <NetworkStatus />
 
       <header className="border-forest/10 bg-cream dark:bg-ink-950 relative z-50 border-b dark:border-white/10">

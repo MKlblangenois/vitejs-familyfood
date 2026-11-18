@@ -1,8 +1,7 @@
 import type { ReactNode } from 'react'
-import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
+import * as Dialog from '@radix-ui/react-dialog'
 
 type ModalSize = 'sm' | 'md' | 'lg'
-
 interface ModalProps {
   open: boolean
   onClose: () => void
@@ -11,7 +10,6 @@ interface ModalProps {
   footer?: ReactNode
   size?: ModalSize
 }
-
 const sizeClasses: Record<ModalSize, string> = {
   sm: 'max-w-sm',
   md: 'max-w-lg',
@@ -25,32 +23,30 @@ const Modal = ({
   children,
   footer,
   size = 'md',
-}: ModalProps) => {
-  return (
-    <Dialog open={open} onClose={onClose} className="relative z-50">
-      <DialogBackdrop
-        transition
-        className="fixed inset-0 bg-ink-950/50 transition-opacity data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-ink-950/80"
-      />
-
-      <div className="fixed inset-0 z-50 overflow-y-auto">
-        <div className="flex min-h-full items-end justify-center p-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] text-center sm:items-center sm:p-0">
-          <DialogPanel
-            transition
-            className={`relative w-full transform overflow-hidden rounded-card bg-cream p-6 text-left shadow-float transition-all data-closed:scale-95 data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-forest-900 sm:p-8 ${sizeClasses[size]}`}
-          >
-            <DialogTitle className="font-display text-lg font-semibold text-ink dark:text-white">
-              {title}
-            </DialogTitle>
-
-            <div className="mt-4">{children}</div>
-
-            {footer && <div className="mt-6 flex justify-end gap-3">{footer}</div>}
-          </DialogPanel>
-        </div>
+}: ModalProps) => (
+  <Dialog.Root
+    open={open}
+    onOpenChange={(next) => {
+      if (!next) onClose()
+    }}
+  >
+    <Dialog.Portal>
+      <Dialog.Overlay className="bg-ink-950/50 dark:bg-ink-950/80 fixed inset-0 z-[60]" />
+      <div className="pointer-events-none fixed inset-0 z-[60] flex items-end justify-center overflow-y-auto p-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] sm:items-center sm:p-4">
+        <Dialog.Content
+          aria-describedby={undefined}
+          className={`rounded-card bg-cream shadow-float dark:bg-forest-900 pointer-events-auto w-full p-6 text-left outline-none sm:p-8 ${sizeClasses[size]}`}
+        >
+          <Dialog.Title className="font-display text-ink text-lg font-semibold dark:text-white">
+            {title}
+          </Dialog.Title>
+          <div className="mt-4">{children}</div>
+          {footer && (
+            <div className="mt-6 flex justify-end gap-3">{footer}</div>
+          )}
+        </Dialog.Content>
       </div>
-    </Dialog>
-  )
-}
-
+    </Dialog.Portal>
+  </Dialog.Root>
+)
 export default Modal

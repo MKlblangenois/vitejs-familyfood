@@ -1,4 +1,5 @@
-import { useState, useCallback, useMemo } from 'react'
+import { DetailDrawerContext } from '../../../shared/components/detailDrawerContext'
+import { useState, useCallback, useMemo, useContext } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import {
   ArrowLeftIcon,
@@ -218,6 +219,7 @@ function NotFoundState() {
 // ============================================================
 
 const RecipeDetailPage = () => {
+  const inDrawer = useContext(DetailDrawerContext)
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const {
@@ -290,13 +292,15 @@ const RecipeDetailPage = () => {
 
   return (
     <div className="mx-auto max-w-5xl pt-8 sm:pt-12">
-      <Link
-        to="/recipes"
-        className="text-sage-600 hover:text-ink focus-visible:outline-forest-600 dark:text-sage-300 mb-8 inline-flex min-h-11 items-center gap-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 dark:hover:text-white"
-      >
-        <ArrowLeftIcon aria-hidden="true" className="size-4" /> Toutes les
-        recettes
-      </Link>
+      {!inDrawer && (
+        <Link
+          to="/recipes"
+          className="text-sage-600 hover:text-ink focus-visible:outline-forest-600 dark:text-sage-300 mb-8 inline-flex min-h-11 items-center gap-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 dark:hover:text-white"
+        >
+          <ArrowLeftIcon aria-hidden="true" className="size-4" /> Toutes les
+          recettes
+        </Link>
+      )}
 
       <header className="mb-8 max-w-3xl">
         <p className="text-forest-600 dark:text-sage-300 text-[10px] font-bold tracking-[0.2em] uppercase">

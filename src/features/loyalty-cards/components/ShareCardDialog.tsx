@@ -5,7 +5,7 @@ import { useAddCardMember, useRemoveCardMember } from '../hooks'
 import type { LoyaltyCardMember } from '../types'
 import { ROLE_LABELS } from '../lib/roleLabels'
 import Button from '../../../shared/components/Button'
-import Modal from '../../../shared/components/Modal'
+import CardDialog from './CardDialog'
 import Badge from '../../../shared/components/Badge'
 
 interface ShareCardDialogProps {
@@ -81,7 +81,7 @@ const ShareCardDialog = ({
           }, 3000)
         },
         onError: (err) => {
-          setError(err.message || 'Échec de l\'ajout du membre.')
+          setError(err.message || "Échec de l'ajout du membre.")
         },
       },
     )
@@ -109,7 +109,7 @@ const ShareCardDialog = ({
   }, [onClose])
 
   return (
-    <Modal
+    <CardDialog
       open={open}
       onClose={handleClose}
       title="Partager la carte"
@@ -119,8 +119,9 @@ const ShareCardDialog = ({
         </Button>
       }
     >
-      <p className="text-sm/6 text-ink-500 dark:text-ink-300">
-        Entrez l&apos;email d&apos;un utilisateur pour lui donner accès à cette carte.
+      <p className="text-ink-500 dark:text-ink-300 text-sm/6">
+        Entrez l&apos;email d&apos;un utilisateur pour lui donner accès à cette
+        carte.
       </p>
 
       {/* Add member form */}
@@ -138,7 +139,7 @@ const ShareCardDialog = ({
           }}
           placeholder="email@exemple.com"
           aria-label="Email de l'utilisateur à ajouter"
-          className="min-w-0 flex-1 rounded-control border border-sand-200 bg-white px-3 py-2 text-sm text-ink shadow-soft placeholder:text-ink-400 focus:border-forest-500 focus:ring-1 focus:ring-forest-500 focus:outline-2 focus:outline-offset-2 focus:outline-forest-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-ink-300 dark:focus:border-forest-400 dark:focus:ring-forest-400 dark:focus:outline-forest-400"
+          className="rounded-control border-sand-200 text-ink shadow-soft placeholder:text-ink-400 focus:border-forest-500 focus:ring-forest-500 focus:outline-forest-600 dark:placeholder:text-ink-300 dark:focus:border-forest-400 dark:focus:ring-forest-400 dark:focus:outline-forest-400 min-w-0 flex-1 border bg-white px-3 py-2 text-sm focus:ring-1 focus:outline-2 focus:outline-offset-2 dark:border-white/10 dark:bg-white/5 dark:text-white"
         />
         <Button
           variant="primary"
@@ -152,24 +153,22 @@ const ShareCardDialog = ({
       </div>
 
       {error && (
-        <p className="mt-2 text-sm text-error dark:text-error-400">
-          {error}
-        </p>
+        <p className="text-error dark:text-error-400 mt-2 text-sm">{error}</p>
       )}
 
       {success && (
-        <p className="mt-2 text-sm text-forest-600 dark:text-forest-300">
+        <p className="text-forest-600 dark:text-forest-300 mt-2 text-sm">
           {success}
         </p>
       )}
 
       {/* Current members */}
       <div className="mt-6">
-        <h3 className="text-sm font-medium text-ink-700 dark:text-ink-200">
+        <h3 className="text-ink-700 dark:text-ink-200 text-sm font-medium">
           Membres actuels
         </h3>
         <ul
-          className="mt-2 divide-y divide-sand-200 dark:divide-white/10"
+          className="divide-sand-200 mt-2 divide-y dark:divide-white/10"
           role="list"
         >
           {members.map((member) => {
@@ -190,12 +189,12 @@ const ShareCardDialog = ({
                       className="size-8 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="flex size-8 items-center justify-center rounded-full bg-sand-100 text-xs font-medium text-ink-600 dark:bg-white/10 dark:text-ink-300">
+                    <div className="bg-sand-100 text-ink-600 dark:text-ink-300 flex size-8 items-center justify-center rounded-full text-xs font-medium dark:bg-white/10">
                       {memberName.slice(0, 2).toUpperCase()}
                     </div>
                   )}
                   <div>
-                    <p className="text-sm font-medium text-ink dark:text-white">
+                    <p className="text-ink text-sm font-medium dark:text-white">
                       {member.profile?.display_name || `${memberName}…`}
                     </p>
                     <Badge variant={isOwner ? 'forest' : 'neutral'}>
@@ -209,7 +208,7 @@ const ShareCardDialog = ({
                     onClick={() => handleRemoveMember(member)}
                     disabled={removeMemberMutation.isPending}
                     aria-label="Quitter cette carte"
-                    className="rounded-control p-1 text-ink-400 transition-colors hover:bg-error-50 hover:text-error focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-ink-300 dark:hover:bg-error-500/10 dark:hover:text-error-400 dark:focus-visible:outline-error-500"
+                    className="rounded-control text-ink-400 hover:bg-error-50 hover:text-error focus-visible:outline-error-600 dark:text-ink-300 dark:hover:bg-error-500/10 dark:hover:text-error-400 dark:focus-visible:outline-error-500 p-1 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     <XMarkIcon aria-hidden="true" className="size-4" />
                   </button>
@@ -217,15 +216,14 @@ const ShareCardDialog = ({
                 {!isOwner &&
                   member.user_id !== currentUserId &&
                   members.some(
-                    (m) =>
-                      m.user_id === currentUserId && m.role === 'owner',
+                    (m) => m.user_id === currentUserId && m.role === 'owner',
                   ) && (
                     <button
                       type="button"
                       onClick={() => handleRemoveMember(member)}
                       disabled={removeMemberMutation.isPending}
                       aria-label={`Retirer ${memberName}`}
-                      className="rounded-control p-1 text-ink-400 transition-colors hover:bg-error-50 hover:text-error focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-ink-300 dark:hover:bg-error-500/10 dark:hover:text-error-400 dark:focus-visible:outline-error-500"
+                      className="rounded-control text-ink-400 hover:bg-error-50 hover:text-error focus-visible:outline-error-600 dark:text-ink-300 dark:hover:bg-error-500/10 dark:hover:text-error-400 dark:focus-visible:outline-error-500 p-1 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       <XMarkIcon aria-hidden="true" className="size-4" />
                     </button>
@@ -235,7 +233,7 @@ const ShareCardDialog = ({
           })}
         </ul>
       </div>
-    </Modal>
+    </CardDialog>
   )
 }
 

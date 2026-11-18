@@ -17,7 +17,7 @@ const LoyaltyCardItem = ({ card, onClick }: LoyaltyCardItemProps) => {
     <button
       type="button"
       onClick={() => onClick(card)}
-      className="group rounded-card border-sand-200/80 shadow-soft focus-visible:outline-forest-600 active:bg-sand-50 dark:bg-forest-900 dark:focus-visible:outline-forest-400 flex min-h-44 min-w-0 flex-col items-start border bg-white p-4 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 sm:min-h-48 sm:p-5 dark:border-white/10 dark:active:bg-white/10"
+      className="loyalty-card-press group rounded-card border-sand-200/80 shadow-soft focus-visible:outline-forest-600 active:bg-sand-50 dark:bg-forest-900 dark:focus-visible:outline-forest-400 flex min-h-44 min-w-0 flex-col items-start border bg-white p-4 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 sm:min-h-48 sm:p-5 dark:border-white/10 dark:active:bg-white/10"
     >
       <span
         className="rounded-control bg-sand-50 relative flex size-12 shrink-0 items-center justify-center overflow-hidden sm:size-14"

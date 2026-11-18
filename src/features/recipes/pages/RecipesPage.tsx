@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import {
   PlusIcon,
   MagnifyingGlassIcon,
@@ -77,10 +77,12 @@ function RecipeCard({
   featured?: boolean
 }) {
   const time = totalTime(recipe)
+  const location = useLocation()
 
   return (
     <Link
       to={`/recipes/${recipe.id}`}
+      state={{ backgroundLocation: location }}
       className="group rounded-card focus-visible:outline-forest-600 dark:focus-visible:outline-forest-400 block min-w-0 focus-visible:outline-2 focus-visible:outline-offset-4"
     >
       <div className="relative">

@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import {
   PlusIcon,
   ShoppingBagIcon,
@@ -45,6 +45,7 @@ export function ListCard({
   onDelete: (list: { id: string; title: string }) => void
 }) {
   const isOwner = list.owner_id === currentUserId
+  const location = useLocation()
 
   return (
     <article className="rounded-card border-sand-200/80 shadow-soft dark:bg-forest-900 flex min-w-0 flex-col border bg-white p-5 sm:p-6 dark:border-white/10">
@@ -75,6 +76,7 @@ export function ListCard({
       </div>
       <Link
         to={`/shopping-lists/${list.id}`}
+        state={{ backgroundLocation: location }}
         className="group focus-visible:outline-forest-600 dark:focus-visible:outline-forest-400 mt-auto flex min-h-16 items-end justify-between gap-4 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4"
       >
         <div className="min-w-0">

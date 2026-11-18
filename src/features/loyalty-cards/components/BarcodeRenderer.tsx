@@ -16,9 +16,15 @@ interface BarcodeRendererProps {
   value: string
   format: string | null
   className?: string
+  large?: boolean
 }
 
-const BarcodeRenderer = ({ value, format, className }: BarcodeRendererProps) => {
+const BarcodeRenderer = ({
+  value,
+  format,
+  className,
+  large = false,
+}: BarcodeRendererProps) => {
   const svgRef = useRef<SVGSVGElement>(null)
 
   const isQRCode = format === 'QR_CODE'
@@ -31,7 +37,7 @@ const BarcodeRenderer = ({ value, format, className }: BarcodeRendererProps) => 
     try {
       JsBarcode(svgRef.current, value, {
         format: jsbarcodeFormat,
-        displayValue: true,
+        displayValue: false,
         height: 100,
         margin: 8,
         fontSize: 14,
@@ -49,7 +55,8 @@ const BarcodeRenderer = ({ value, format, className }: BarcodeRendererProps) => 
       <div className={className}>
         <QRCodeSVG
           value={value}
-          size={200}
+          size={large ? 280 : 200}
+          style={{ maxWidth: '100%', height: 'auto' }}
           bgColor="white"
           fgColor="#1a1a1a"
           level="M"
@@ -65,7 +72,7 @@ const BarcodeRenderer = ({ value, format, className }: BarcodeRendererProps) => 
         <svg
           ref={svgRef}
           aria-label={`Code-barres : ${value}`}
-          className="w-full max-w-xs"
+          className={`w-full ${large ? 'max-w-md' : 'max-w-xs'}`}
         />
       </div>
     )
