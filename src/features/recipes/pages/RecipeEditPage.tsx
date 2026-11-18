@@ -16,6 +16,7 @@ import Button from '../../../shared/components/Button'
 import Card from '../../../shared/components/Card'
 import { useRecipe, useUpdateRecipe } from '../hooks'
 import RecipeImageUpload from '../components/RecipeImageUpload'
+import AutoResizeTextarea from '../components/AutoResizeTextarea'
 import { deleteRecipeImage, extractStoragePath } from '../lib/imageUpload'
 import type { RecipeWithRelations, UpdateRecipeInput } from '../types'
 
@@ -203,7 +204,7 @@ function IngredientGroupCard({
   const groupError = formErrors.ingredient_groups?.[groupIdx]
 
   return (
-    <Card className="p-5">
+    <Card className="p-5 sm:p-7">
       {/* Group header */}
       <div className="mb-4 flex items-start gap-3">
         <div className="flex-1">
@@ -220,7 +221,7 @@ function IngredientGroupCard({
           <button
             type="button"
             onClick={onRemoveGroup}
-            className="rounded-control text-error hover:bg-error-50 focus-visible:outline-error-600 dark:text-error-400 dark:hover:bg-error-500/10 dark:focus-visible:outline-error-400 mt-6 inline-flex items-center justify-center p-2 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
+            className="rounded-control text-error hover:bg-error-50 focus-visible:outline-error-600 dark:text-error-400 dark:hover:bg-error-500/10 dark:focus-visible:outline-error-400 mt-6 inline-flex size-11 items-center justify-center p-2 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
             aria-label={`Supprimer le groupe d’ingrédients ${groupIdx + 1}`}
           >
             <TrashIcon aria-hidden="true" className="size-4" />
@@ -239,59 +240,76 @@ function IngredientGroupCard({
         {ingredientFields.map((ingField, ingIdx) => {
           const ingError = groupError?.ingredients?.[ingIdx]
           return (
-            <div key={ingField.id} className="flex items-end gap-2">
-              <div className="min-w-0 flex-1">
-                <TextInput
-                  id={`ing-name-${groupIdx}-${ingIdx}`}
-                  label={ingIdx === 0 ? 'Nom' : undefined}
-                  placeholder="Nom de l’ingrédient"
-                  error={ingError?.name?.message}
-                  required
-                  {...register(
-                    `ingredient_groups.${groupIdx}.ingredients.${ingIdx}.name`,
-                  )}
-                />
-              </div>
-              <div className="w-24 shrink-0">
-                <TextInput
-                  id={`ing-qty-${groupIdx}-${ingIdx}`}
-                  label={ingIdx === 0 ? 'Qté' : undefined}
-                  type="number"
-                  placeholder="0"
-                  min={0}
-                  step="any"
-                  error={ingError?.quantity?.message}
-                  {...register(
-                    `ingredient_groups.${groupIdx}.ingredients.${ingIdx}.quantity`,
-                    { valueAsNumber: true },
-                  )}
-                />
-              </div>
-              <div className="w-28 shrink-0">
-                <SelectField
-                  id={`ing-unit-${groupIdx}-${ingIdx}`}
-                  label={ingIdx === 0 ? 'Unité' : undefined}
-                  {...register(
-                    `ingredient_groups.${groupIdx}.ingredients.${ingIdx}.unit`,
-                  )}
+            <fieldset
+              key={ingField.id}
+              className="rounded-card border-sand-200/70 bg-sand-50/80 min-w-0 border p-4 dark:border-white/10 dark:bg-white/[0.03]"
+            >
+              <legend className="sr-only">Ingrédient {ingIdx + 1}</legend>
+              <div className="mb-2 flex items-center justify-between gap-3">
+                <span
+                  aria-hidden="true"
+                  className="text-forest-600 dark:text-sage-300 text-[10px] font-bold tracking-[0.16em] uppercase"
                 >
-                  <option value="">—</option>
-                  {CANONICAL_UNITS.map((u) => (
-                    <option key={u} value={u}>
-                      {u}
-                    </option>
-                  ))}
-                </SelectField>
+                  Ingrédient {String(ingIdx + 1).padStart(2, '0')}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => removeIngredient(ingIdx)}
+                  aria-label={`Supprimer l’ingrédient ${ingIdx + 1}`}
+                  className="text-ink-400 hover:text-error-600 focus-visible:outline-forest-600 dark:text-ink-300 dark:hover:text-error-400 inline-flex size-11 items-center justify-center rounded-full transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 dark:hover:bg-white/10"
+                >
+                  <XMarkIcon aria-hidden="true" className="size-4" />
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => removeIngredient(ingIdx)}
-                aria-label={`Supprimer l’ingrédient ${ingIdx + 1}`}
-                className="rounded-control text-error hover:bg-error-50 focus-visible:outline-error-600 dark:text-error-400 dark:hover:bg-error-500/10 dark:focus-visible:outline-error-400 mb-0.5 inline-flex shrink-0 items-center justify-center p-2 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
-              >
-                <XMarkIcon aria-hidden="true" className="size-4" />
-              </button>
-            </div>
+              <div className="grid grid-cols-2 items-start gap-3 sm:grid-cols-[minmax(0,1fr)_6rem_7rem]">
+                <div className="col-span-2 min-w-0 sm:col-span-1">
+                  <TextInput
+                    id={`ing-name-${groupIdx}-${ingIdx}`}
+                    label="Nom"
+                    className="dark:bg-ink-950/30 bg-white"
+                    placeholder="Nom de l’ingrédient"
+                    error={ingError?.name?.message}
+                    required
+                    {...register(
+                      `ingredient_groups.${groupIdx}.ingredients.${ingIdx}.name`,
+                    )}
+                  />
+                </div>
+                <div className="min-w-0">
+                  <TextInput
+                    id={`ing-qty-${groupIdx}-${ingIdx}`}
+                    label="Quantité"
+                    className="dark:bg-ink-950/30 bg-white"
+                    type="number"
+                    placeholder="0"
+                    min={0}
+                    step="any"
+                    error={ingError?.quantity?.message}
+                    {...register(
+                      `ingredient_groups.${groupIdx}.ingredients.${ingIdx}.quantity`,
+                      { valueAsNumber: true },
+                    )}
+                  />
+                </div>
+                <div className="min-w-0">
+                  <SelectField
+                    id={`ing-unit-${groupIdx}-${ingIdx}`}
+                    label="Unité"
+                    className="dark:bg-ink-950/30 bg-white"
+                    {...register(
+                      `ingredient_groups.${groupIdx}.ingredients.${ingIdx}.unit`,
+                    )}
+                  >
+                    <option value="">—</option>
+                    {CANONICAL_UNITS.map((u) => (
+                      <option key={u} value={u}>
+                        {u}
+                      </option>
+                    ))}
+                  </SelectField>
+                </div>
+              </div>
+            </fieldset>
           )
         })}
       </div>
@@ -336,7 +354,7 @@ function StepsSection({
     <section aria-labelledby="steps-heading">
       <h2
         id="steps-heading"
-        className="font-display text-ink mb-4 text-lg font-semibold dark:text-white"
+        className="font-display text-ink mb-5 text-2xl font-medium dark:text-white"
       >
         Étapes
       </h2>
@@ -353,7 +371,7 @@ function StepsSection({
                 <label htmlFor={`step-${stepIdx}`} className="sr-only">
                   Étape {stepIdx + 1}
                 </label>
-                <textarea
+                <AutoResizeTextarea
                   id={`step-${stepIdx}`}
                   rows={2}
                   placeholder={`Décrivez l’étape ${stepIdx + 1}…`}
@@ -366,7 +384,7 @@ function StepsSection({
                     stepError?.instruction?.message ? 'true' : undefined
                   }
                   {...register(`steps.${stepIdx}.instruction`)}
-                  className="rounded-control border-sand-200 text-ink shadow-soft placeholder:text-ink-400 focus:border-forest-500 focus:ring-forest-500 focus:outline-forest-600 dark:placeholder:text-ink-400 dark:focus:border-forest-400 dark:focus:ring-forest-400 dark:focus:outline-forest-400 block w-full border bg-white px-3 py-2 text-sm focus:ring-1 focus:outline-2 focus:outline-offset-2 dark:border-white/10 dark:bg-white/5 dark:text-white"
+                  className="rounded-control border-sand-200 text-ink shadow-soft placeholder:text-ink-400 focus:border-forest-500 focus:ring-forest-500 focus:outline-forest-600 dark:placeholder:text-ink-400 dark:focus:border-forest-400 dark:focus:ring-forest-400 dark:focus:outline-forest-400 block w-full resize-none overflow-hidden border bg-white px-3 py-2 text-sm focus:ring-1 focus:outline-2 focus:outline-offset-2 dark:border-white/10 dark:bg-white/5 dark:text-white"
                 />
                 {stepError?.instruction?.message && (
                   <p
@@ -525,7 +543,7 @@ const RecipeEditPage = () => {
   if (isError || (isFetched && !recipe)) return <NotFoundState />
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="recipe-form mx-auto max-w-3xl pt-8 sm:pt-12">
       {/* Back link */}
       <Link
         to={id ? `/recipes/${id}` : '/recipes'}
@@ -535,9 +553,17 @@ const RecipeEditPage = () => {
         Retour à la recette
       </Link>
 
-      <h1 className="font-display text-ink mb-6 text-2xl font-bold sm:text-3xl dark:text-white">
-        Modifier la recette
-      </h1>
+      <header className="border-sand-200 mb-10 border-b pb-8 dark:border-white/10">
+        <p className="text-forest-600 dark:text-sage-300 text-[10px] font-bold tracking-[0.2em] uppercase">
+          Votre carnet de cuisine
+        </p>
+        <h1 className="font-display text-forest dark:text-cream mt-4 text-4xl font-medium tracking-tight sm:text-5xl">
+          Modifier la recette
+        </h1>
+        <p className="text-ink-500 dark:text-ink-300 mt-3 text-sm/6">
+          Ajustez les détails de votre recette, à votre goût.
+        </p>
+      </header>
 
       {/* Error banner */}
       {updateRecipe.isError && (
@@ -556,12 +582,12 @@ const RecipeEditPage = () => {
           <section aria-labelledby="basic-heading">
             <h2
               id="basic-heading"
-              className="font-display text-ink mb-4 text-lg font-semibold dark:text-white"
+              className="font-display text-ink mb-5 text-2xl font-medium dark:text-white"
             >
               Informations de base
             </h2>
 
-            <Card className="space-y-4 p-5">
+            <Card className="space-y-5 p-5 sm:p-7">
               <TextField
                 id="recipe-title"
                 label="Titre"
@@ -640,7 +666,7 @@ const RecipeEditPage = () => {
           <section aria-labelledby="ingredients-heading">
             <h2
               id="ingredients-heading"
-              className="font-display text-ink mb-4 text-lg font-semibold dark:text-white"
+              className="font-display text-ink mb-5 text-2xl font-medium dark:text-white"
             >
               Ingrédients
             </h2>

@@ -16,6 +16,7 @@ import Button from '../../../shared/components/Button'
 import Card from '../../../shared/components/Card'
 import { useCreateRecipe } from '../hooks'
 import RecipeImageUpload from '../components/RecipeImageUpload'
+import AutoResizeTextarea from '../components/AutoResizeTextarea'
 import type { CreateRecipeInput } from '../types'
 
 // ============================================================
@@ -132,7 +133,9 @@ function IngredientGroupCard({
   groupIdx: number
   control: ReturnType<typeof useForm<RecipeFormValues>>['control']
   register: ReturnType<typeof useForm<RecipeFormValues>>['register']
-  formErrors: ReturnType<typeof useForm<RecipeFormValues>>['formState']['errors']
+  formErrors: ReturnType<
+    typeof useForm<RecipeFormValues>
+  >['formState']['errors']
   onRemoveGroup: () => void
   isOnlyGroup: boolean
 }) {
@@ -148,7 +151,7 @@ function IngredientGroupCard({
   const groupError = formErrors.ingredient_groups?.[groupIdx]
 
   return (
-    <Card className="p-5">
+    <Card className="p-5 sm:p-7">
       {/* Group header */}
       <div className="mb-4 flex items-start gap-3">
         <div className="flex-1">
@@ -165,7 +168,7 @@ function IngredientGroupCard({
           <button
             type="button"
             onClick={onRemoveGroup}
-            className="mt-6 inline-flex items-center justify-center rounded-control p-2 text-error transition-colors hover:bg-error-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error-600 dark:text-error-400 dark:hover:bg-error-500/10 dark:focus-visible:outline-error-400"
+            className="rounded-control text-error hover:bg-error-50 focus-visible:outline-error-600 dark:text-error-400 dark:hover:bg-error-500/10 dark:focus-visible:outline-error-400 mt-6 inline-flex items-center justify-center p-2 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
             aria-label={`Supprimer le groupe d’ingrédients ${groupIdx + 1}`}
           >
             <TrashIcon aria-hidden="true" className="size-4" />
@@ -174,10 +177,7 @@ function IngredientGroupCard({
       </div>
 
       {groupError?.ingredients?.message && (
-        <p
-          role="alert"
-          className="mb-3 text-sm text-error dark:text-error-400"
-        >
+        <p role="alert" className="text-error dark:text-error-400 mb-3 text-sm">
           {groupError.ingredients.message}
         </p>
       )}
@@ -187,59 +187,76 @@ function IngredientGroupCard({
         {ingredientFields.map((ingField, ingIdx) => {
           const ingError = groupError?.ingredients?.[ingIdx]
           return (
-            <div key={ingField.id} className="flex items-end gap-2">
-              <div className="min-w-0 flex-1">
-                <TextInput
-                  id={`ing-name-${groupIdx}-${ingIdx}`}
-                  label={ingIdx === 0 ? 'Nom' : undefined}
-                  placeholder="Nom de l’ingrédient"
-                  error={ingError?.name?.message}
-                  required
-                  {...register(
-                    `ingredient_groups.${groupIdx}.ingredients.${ingIdx}.name`,
-                  )}
-                />
-              </div>
-              <div className="w-24 shrink-0">
-                <TextInput
-                  id={`ing-qty-${groupIdx}-${ingIdx}`}
-                  label={ingIdx === 0 ? 'Qté' : undefined}
-                  type="number"
-                  placeholder="0"
-                  min={0}
-                  step="any"
-                  error={ingError?.quantity?.message}
-                  {...register(
-                    `ingredient_groups.${groupIdx}.ingredients.${ingIdx}.quantity`,
-                    { valueAsNumber: true },
-                  )}
-                />
-              </div>
-              <div className="w-28 shrink-0">
-                <SelectField
-                  id={`ing-unit-${groupIdx}-${ingIdx}`}
-                  label={ingIdx === 0 ? 'Unité' : undefined}
-                  {...register(
-                    `ingredient_groups.${groupIdx}.ingredients.${ingIdx}.unit`,
-                  )}
+            <fieldset
+              key={ingField.id}
+              className="rounded-card border-sand-200/70 bg-sand-50/80 min-w-0 border p-4 dark:border-white/10 dark:bg-white/[0.03]"
+            >
+              <legend className="sr-only">Ingrédient {ingIdx + 1}</legend>
+              <div className="mb-2 flex items-center justify-between gap-3">
+                <span
+                  aria-hidden="true"
+                  className="text-forest-600 dark:text-sage-300 text-[10px] font-bold tracking-[0.16em] uppercase"
                 >
-                  <option value="">—</option>
-                  {CANONICAL_UNITS.map((u) => (
-                    <option key={u} value={u}>
-                      {u}
-                    </option>
-                  ))}
-                </SelectField>
+                  Ingrédient {String(ingIdx + 1).padStart(2, '0')}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => removeIngredient(ingIdx)}
+                  aria-label={`Supprimer l’ingrédient ${ingIdx + 1}`}
+                  className="text-ink-400 hover:text-error-600 focus-visible:outline-forest-600 dark:text-ink-300 dark:hover:text-error-400 inline-flex size-11 items-center justify-center rounded-full transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 dark:hover:bg-white/10"
+                >
+                  <XMarkIcon aria-hidden="true" className="size-4" />
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => removeIngredient(ingIdx)}
-                aria-label={`Supprimer l’ingrédient ${ingIdx + 1}`}
-                className="mb-0.5 inline-flex shrink-0 items-center justify-center rounded-control p-2 text-error transition-colors hover:bg-error-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error-600 dark:text-error-400 dark:hover:bg-error-500/10 dark:focus-visible:outline-error-400"
-              >
-                <XMarkIcon aria-hidden="true" className="size-4" />
-              </button>
-            </div>
+              <div className="grid grid-cols-2 items-start gap-3 sm:grid-cols-[minmax(0,1fr)_6rem_7rem]">
+                <div className="col-span-2 min-w-0 sm:col-span-1">
+                  <TextInput
+                    id={`ing-name-${groupIdx}-${ingIdx}`}
+                    label="Nom"
+                    className="dark:bg-ink-950/30 bg-white"
+                    placeholder="Nom de l’ingrédient"
+                    error={ingError?.name?.message}
+                    required
+                    {...register(
+                      `ingredient_groups.${groupIdx}.ingredients.${ingIdx}.name`,
+                    )}
+                  />
+                </div>
+                <div className="min-w-0">
+                  <TextInput
+                    id={`ing-qty-${groupIdx}-${ingIdx}`}
+                    label="Quantité"
+                    className="dark:bg-ink-950/30 bg-white"
+                    type="number"
+                    placeholder="0"
+                    min={0}
+                    step="any"
+                    error={ingError?.quantity?.message}
+                    {...register(
+                      `ingredient_groups.${groupIdx}.ingredients.${ingIdx}.quantity`,
+                      { valueAsNumber: true },
+                    )}
+                  />
+                </div>
+                <div className="min-w-0">
+                  <SelectField
+                    id={`ing-unit-${groupIdx}-${ingIdx}`}
+                    label="Unité"
+                    className="dark:bg-ink-950/30 bg-white"
+                    {...register(
+                      `ingredient_groups.${groupIdx}.ingredients.${ingIdx}.unit`,
+                    )}
+                  >
+                    <option value="">—</option>
+                    {CANONICAL_UNITS.map((u) => (
+                      <option key={u} value={u}>
+                        {u}
+                      </option>
+                    ))}
+                  </SelectField>
+                </div>
+              </div>
+            </fieldset>
           )
         })}
       </div>
@@ -247,7 +264,7 @@ function IngredientGroupCard({
       <button
         type="button"
         onClick={() => appendIngredient({ name: '', quantity: 0, unit: '' })}
-        className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-sage-600 transition-colors hover:text-sage-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 dark:text-sage-300 dark:hover:text-sage-200 dark:focus-visible:outline-forest-400"
+        className="text-sage-600 hover:text-sage-700 focus-visible:outline-forest-600 dark:text-sage-300 dark:hover:text-sage-200 dark:focus-visible:outline-forest-400 mt-3 inline-flex items-center gap-1.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
       >
         <PlusIcon aria-hidden="true" className="size-3.5" />
         Ajouter un ingrédient
@@ -267,7 +284,9 @@ function StepsSection({
 }: {
   control: ReturnType<typeof useForm<RecipeFormValues>>['control']
   register: ReturnType<typeof useForm<RecipeFormValues>>['register']
-  formErrors: ReturnType<typeof useForm<RecipeFormValues>>['formState']['errors']
+  formErrors: ReturnType<
+    typeof useForm<RecipeFormValues>
+  >['formState']['errors']
 }) {
   const {
     fields: stepFields,
@@ -282,7 +301,7 @@ function StepsSection({
     <section aria-labelledby="steps-heading">
       <h2
         id="steps-heading"
-        className="mb-4 font-display text-lg font-semibold text-ink dark:text-white"
+        className="font-display text-ink mb-5 text-2xl font-medium dark:text-white"
       >
         Étapes
       </h2>
@@ -292,14 +311,14 @@ function StepsSection({
           const stepError = formErrors.steps?.[stepIdx]
           return (
             <div key={stepField.id} className="flex items-start gap-3">
-              <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-forest text-xs font-bold text-white dark:bg-forest-500">
+              <span className="bg-forest dark:bg-forest-500 flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white">
                 {stepIdx + 1}
               </span>
               <div className="min-w-0 flex-1">
                 <label htmlFor={`step-${stepIdx}`} className="sr-only">
                   Étape {stepIdx + 1}
                 </label>
-                <textarea
+                <AutoResizeTextarea
                   id={`step-${stepIdx}`}
                   rows={2}
                   placeholder={`Décrivez l’étape ${stepIdx + 1}…`}
@@ -312,13 +331,13 @@ function StepsSection({
                     stepError?.instruction?.message ? 'true' : undefined
                   }
                   {...register(`steps.${stepIdx}.instruction`)}
-                  className="block w-full rounded-control border border-sand-200 bg-white px-3 py-2 text-sm text-ink shadow-soft placeholder:text-ink-400 focus:border-forest-500 focus:ring-1 focus:ring-forest-500 focus:outline-2 focus:outline-offset-2 focus:outline-forest-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-ink-400 dark:focus:border-forest-400 dark:focus:ring-forest-400 dark:focus:outline-forest-400"
+                  className="rounded-control border-sand-200 text-ink shadow-soft placeholder:text-ink-400 focus:border-forest-500 focus:ring-forest-500 focus:outline-forest-600 dark:placeholder:text-ink-400 dark:focus:border-forest-400 dark:focus:ring-forest-400 dark:focus:outline-forest-400 block w-full resize-none overflow-hidden border bg-white px-3 py-2 text-sm focus:ring-1 focus:outline-2 focus:outline-offset-2 dark:border-white/10 dark:bg-white/5 dark:text-white"
                 />
                 {stepError?.instruction?.message && (
                   <p
                     id={`step-${stepIdx}-error`}
                     role="alert"
-                    className="mt-1 text-sm text-error dark:text-error-400"
+                    className="text-error dark:text-error-400 mt-1 text-sm"
                   >
                     {stepError.instruction.message}
                   </p>
@@ -328,7 +347,7 @@ function StepsSection({
                 type="button"
                 onClick={() => removeStep(stepIdx)}
                 aria-label={`Supprimer l’étape ${stepIdx + 1}`}
-                className="mt-1 inline-flex shrink-0 items-center justify-center rounded-control p-2 text-error transition-colors hover:bg-error-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error-600 dark:text-error-400 dark:hover:bg-error-500/10 dark:focus-visible:outline-error-400"
+                className="rounded-control text-error hover:bg-error-50 focus-visible:outline-error-600 dark:text-error-400 dark:hover:bg-error-500/10 dark:focus-visible:outline-error-400 mt-1 inline-flex shrink-0 items-center justify-center p-2 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
               >
                 <XMarkIcon aria-hidden="true" className="size-4" />
               </button>
@@ -340,7 +359,7 @@ function StepsSection({
       <button
         type="button"
         onClick={() => appendStep({ instruction: '' })}
-        className="mt-4 inline-flex items-center gap-2 rounded-card border border-dashed border-sand-200 px-4 py-2.5 text-sm font-medium text-ink-600 transition-colors hover:border-sage hover:text-sage focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 dark:border-white/20 dark:text-ink-300 dark:hover:border-sage-400 dark:hover:text-sage-300 dark:focus-visible:outline-forest-400"
+        className="rounded-card border-sand-200 text-ink-600 hover:border-sage hover:text-sage focus-visible:outline-forest-600 dark:text-ink-300 dark:hover:border-sage-400 dark:hover:text-sage-300 dark:focus-visible:outline-forest-400 mt-4 inline-flex items-center gap-2 border border-dashed px-4 py-2.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 dark:border-white/20"
       >
         <PlusIcon aria-hidden="true" className="size-4" />
         Ajouter une étape
@@ -413,28 +432,36 @@ const RecipeCreatePage = () => {
   }
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="recipe-form mx-auto max-w-3xl pt-8 sm:pt-12">
       {/* Back link */}
       <Link
         to="/recipes"
-        className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-ink-500 transition-colors hover:text-ink dark:text-ink-300 dark:hover:text-white"
+        className="text-ink-500 hover:text-ink dark:text-ink-300 mb-6 inline-flex items-center gap-1.5 text-sm font-medium transition-colors dark:hover:text-white"
       >
         <ArrowLeftIcon aria-hidden="true" className="size-4" />
         Toutes les recettes
       </Link>
 
-      <h1 className="mb-6 font-display text-2xl font-bold text-ink dark:text-white sm:text-3xl">
-        Nouvelle recette
-      </h1>
+      <header className="border-sand-200 mb-10 border-b pb-8 dark:border-white/10">
+        <p className="text-forest-600 dark:text-sage-300 text-[10px] font-bold tracking-[0.2em] uppercase">
+          Votre carnet de cuisine
+        </p>
+        <h1 className="font-display text-forest dark:text-cream mt-4 text-4xl font-medium tracking-tight sm:text-5xl">
+          Nouvelle recette
+        </h1>
+        <p className="text-ink-500 dark:text-ink-300 mt-3 text-sm/6">
+          Gardez ici les bonnes idées que vous aurez envie de partager.
+        </p>
+      </header>
 
       {/* Error banner */}
       {createRecipe.isError && (
         <div
           role="alert"
-          className="mb-6 rounded-card border border-error-200 bg-error-50 p-4 text-sm text-error-700 dark:border-error-500/20 dark:bg-error-500/10 dark:text-error-400"
+          className="rounded-card border-error-200 bg-error-50 text-error-700 dark:border-error-500/20 dark:bg-error-500/10 dark:text-error-400 mb-6 border p-4 text-sm"
         >
-          Une erreur est survenue lors de la création de votre recette.
-          Veuillez réessayer.
+          Une erreur est survenue lors de la création de votre recette. Veuillez
+          réessayer.
         </div>
       )}
 
@@ -444,12 +471,12 @@ const RecipeCreatePage = () => {
           <section aria-labelledby="basic-heading">
             <h2
               id="basic-heading"
-              className="mb-4 font-display text-lg font-semibold text-ink dark:text-white"
+              className="font-display text-ink mb-5 text-2xl font-medium dark:text-white"
             >
               Informations de base
             </h2>
 
-            <Card className="space-y-4 p-5">
+            <Card className="space-y-5 p-5 sm:p-7">
               <TextField
                 id="recipe-title"
                 label="Titre"
@@ -511,7 +538,7 @@ const RecipeCreatePage = () => {
           <section aria-labelledby="ingredients-heading">
             <h2
               id="ingredients-heading"
-              className="mb-4 font-display text-lg font-semibold text-ink dark:text-white"
+              className="font-display text-ink mb-5 text-2xl font-medium dark:text-white"
             >
               Ingrédients
             </h2>
@@ -519,7 +546,7 @@ const RecipeCreatePage = () => {
             {formErrors.ingredient_groups?.message && (
               <p
                 role="alert"
-                className="mb-4 text-sm text-error dark:text-error-400"
+                className="text-error dark:text-error-400 mb-4 text-sm"
               >
                 {formErrors.ingredient_groups.message}
               </p>
@@ -547,7 +574,7 @@ const RecipeCreatePage = () => {
                   ingredients: [{ name: '', quantity: 0, unit: '' }],
                 })
               }
-              className="mt-4 inline-flex items-center gap-2 rounded-card border border-dashed border-sand-200 px-4 py-2.5 text-sm font-medium text-ink-600 transition-colors hover:border-sage hover:text-sage focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 dark:border-white/20 dark:text-ink-300 dark:hover:border-sage-400 dark:hover:text-sage-300 dark:focus-visible:outline-forest-400"
+              className="rounded-card border-sand-200 text-ink-600 hover:border-sage hover:text-sage focus-visible:outline-forest-600 dark:text-ink-300 dark:hover:border-sage-400 dark:hover:text-sage-300 dark:focus-visible:outline-forest-400 mt-4 inline-flex items-center gap-2 border border-dashed px-4 py-2.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 dark:border-white/20"
             >
               <PlusIcon aria-hidden="true" className="size-4" />
               Ajouter un groupe d’ingrédients
@@ -562,10 +589,10 @@ const RecipeCreatePage = () => {
           />
 
           {/* ── Submit ── */}
-          <div className="flex items-center justify-end gap-3 border-t border-sand-200 pt-6 dark:border-white/10">
+          <div className="border-sand-200 flex items-center justify-end gap-3 border-t pt-6 dark:border-white/10">
             <Link
               to="/recipes"
-              className="inline-flex items-center justify-center rounded-control border border-sand-200 bg-cream px-4 py-2.5 text-sm font-semibold text-ink-700 shadow-soft transition-colors hover:bg-sand-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 dark:border-white/10 dark:bg-white/5 dark:text-ink-200 dark:hover:bg-white/10 dark:focus-visible:outline-forest-400"
+              className="rounded-control border-sand-200 bg-cream text-ink-700 shadow-soft hover:bg-sand-100 focus-visible:outline-forest-600 dark:text-ink-200 dark:focus-visible:outline-forest-400 inline-flex items-center justify-center border px-4 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
             >
               Annuler
             </Link>

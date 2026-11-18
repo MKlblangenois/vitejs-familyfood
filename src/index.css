@@ -1,11 +1,12 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-sans:
+    'DM Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
 
   /* ============================================================
      Design-system palette (source of truth)
@@ -101,12 +102,12 @@
   /* ============================================================
      Shadow tokens (subtle, low-opacity, large-blur)
      ============================================================ */
-  --shadow-soft: 0 1px 2px 0 rgb(31 58 46 / 0.04),
-    0 4px 12px -2px rgb(31 58 46 / 0.06);
-  --shadow-card: 0 2px 4px 0 rgb(31 58 46 / 0.04),
-    0 12px 32px -8px rgb(31 58 46 / 0.1);
-  --shadow-float: 0 4px 8px 0 rgb(31 58 46 / 0.06),
-    0 24px 64px -16px rgb(31 58 46 / 0.18);
+  --shadow-soft:
+    0 1px 2px 0 rgb(31 58 46 / 0.04), 0 4px 12px -2px rgb(31 58 46 / 0.06);
+  --shadow-card:
+    0 2px 4px 0 rgb(31 58 46 / 0.04), 0 12px 32px -8px rgb(31 58 46 / 0.1);
+  --shadow-float:
+    0 4px 8px 0 rgb(31 58 46 / 0.06), 0 24px 64px -16px rgb(31 58 46 / 0.18);
 }
 
 /* Ensure the app fills the viewport and respects safe areas when
@@ -125,6 +126,19 @@
 
 /* Subtle feedback for recipe cards on devices that support hover. */
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .recipe-image-hover { transition: transform 200ms ease-out; }
-  .group:hover .recipe-image-hover { transform: scale(1.03); }
+  .recipe-image-hover {
+    transition: transform 200ms ease-out;
+  }
+  .group:hover .recipe-image-hover {
+    transform: scale(1.03);
+  }
+}
+
+/* Keep recipe fields readable when the iOS keyboard opens. */
+@media (pointer: coarse) {
+  .recipe-form input:not([type='file']),
+  .recipe-form textarea,
+  .recipe-form select {
+    font-size: 16px;
+  }
 }
