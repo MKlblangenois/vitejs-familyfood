@@ -141,6 +141,19 @@ describe('RecipesPage', () => {
     expect(screen.getByText('Chicken Curry')).toBeInTheDocument()
   })
 
+  it('distinguishes an empty search from an empty collection', async () => {
+    const user = userEvent.setup()
+    const { chain } = mockSupabase(mocks.from)
+    chain('recipes').setResult({ data: sampleRecipes, error: null })
+    renderPage()
+
+    await screen.findByText('Spaghetti Carbonara')
+    await user.type(screen.getByLabelText('Rechercher des recettes'), 'inconnue')
+
+    expect(screen.getByText(/aucune recette ne correspond/i)).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: /aucune recette pour le moment/i })).not.toBeInTheDocument()
+  })
+
   it('links each recipe card to its detail page', async () => {
     const { chain } = mockSupabase(mocks.from)
     chain('recipes').setResult({ data: sampleRecipes, error: null })

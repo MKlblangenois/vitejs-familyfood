@@ -6,12 +6,14 @@ import {
   ClockIcon,
   UsersIcon,
   CakeIcon,
+  ArrowUpRightIcon,
 } from '@heroicons/react/24/outline'
 import { useRecipes } from '../hooks'
 import type { Recipe } from '../types'
 import EmptyState from '../../../shared/components/EmptyState'
 import ErrorState from '../../../shared/components/ErrorState'
 import LoadingSkeleton from '../../../shared/components/LoadingSkeleton'
+import BrandMark from '../../../shared/components/BrandMark'
 
 // ============================================================
 // Helpers
@@ -54,7 +56,7 @@ export function RecipeImage({
           alt=""
           aria-hidden="true"
           onError={() => setImageFailed(true)}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="h-full w-full object-cover recipe-image-hover"
         />
       ) : (
         <div className="flex h-full w-full items-center justify-center">
@@ -65,92 +67,46 @@ export function RecipeImage({
   )
 }
 
-export function FeaturedRecipeCard({ recipe }: { recipe: Recipe }) {
+function RecipeCard({ recipe, featured = false }: { recipe: Recipe; featured?: boolean }) {
   const time = totalTime(recipe)
 
   return (
     <Link
       to={`/recipes/${recipe.id}`}
-      className="group flex flex-col overflow-hidden rounded-page border border-sand-200 bg-white shadow-card transition-shadow hover:shadow-float focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 dark:border-white/10 dark:bg-forest-900 dark:focus-visible:outline-forest-400 sm:flex-row"
+      className="group block min-w-0 rounded-card focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-forest-600 dark:focus-visible:outline-forest-400"
     >
-      <RecipeImage
-        recipe={recipe}
-        className="aspect-[16/10] w-full sm:aspect-auto sm:w-3/5"
-        iconClassName="size-16 text-sand-300 dark:text-white/20"
-      />
-
-      <div className="flex flex-1 flex-col justify-center gap-3 p-6 sm:p-10">
-        <h2 className="font-display text-2xl font-semibold text-ink dark:text-white sm:text-3xl">
-          {recipe.title}
-        </h2>
-
+      <div className="relative">
+        <RecipeImage
+          recipe={recipe}
+          className={featured ? 'aspect-[16/11] w-full rounded-card sm:aspect-[16/10]' : 'aspect-[4/3] w-full rounded-card'}
+          iconClassName={featured ? 'size-16 text-sand-300 dark:text-white/20' : 'size-12 text-sand-300 dark:text-white/20'}
+        />
+        <span className="absolute right-4 bottom-4 flex size-9 items-center justify-center rounded-full bg-white/90 text-forest shadow-soft dark:bg-ink-900/90 dark:text-white">
+          <ArrowUpRightIcon aria-hidden="true" className="size-4" />
+        </span>
+      </div>
+      <div className="pt-4">
         {recipe.description && (
-          <p className="line-clamp-2 text-sm/6 text-ink-500 dark:text-ink-300 sm:text-base/7">
-            {recipe.description}
-          </p>
+          <p className="line-clamp-1 text-xs text-ink-500 dark:text-ink-300">{recipe.description}</p>
         )}
-
-        <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-ink-600 dark:text-ink-300">
-          {recipe.servings > 0 && (
-            <span className="inline-flex items-center gap-1.5">
-              <UsersIcon aria-hidden="true" className="size-4" />
-              {recipe.servings} portion{recipe.servings !== 1 ? 's' : ''}
-            </span>
-          )}
-          {time && (
-            <span className="inline-flex items-center gap-1.5">
-              <ClockIcon aria-hidden="true" className="size-4" />
-              {time}
-            </span>
-          )}
+        <h3 className={`mt-1.5 font-display font-medium text-ink dark:text-white ${featured ? 'text-2xl sm:text-3xl' : 'text-xl'}`}>
+          {recipe.title}
+        </h3>
+        <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-ink-600 dark:text-ink-300">
+          {time && <span className="inline-flex items-center gap-1.5"><ClockIcon aria-hidden="true" className="size-4" />{time}</span>}
+          {recipe.servings > 0 && <span className="inline-flex items-center gap-1.5"><UsersIcon aria-hidden="true" className="size-4" />{recipe.servings} portion{recipe.servings !== 1 ? 's' : ''}</span>}
         </div>
       </div>
     </Link>
   )
 }
 
+export function FeaturedRecipeCard({ recipe }: { recipe: Recipe }) {
+  return <RecipeCard recipe={recipe} featured />
+}
+
 export function CompactRecipeCard({ recipe }: { recipe: Recipe }) {
-  const time = totalTime(recipe)
-
-  return (
-    <Link
-      to={`/recipes/${recipe.id}`}
-      className="group flex flex-col overflow-hidden rounded-card border border-sand-200 bg-white shadow-card transition-shadow hover:shadow-float focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 dark:border-white/10 dark:bg-forest-900 dark:focus-visible:outline-forest-400"
-    >
-      <RecipeImage
-        recipe={recipe}
-        className="aspect-[16/9] w-full"
-        iconClassName="size-12 text-sand-300 dark:text-white/20"
-      />
-
-      <div className="flex flex-1 flex-col gap-2 p-5">
-        <h3 className="font-display text-lg font-semibold text-ink dark:text-white">
-          {recipe.title}
-        </h3>
-
-        {recipe.description && (
-          <p className="line-clamp-2 text-sm/6 text-ink-500 dark:text-ink-300">
-            {recipe.description}
-          </p>
-        )}
-
-        <div className="mt-auto flex flex-wrap items-center gap-3 pt-2 text-xs text-ink-600 dark:text-ink-300">
-          {recipe.servings > 0 && (
-            <span className="inline-flex items-center gap-1">
-              <UsersIcon aria-hidden="true" className="size-4" />
-              {recipe.servings} portion{recipe.servings !== 1 ? 's' : ''}
-            </span>
-          )}
-          {time && (
-            <span className="inline-flex items-center gap-1">
-              <ClockIcon aria-hidden="true" className="size-4" />
-              {time}
-            </span>
-          )}
-        </div>
-      </div>
-    </Link>
-  )
+  return <RecipeCard recipe={recipe} />
 }
 
 function RecipesLoadingSkeleton() {
@@ -207,20 +163,26 @@ const RecipesPage = () => {
 
   return (
     <div>
-      {/* Header */}
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="font-display text-3xl font-bold text-ink dark:text-white sm:text-4xl">
-          Recettes
+      <header className="relative mb-8 overflow-hidden pt-14 sm:mb-12 sm:pt-16">
+        <p className="text-[10px] font-bold tracking-[0.2em] text-forest-600 uppercase dark:text-sage-300">
+          Votre carnet de cuisine
+        </p>
+        <h1 className="mt-5 max-w-2xl font-display relative z-10 max-w-[13ch] text-[clamp(2.8rem,8vw,4.75rem)] leading-[1.08] font-medium tracking-[-0.04em] text-forest dark:text-cream">
+          <span className="sr-only">Recettes : </span>De bonnes choses<br />
+          <span className="font-normal text-sage-400 italic dark:text-sage-300">à partager.</span>
         </h1>
-
+        <p className="mt-5 max-w-md text-sm/6 text-ink-500 sm:text-base dark:text-ink-300">
+          Les recettes qu’on aime, réunies au même endroit.
+        </p>
+        <BrandMark className="pointer-events-none absolute top-14 right-0 size-14 text-sage-100 sm:top-16 sm:right-8 sm:size-28 dark:text-white/10" />
         <Link
           to="/recipes/new"
-          className="inline-flex items-center justify-center gap-2 rounded-control bg-forest px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-forest-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-700 dark:bg-forest-600 dark:hover:bg-forest-500 dark:focus-visible:outline-forest-400"
+          className="relative mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-control bg-forest px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-forest-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-700 dark:bg-forest-600 dark:hover:bg-forest-500 dark:focus-visible:outline-forest-400"
         >
           <PlusIcon aria-hidden="true" className="size-5" />
           Nouvelle recette
         </Link>
-      </div>
+      </header>
 
       {/* Search — only show when there are recipes or loading */}
       {!isError && (
@@ -254,7 +216,7 @@ const RecipesPage = () => {
         />
       )}
 
-      {!isLoading && !isError && filteredRecipes.length === 0 && (
+      {!isLoading && !isError && recipes?.length === 0 && (
         <EmptyState
           icon={<CakeIcon aria-hidden="true" className="size-7" />}
           title="Aucune recette pour le moment"
@@ -272,16 +234,23 @@ const RecipesPage = () => {
       )}
 
       {!isLoading && !isError && filteredRecipes.length > 0 && (
-        <div className="space-y-6">
-          <FeaturedRecipeCard recipe={filteredRecipes[0]} />
-          {filteredRecipes.length > 1 && (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {filteredRecipes.slice(1).map((recipe) => (
-                <CompactRecipeCard key={recipe.id} recipe={recipe} />
-              ))}
+        <section aria-labelledby="recipes-heading">
+          <div className="mb-5 flex items-end justify-between gap-4 sm:mb-6">
+            <div>
+              <p className="text-[10px] font-bold tracking-[0.2em] text-forest-600 uppercase dark:text-sage-300">À la une</p>
+              <h2 id="recipes-heading" className="mt-2 font-display text-2xl font-medium tracking-tight text-ink sm:text-3xl dark:text-white">Une idée pour aujourd’hui</h2>
             </div>
-          )}
-        </div>
+            <span className="hidden text-xs text-ink-500 sm:block dark:text-ink-300">Le plaisir de cuisiner ensemble</span>
+          </div>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-7 sm:grid-cols-3 sm:gap-6">
+            <div className="col-span-2 sm:row-span-2">
+              <FeaturedRecipeCard recipe={filteredRecipes[0]} />
+            </div>
+            {filteredRecipes.slice(1).map((recipe) => (
+              <CompactRecipeCard key={recipe.id} recipe={recipe} />
+            ))}
+          </div>
+        </section>
       )}
 
       {/* No results for search (recipes exist but filter yielded nothing) */}
@@ -300,14 +269,6 @@ const RecipesPage = () => {
           </div>
         )}
 
-      {/* Mobile FAB */}
-      <Link
-        to="/recipes/new"
-        aria-label="Nouvelle recette"
-        className="fixed bottom-24 right-5 z-30 flex size-14 items-center justify-center rounded-full bg-forest text-white shadow-float transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 sm:hidden dark:bg-forest-600 dark:focus-visible:outline-forest-400"
-      >
-        <PlusIcon aria-hidden="true" className="size-6" />
-      </Link>
     </div>
   )
 }

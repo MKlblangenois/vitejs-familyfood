@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import {
   HomeIcon,
   ShoppingBagIcon,
@@ -6,6 +6,7 @@ import {
   UserIcon,
 } from '@heroicons/react/24/outline'
 import NetworkStatus from './NetworkStatus'
+import BrandMark from './BrandMark'
 
 interface NavItem {
   to: string
@@ -31,7 +32,18 @@ const AppShell = ({ children }: AppShellProps) => {
     <div className="bg-cream dark:bg-ink-950 min-h-screen">
       <NetworkStatus />
 
-      <main className="mx-auto max-w-5xl px-4 pt-6 pb-24 sm:px-6 sm:pt-16 sm:pb-8 lg:pr-8 lg:pl-72">
+      <header className="relative z-50 border-b border-forest/10 bg-cream dark:border-white/10 dark:bg-ink-950">
+        <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-12">
+          <Link to="/recipes" aria-label="FamilyFood, accueil" className="flex items-center gap-2.5 text-forest focus-visible:outline-2 focus-visible:outline-offset-4 dark:text-cream">
+            <BrandMark className="size-8 text-sage-500 dark:text-sage-300" />
+            <span className="text-[22px] leading-none font-bold tracking-[-0.06em]">family<span className="font-normal">food</span><span className="mt-1 block text-[7px] font-bold tracking-[0.15em]">LE PLAISIR DE PARTAGER</span></span>
+          </Link>
+          <span className="hidden text-[10px] font-bold tracking-[0.18em] text-ink-500 md:block dark:text-ink-300">CUISINER · PARTAGER · SAVOURER</span>
+          <Link to="/profile" aria-label="Mon profil" className="flex size-10 items-center justify-center rounded-full bg-sage-100 text-forest focus-visible:outline-2 focus-visible:outline-offset-4 dark:bg-white/10 dark:text-sage-200"><UserIcon aria-hidden="true" className="size-5" /></Link>
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-7xl px-5 pt-0 pb-24 sm:px-8 sm:pt-14 sm:pb-8 lg:pr-12 lg:pl-72">
         {children}
       </main>
 
@@ -39,7 +51,7 @@ const AppShell = ({ children }: AppShellProps) => {
           mobile = floating glass dock, tablet = top bar, desktop = left sidebar */}
       <nav
         aria-label="Navigation principale"
-        className="sm:border-sand/60 sm:bg-cream/0 lg:bg-cream dark:sm:bg-ink-950/90 dark:lg:bg-ink-950 fixed inset-x-0 bottom-0 z-40 pb-[env(safe-area-inset-bottom)] sm:top-0 sm:bottom-auto sm:border-b sm:px-6 sm:pt-[env(safe-area-inset-top)] sm:pb-0 sm:backdrop-blur-lg lg:inset-x-auto lg:inset-y-0 lg:left-0 lg:w-60 lg:border-r lg:border-b-0 lg:px-0 lg:pt-0 dark:sm:border-white/10 dark:lg:border-white/10"
+        className="sm:border-sand/60 sm:bg-cream/0 lg:bg-cream dark:sm:bg-ink-950/90 dark:lg:bg-ink-950 fixed inset-x-0 bottom-0 z-40 pb-[env(safe-area-inset-bottom)] sm:top-[76px] sm:bottom-auto sm:border-b sm:px-6 sm:pt-[env(safe-area-inset-top)] sm:pb-0 sm:backdrop-blur-lg lg:inset-x-auto lg:top-[76px] lg:bottom-0 lg:left-0 lg:w-60 lg:border-r lg:border-b-0 lg:px-0 lg:pt-0 dark:sm:border-white/10 dark:lg:border-white/10"
       >
         <ul className="bg-cream/50 shadow-float dark:bg-ink-900/80 mx-4 mb-4 flex items-stretch justify-around rounded-full border border-white/40 px-2 py-2 backdrop-blur sm:mx-auto sm:mb-0 sm:max-w-5xl sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-1 sm:shadow-none sm:backdrop-blur-none lg:mx-0 lg:h-full lg:max-w-none lg:flex-col lg:justify-start lg:gap-1 lg:px-3 lg:py-8 dark:border-white/10 dark:sm:bg-transparent dark:lg:bg-transparent">
           {navItems.map(({ to, label, icon: Icon }) => (
