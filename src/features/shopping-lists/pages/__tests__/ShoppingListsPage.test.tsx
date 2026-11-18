@@ -4,7 +4,11 @@ import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter } from 'react-router-dom'
 import ShoppingListsPage from '../ShoppingListsPage'
-import { mockSupabase, mockSupabaseRealtime, createChain } from '../../../../test/supabaseMock'
+import {
+  mockSupabase,
+  mockSupabaseRealtime,
+  createChain,
+} from '../../../../test/supabaseMock'
 import type { ShoppingList } from '../../types'
 
 // ---------------------------------------------------------------------------
@@ -111,7 +115,9 @@ describe('ShoppingListsPage', () => {
     renderPage()
 
     expect(
-      await screen.findByRole('heading', { name: /aucune liste de courses pour le moment/i }),
+      await screen.findByRole('heading', {
+        name: /aucune liste de courses pour le moment/i,
+      }),
     ).toBeInTheDocument()
   })
 
@@ -135,7 +141,10 @@ describe('ShoppingListsPage', () => {
 
     await screen.findByText('Weekly Groceries')
 
-    await user.type(screen.getByLabelText('Rechercher des listes de courses'), 'party')
+    await user.type(
+      screen.getByLabelText('Rechercher des listes de courses'),
+      'party',
+    )
 
     expect(screen.queryByText('Weekly Groceries')).not.toBeInTheDocument()
     expect(screen.getByText('Party Supplies')).toBeInTheDocument()
@@ -212,6 +221,39 @@ describe('ShoppingListsPage', () => {
     expect(
       screen.getByText(/voulez-vous vraiment supprimer/i),
     ).toBeInTheDocument()
+  })
+
+  it('does not offer owner actions for a shared list', async () => {
+    const { chain } = mockSupabase(mocks.from)
+    chain('shopping_lists').setResult({ data: sampleLists, error: null })
+    renderPage()
+
+    await screen.findByText('Party Supplies')
+    expect(
+      screen.queryByRole('button', { name: /renommer « party supplies »/i }),
+    ).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: /supprimer « party supplies »/i }),
+    ).not.toBeInTheDocument()
+  })
+
+  it('shows only the no-results message when a search has no matches', async () => {
+    const user = userEvent.setup()
+    const { chain } = mockSupabase(mocks.from)
+    chain('shopping_lists').setResult({ data: sampleLists, error: null })
+    renderPage()
+
+    await screen.findByText('Weekly Groceries')
+    await user.type(
+      screen.getByLabelText('Rechercher des listes de courses'),
+      'introuvable',
+    )
+    expect(screen.getByText(/aucune liste ne correspond/i)).toBeInTheDocument()
+    expect(
+      screen.queryByRole('heading', {
+        name: /aucune liste de courses pour le moment/i,
+      }),
+    ).not.toBeInTheDocument()
   })
 
   it('shows owner and member badges', async () => {

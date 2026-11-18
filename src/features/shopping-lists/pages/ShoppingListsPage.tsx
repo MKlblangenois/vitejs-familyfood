@@ -6,7 +6,7 @@ import {
   MagnifyingGlassIcon,
   TrashIcon,
   PencilIcon,
-  UserGroupIcon,
+  ArrowUpRightIcon,
 } from '@heroicons/react/24/outline'
 import { useAuth } from '../../auth/hooks/useAuth'
 import {
@@ -17,11 +17,11 @@ import {
   useRealtimeSync,
 } from '../hooks'
 import Button from '../../../shared/components/Button'
-import Badge from '../../../shared/components/Badge'
 import Modal from '../../../shared/components/Modal'
 import TextField from '../../../shared/components/TextField'
 import EmptyState from '../../../shared/components/EmptyState'
 import ErrorState from '../../../shared/components/ErrorState'
+import BrandMark from '../../../shared/components/BrandMark'
 
 // ============================================================
 // Sub-components
@@ -33,7 +33,13 @@ export function ListCard({
   onRename,
   onDelete,
 }: {
-  list: { id: string; title: string; owner_id: string; created_at: string; updated_at: string }
+  list: {
+    id: string
+    title: string
+    owner_id: string
+    created_at: string
+    updated_at: string
+  }
   currentUserId: string
   onRename: (list: { id: string; title: string }) => void
   onDelete: (list: { id: string; title: string }) => void
@@ -41,56 +47,52 @@ export function ListCard({
   const isOwner = list.owner_id === currentUserId
 
   return (
-    <Link
-      to={`/shopping-lists/${list.id}`}
-      className="group relative flex flex-col overflow-hidden rounded-card border border-sand-200 bg-white shadow-card transition-shadow hover:shadow-float focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 dark:border-white/10 dark:bg-forest-900 dark:focus-visible:outline-forest-400"
-    >
-      {/* Content */}
-      <div className="flex flex-1 flex-col gap-3 p-5">
-        <div className="flex items-start justify-between gap-3">
-          <h3 className="font-display text-lg font-semibold text-ink dark:text-white sm:text-xl">
-            {list.title}
-          </h3>
-          <div className="flex shrink-0 items-center gap-0.5">
+    <article className="rounded-card border-sand-200/80 shadow-soft dark:bg-forest-900 flex min-w-0 flex-col border bg-white p-5 sm:p-6 dark:border-white/10">
+      <div className="mb-6 flex items-start justify-between gap-3">
+        <span className="rounded-control bg-sage-50 text-forest-600 dark:text-sage-300 flex size-11 items-center justify-center dark:bg-white/10">
+          <ShoppingBagIcon aria-hidden="true" className="size-5" />
+        </span>
+        {isOwner && (
+          <div className="flex items-center gap-1">
             <button
               type="button"
-              onClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                onRename(list)
-              }}
+              onClick={() => onRename(list)}
               aria-label={`Renommer « ${list.title} »`}
-              className="rounded-control p-1.5 text-ink-400 opacity-0 transition-opacity hover:bg-sand-100 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 group-hover:opacity-100 dark:text-ink-300 dark:hover:bg-white/10 dark:hover:text-white dark:focus-visible:outline-forest-400"
+              className="rounded-control text-ink-500 hover:bg-sand-100 hover:text-ink focus-visible:outline-forest-600 dark:text-ink-300 flex size-11 items-center justify-center transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 dark:hover:bg-white/10"
             >
               <PencilIcon aria-hidden="true" className="size-4" />
             </button>
             <button
               type="button"
-              onClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                onDelete(list)
-              }}
+              onClick={() => onDelete(list)}
               aria-label={`Supprimer « ${list.title} »`}
-              className="rounded-control p-1.5 text-ink-400 opacity-0 transition-opacity hover:bg-error-50 hover:text-error focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error-600 group-hover:opacity-100 dark:text-ink-300 dark:hover:bg-error-500/10 dark:hover:text-error-400 dark:focus-visible:outline-error-500"
+              className="rounded-control text-ink-500 hover:bg-error-50 hover:text-error focus-visible:outline-error-600 dark:text-ink-300 dark:hover:bg-error-500/10 flex size-11 items-center justify-center transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
             >
               <TrashIcon aria-hidden="true" className="size-4" />
             </button>
           </div>
-        </div>
-
-        {/* Badge + meta */}
-        <div className="mt-auto flex items-center gap-2 pt-1">
-          <Badge variant={isOwner ? 'forest' : 'neutral'}>
+        )}
+      </div>
+      <Link
+        to={`/shopping-lists/${list.id}`}
+        className="group focus-visible:outline-forest-600 dark:focus-visible:outline-forest-400 mt-auto flex min-h-16 items-end justify-between gap-4 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4"
+      >
+        <div className="min-w-0">
+          <p className="text-sage-600 dark:text-sage-300 text-[10px] font-bold tracking-[0.16em] uppercase">
+            {isOwner ? 'Votre liste' : 'Liste partagée'}
+          </p>
+          <h3 className="font-display text-ink mt-2 text-2xl leading-tight font-medium break-words dark:text-white">
+            {list.title}
+          </h3>
+          <span className="text-ink-500 dark:text-ink-300 mt-2 block text-xs">
             {isOwner ? 'Propriétaire' : 'Membre'}
-          </Badge>
-          <span className="inline-flex items-center gap-1 text-xs text-ink-500 dark:text-ink-300">
-            <UserGroupIcon aria-hidden="true" className="size-3.5" />
-            Partagée
           </span>
         </div>
-      </div>
-    </Link>
+        <span className="bg-sage-50 text-forest-600 group-hover:bg-sage-100 dark:text-sage-300 flex size-9 shrink-0 items-center justify-center rounded-full transition-colors dark:bg-white/10">
+          <ArrowUpRightIcon aria-hidden="true" className="size-4" />
+        </span>
+      </Link>
+    </article>
   )
 }
 
@@ -100,13 +102,13 @@ function ListsLoadingSkeleton() {
       {Array.from({ length: 6 }).map((_, i) => (
         <div
           key={i}
-          className="animate-pulse overflow-hidden rounded-card border border-sand-200 bg-white dark:border-white/10 dark:bg-forest-900"
+          className="rounded-card border-sand-200 dark:bg-forest-900 animate-pulse overflow-hidden border bg-white dark:border-white/10"
         >
           <div className="space-y-3 p-5">
-            <div className="h-5 w-3/4 animate-pulse rounded-control bg-sand-200 dark:bg-white/10" />
+            <div className="rounded-control bg-sand-200 h-5 w-3/4 animate-pulse dark:bg-white/10" />
             <div className="flex gap-2 pt-1">
-              <div className="h-5 w-20 animate-pulse rounded-pill bg-sand-200 dark:bg-white/10" />
-              <div className="h-5 w-16 animate-pulse rounded-pill bg-sand-200 dark:bg-white/10" />
+              <div className="rounded-pill bg-sand-200 h-5 w-20 animate-pulse dark:bg-white/10" />
+              <div className="rounded-pill bg-sand-200 h-5 w-16 animate-pulse dark:bg-white/10" />
             </div>
           </div>
         </div>
@@ -122,12 +124,7 @@ function ListsLoadingSkeleton() {
 const ShoppingListsPage = () => {
   const { user } = useAuth()
   useRealtimeSync()
-  const {
-    data: lists,
-    isLoading,
-    isError,
-    refetch,
-  } = useShoppingLists()
+  const { data: lists, isLoading, isError, refetch } = useShoppingLists()
   const createMutation = useCreateShoppingList()
   const updateMutation = useUpdateShoppingList()
   const deleteMutation = useDeleteShoppingList()
@@ -204,20 +201,30 @@ const ShoppingListsPage = () => {
 
   return (
     <div>
-      {/* Header */}
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="font-display text-3xl font-bold text-ink dark:text-white sm:text-4xl">
-          Listes de courses
+      <header className="relative mb-8 overflow-hidden pt-14 sm:mb-12 sm:pt-16">
+        <p className="text-forest-600 dark:text-sage-300 text-[10px] font-bold tracking-[0.2em] uppercase">
+          Pour ne rien oublier
+        </p>
+        <h1 className="font-display text-forest dark:text-cream relative z-10 mt-5 max-w-[14ch] text-[clamp(2.8rem,8vw,4.75rem)] leading-[1.08] font-medium tracking-[-0.04em]">
+          <span className="sr-only">Listes de courses : </span>Les courses,
+          <br />
+          <span className="text-sage-400 dark:text-sage-300 font-normal italic">
+            tout simplement.
+          </span>
         </h1>
-
+        <p className="text-ink-500 dark:text-ink-300 mt-5 max-w-md text-sm/6 sm:text-base">
+          Vos listes à portée de main, pour faire les courses ensemble.
+        </p>
+        <BrandMark className="text-sage-100 pointer-events-none absolute top-14 right-0 size-14 sm:top-16 sm:right-8 sm:size-28 dark:text-white/10" />
         <Button
           variant="primary"
           icon={<PlusIcon aria-hidden="true" className="size-5" />}
           onClick={openCreateDialog}
+          className="relative mt-6 min-h-11"
         >
           Nouvelle liste
         </Button>
-      </div>
+      </header>
 
       {/* Search — only show when there are lists or loading */}
       {!isError && (
@@ -227,7 +234,7 @@ const ShoppingListsPage = () => {
           </label>
           <MagnifyingGlassIcon
             aria-hidden="true"
-            className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-ink-400 dark:text-ink-300"
+            className="text-ink-400 dark:text-ink-300 pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2"
           />
           <input
             id="list-search"
@@ -235,7 +242,7 @@ const ShoppingListsPage = () => {
             placeholder="Rechercher des listes…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="block w-full rounded-control border border-sand-200 bg-cream py-3 pl-11 pr-4 text-sm text-ink shadow-soft placeholder:text-ink-400 focus:border-forest-500 focus:ring-1 focus:ring-forest-500 focus:outline-2 focus:outline-offset-2 focus:outline-forest-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-ink-300 dark:focus:border-forest-400 dark:focus:ring-forest-400 dark:focus:outline-forest-400"
+            className="rounded-control border-sand-200 text-ink shadow-soft placeholder:text-ink-400 focus:border-forest-500 focus:ring-forest-500 focus:outline-forest-600 dark:placeholder:text-ink-300 dark:focus:border-forest-400 dark:focus:ring-forest-400 dark:focus:outline-forest-400 block w-full border bg-white py-3 pr-4 pl-11 text-sm focus:ring-1 focus:outline-2 focus:outline-offset-2 dark:border-white/10 dark:bg-white/5 dark:text-white"
           />
         </div>
       )}
@@ -251,7 +258,7 @@ const ShoppingListsPage = () => {
         />
       )}
 
-      {!isLoading && !isError && filteredLists.length === 0 && (
+      {!isLoading && !isError && lists?.length === 0 && (
         <EmptyState
           icon={<ShoppingBagIcon aria-hidden="true" className="size-7" />}
           title="Aucune liste de courses pour le moment"
@@ -269,17 +276,28 @@ const ShoppingListsPage = () => {
       )}
 
       {!isLoading && !isError && filteredLists.length > 0 && (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredLists.map((list) => (
-            <ListCard
-              key={list.id}
-              list={list}
-              currentUserId={user?.id ?? ''}
-              onRename={openRenameDialog}
-              onDelete={setDeleteTarget}
-            />
-          ))}
-        </div>
+        <section aria-labelledby="lists-heading">
+          <p className="text-forest-600 dark:text-sage-300 text-[10px] font-bold tracking-[0.2em] uppercase">
+            À portée de main
+          </p>
+          <h2
+            id="lists-heading"
+            className="font-display text-ink mt-2 mb-6 text-2xl font-medium tracking-tight sm:text-3xl dark:text-white"
+          >
+            Vos listes de courses
+          </h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredLists.map((list) => (
+              <ListCard
+                key={list.id}
+                list={list}
+                currentUserId={user?.id ?? ''}
+                onRename={openRenameDialog}
+                onDelete={setDeleteTarget}
+              />
+            ))}
+          </div>
+        </section>
       )}
 
       {/* No results for search (lists exist but filter yielded nothing) */}
@@ -289,23 +307,14 @@ const ShoppingListsPage = () => {
         lists.length > 0 &&
         filteredLists.length === 0 && (
           <div className="flex min-h-[30vh] flex-col items-center justify-center text-center">
-            <div className="flex size-14 items-center justify-center rounded-full bg-sand-100 text-ink-400 dark:bg-white/10 dark:text-ink-300">
+            <div className="bg-sand-100 text-ink-400 dark:text-ink-300 flex size-14 items-center justify-center rounded-full dark:bg-white/10">
               <MagnifyingGlassIcon aria-hidden="true" className="size-6" />
             </div>
-            <p className="mt-4 text-sm/6 text-ink-500 dark:text-ink-300">
+            <p className="text-ink-500 dark:text-ink-300 mt-4 text-sm/6">
               Aucune liste ne correspond à « {search} »
             </p>
           </div>
         )}
-
-      {/* Mobile FAB */}
-      <Button
-        variant="primary"
-        aria-label="Nouvelle liste"
-        onClick={openCreateDialog}
-        icon={<PlusIcon aria-hidden="true" className="size-6" />}
-        className="fixed bottom-20 right-5 z-30 flex size-14 !rounded-full !p-0 shadow-float transition-transform hover:scale-105 sm:hidden"
-      />
 
       {/* Create list dialog */}
       <Modal
@@ -332,7 +341,7 @@ const ShoppingListsPage = () => {
           </>
         }
       >
-        <p className="text-sm/6 text-ink-500 dark:text-ink-300">
+        <p className="text-ink-500 dark:text-ink-300 text-sm/6">
           Donnez un nom à votre liste pour commencer.
         </p>
         <div className="mt-4">
@@ -416,9 +425,9 @@ const ShoppingListsPage = () => {
           </>
         }
       >
-        <p className="text-sm/6 text-ink-500 dark:text-ink-300">
-          Voulez-vous vraiment supprimer « {deleteTarget?.title} » ?
-          Cette action est irréversible.
+        <p className="text-ink-500 dark:text-ink-300 text-sm/6">
+          Voulez-vous vraiment supprimer « {deleteTarget?.title} » ? Cette
+          action est irréversible.
         </p>
       </Modal>
     </div>

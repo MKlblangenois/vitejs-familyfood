@@ -61,31 +61,33 @@ export function ItemRow({
 
   return (
     <li
-      className={`flex items-center gap-3 rounded-control border px-3 py-2.5 transition-colors ${
+      className={`rounded-control flex items-center gap-1 border px-2 py-2 transition-colors sm:gap-3 sm:px-3 ${
         item.checked
           ? 'border-sand-200/60 bg-sand-50/50 dark:border-white/5 dark:bg-white/[0.02]'
-          : 'border-sand-200 bg-white dark:border-white/10 dark:bg-forest-900'
+          : 'border-sand-200 dark:bg-forest-900 bg-white dark:border-white/10'
       }`}
     >
       <button
         type="button"
         onClick={handleToggle}
         disabled={toggleMutation.isPending}
-        aria-label={item.checked ? `Décocher « ${item.name} »` : `Cocher « ${item.name} »`}
-        className={`flex size-7 shrink-0 items-center justify-center rounded-control border-2 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 dark:focus-visible:outline-forest-400 ${
-          item.checked
-            ? 'border-forest bg-forest text-white dark:border-forest-400 dark:bg-forest-400'
-            : 'border-sand-300 bg-cream text-transparent hover:border-forest-400 dark:border-white/20 dark:bg-transparent dark:hover:border-forest-400'
-        }`}
+        aria-label={
+          item.checked ? `Décocher « ${item.name} »` : `Cocher « ${item.name} »`
+        }
+        className="rounded-control focus-visible:outline-forest-600 dark:focus-visible:outline-forest-400 flex size-11 shrink-0 items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-2"
       >
-        {item.checked && <CheckIcon aria-hidden="true" className="size-4" />}
+        <span
+          className={`flex size-6 items-center justify-center rounded-lg border-2 transition-colors ${item.checked ? 'border-forest bg-forest dark:border-forest-400 dark:bg-forest-400 text-white' : 'border-sand-300 bg-cream text-transparent dark:border-white/20 dark:bg-transparent'}`}
+        >
+          {item.checked && <CheckIcon aria-hidden="true" className="size-4" />}
+        </span>
       </button>
 
-      <div className="flex min-w-0 flex-1 items-baseline gap-2">
+      <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-2 gap-y-0.5">
         <span
-          className={`text-sm font-medium transition-colors ${
+          className={`min-w-0 text-sm font-medium break-words transition-colors ${
             item.checked
-              ? 'text-ink-400 line-through dark:text-ink-500'
+              ? 'text-ink-400 dark:text-ink-500 line-through'
               : 'text-ink dark:text-white'
           }`}
         >
@@ -109,7 +111,7 @@ export function ItemRow({
           type="button"
           onClick={() => onEdit(item)}
           aria-label={`Modifier « ${item.name} »`}
-          className="rounded-control p-1.5 text-ink-400 transition-colors hover:bg-sand-100 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 dark:text-ink-300 dark:hover:bg-white/10 dark:hover:text-white dark:focus-visible:outline-forest-400"
+          className="rounded-control text-ink-400 hover:bg-sand-100 hover:text-ink focus-visible:outline-forest-600 dark:text-ink-300 dark:focus-visible:outline-forest-400 flex size-11 items-center justify-center transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 dark:hover:bg-white/10 dark:hover:text-white"
         >
           <PencilIcon aria-hidden="true" className="size-4" />
         </button>
@@ -117,7 +119,7 @@ export function ItemRow({
           type="button"
           onClick={() => onDelete(item)}
           aria-label={`Supprimer « ${item.name} »`}
-          className="rounded-control p-1.5 text-ink-400 transition-colors hover:bg-error-50 hover:text-error focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error-600 dark:text-ink-300 dark:hover:bg-error-500/10 dark:hover:text-error-400 dark:focus-visible:outline-error-500"
+          className="rounded-control text-ink-400 hover:bg-error-50 hover:text-error focus-visible:outline-error-600 dark:text-ink-300 dark:hover:bg-error-500/10 dark:hover:text-error-400 dark:focus-visible:outline-error-500 flex size-11 items-center justify-center transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
         >
           <TrashIcon aria-hidden="true" className="size-4" />
         </button>
@@ -163,16 +165,16 @@ export function AddItemRow({ listId }: { listId: string }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-2 rounded-card border border-dashed border-sand-300 bg-sand-50 p-3 dark:border-white/10 dark:bg-white/[0.02]"
+      className="shopping-item-form rounded-card border-sand-200 bg-sand-50 space-y-3 border p-4 sm:p-5 dark:border-white/10 dark:bg-white/[0.03]"
     >
-      <div className="flex gap-2">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-[minmax(0,1fr)_6rem_6rem]">
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Nom de l’article"
           aria-label="Nom de l’article"
-          className="min-w-0 flex-1 rounded-control border border-sand-200 bg-white px-3 py-2 text-sm text-ink shadow-soft placeholder:text-ink-400 focus:border-forest-500 focus:ring-1 focus:ring-forest-500 focus:outline-2 focus:outline-offset-2 focus:outline-forest-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-ink-300 dark:focus:border-forest-400 dark:focus:ring-forest-400 dark:focus:outline-forest-400"
+          className="rounded-control border-sand-200 text-ink shadow-soft placeholder:text-ink-400 focus:border-forest-500 focus:ring-forest-500 focus:outline-forest-600 dark:placeholder:text-ink-300 dark:focus:border-forest-400 dark:focus:ring-forest-400 dark:focus:outline-forest-400 col-span-2 min-w-0 border bg-white px-3 py-2 text-sm focus:ring-1 focus:outline-2 focus:outline-offset-2 sm:col-span-1 dark:border-white/10 dark:bg-white/5 dark:text-white"
         />
         <input
           type="number"
@@ -182,7 +184,7 @@ export function AddItemRow({ listId }: { listId: string }) {
           aria-label="Quantité"
           min="0"
           step="any"
-          className="w-20 rounded-control border border-sand-200 bg-white px-3 py-2 text-sm text-ink shadow-soft placeholder:text-ink-400 focus:border-forest-500 focus:ring-1 focus:ring-forest-500 focus:outline-2 focus:outline-offset-2 focus:outline-forest-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-ink-300 dark:focus:border-forest-400 dark:focus:ring-forest-400 dark:focus:outline-forest-400"
+          className="rounded-control border-sand-200 text-ink shadow-soft placeholder:text-ink-400 focus:border-forest-500 focus:ring-forest-500 focus:outline-forest-600 dark:placeholder:text-ink-300 dark:focus:border-forest-400 dark:focus:ring-forest-400 dark:focus:outline-forest-400 w-full min-w-0 border bg-white px-3 py-2 text-sm focus:ring-1 focus:outline-2 focus:outline-offset-2 dark:border-white/10 dark:bg-white/5 dark:text-white"
         />
         <input
           type="text"
@@ -190,7 +192,7 @@ export function AddItemRow({ listId }: { listId: string }) {
           onChange={(e) => setUnit(e.target.value)}
           placeholder="Unité"
           aria-label="Unité"
-          className="w-20 rounded-control border border-sand-200 bg-white px-3 py-2 text-sm text-ink shadow-soft placeholder:text-ink-400 focus:border-forest-500 focus:ring-1 focus:ring-forest-500 focus:outline-2 focus:outline-offset-2 focus:outline-forest-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-ink-300 dark:focus:border-forest-400 dark:focus:ring-forest-400 dark:focus:outline-forest-400"
+          className="rounded-control border-sand-200 text-ink shadow-soft placeholder:text-ink-400 focus:border-forest-500 focus:ring-forest-500 focus:outline-forest-600 dark:placeholder:text-ink-300 dark:focus:border-forest-400 dark:focus:ring-forest-400 dark:focus:outline-forest-400 w-full min-w-0 border bg-white px-3 py-2 text-sm focus:ring-1 focus:outline-2 focus:outline-offset-2 dark:border-white/10 dark:bg-white/5 dark:text-white"
         />
       </div>
       <Button
@@ -198,7 +200,11 @@ export function AddItemRow({ listId }: { listId: string }) {
         variant="primary"
         isLoading={addItemMutation.isPending}
         disabled={addItemMutation.isPending || !name.trim()}
-        icon={!addItemMutation.isPending ? <PlusIcon aria-hidden="true" className="size-4" /> : undefined}
+        icon={
+          !addItemMutation.isPending ? (
+            <PlusIcon aria-hidden="true" className="size-4" />
+          ) : undefined
+        }
       >
         {addItemMutation.isPending ? 'Ajout…' : 'Ajouter un article'}
       </Button>
@@ -209,17 +215,17 @@ export function AddItemRow({ listId }: { listId: string }) {
 function DetailLoadingState() {
   return (
     <div className="mx-auto max-w-3xl animate-pulse space-y-6">
-      <div className="h-5 w-24 animate-pulse rounded-control bg-sand-200 dark:bg-white/10" />
+      <div className="rounded-control bg-sand-200 h-5 w-24 animate-pulse dark:bg-white/10" />
       <div className="space-y-3">
         <LoadingSkeleton className="h-8 w-2/3" />
         <LoadingSkeleton lines={2} className="w-1/3" />
       </div>
-      <LoadingSkeleton className="h-3 w-full rounded-pill" />
+      <LoadingSkeleton className="rounded-pill h-3 w-full" />
       <div className="space-y-3 pt-4">
         {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}
-            className="h-12 animate-pulse rounded-control bg-sand-200 dark:bg-white/10"
+            className="rounded-control bg-sand-200 h-12 animate-pulse dark:bg-white/10"
             style={{ width: `${90 - i * 5}%` }}
           />
         ))}
@@ -231,18 +237,18 @@ function DetailLoadingState() {
 function DetailNotFoundState() {
   return (
     <div className="flex min-h-[40vh] flex-col items-center justify-center text-center">
-      <div className="mb-5 flex size-14 items-center justify-center rounded-full bg-sand-100 text-ink-400 dark:bg-white/10 dark:text-ink-300">
+      <div className="bg-sand-100 text-ink-400 dark:text-ink-300 mb-5 flex size-14 items-center justify-center rounded-full dark:bg-white/10">
         <ShoppingBagIcon aria-hidden="true" className="size-7" />
       </div>
-      <h2 className="font-display text-2xl font-semibold text-ink dark:text-white">
+      <h2 className="font-display text-ink text-2xl font-semibold dark:text-white">
         Liste introuvable
       </h2>
-      <p className="mt-2 max-w-sm text-sm/6 text-ink-500 dark:text-ink-300">
+      <p className="text-ink-500 dark:text-ink-300 mt-2 max-w-sm text-sm/6">
         Cette liste de courses a peut-être été supprimée ou n&apos;existe pas.
       </p>
       <Link
         to="/shopping-lists"
-        className="mt-6 inline-flex items-center justify-center gap-2 rounded-control bg-forest px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-forest-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-700 dark:bg-forest-600 dark:hover:bg-forest-500 dark:focus-visible:outline-forest-400"
+        className="rounded-control bg-forest hover:bg-forest-700 focus-visible:outline-forest-700 dark:bg-forest-600 dark:hover:bg-forest-500 dark:focus-visible:outline-forest-400 mt-6 inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
       >
         <ArrowLeftIcon aria-hidden="true" className="size-4" />
         Retour aux listes
@@ -356,12 +362,21 @@ const ShoppingListDetailPage = () => {
         id: editingItem.id,
         list_id: list.id,
         name,
-        quantity: editItemQuantity.trim() ? Number(editItemQuantity.trim()) : null,
+        quantity: editItemQuantity.trim()
+          ? Number(editItemQuantity.trim())
+          : null,
         unit: editItemUnit.trim() || null,
       },
       { onSuccess: () => setEditingItem(null) },
     )
-  }, [editingItem, list, editItemName, editItemQuantity, editItemUnit, updateItemMutation])
+  }, [
+    editingItem,
+    list,
+    editItemName,
+    editItemQuantity,
+    editItemUnit,
+    updateItemMutation,
+  ])
 
   // Item deletion
   const confirmDeleteItem = useCallback(() => {
@@ -416,16 +431,23 @@ const ShoppingListDetailPage = () => {
 
   if (!id) return <DetailNotFoundState />
   if (isLoading) return <DetailLoadingState />
-  if (isError) return <ErrorState title="Impossible de charger la liste de courses" description="Une erreur est survenue lors du chargement de cette liste. Vérifiez votre connexion et réessayez." onRetry={() => void refetch()} />
+  if (isError)
+    return (
+      <ErrorState
+        title="Impossible de charger la liste de courses"
+        description="Une erreur est survenue lors du chargement de cette liste. Vérifiez votre connexion et réessayez."
+        onRetry={() => void refetch()}
+      />
+    )
   if (isFetched && !list) return <DetailNotFoundState />
   if (!list) return null
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="mx-auto max-w-3xl pt-8 sm:pt-12">
       {/* Back link */}
       <Link
         to="/shopping-lists"
-        className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-ink-500 transition-colors hover:text-ink dark:text-ink-300 dark:hover:text-white"
+        className="text-ink-500 hover:text-ink dark:text-ink-300 mb-8 inline-flex min-h-11 items-center gap-2 text-sm font-medium transition-colors dark:hover:text-white"
       >
         <ArrowLeftIcon aria-hidden="true" className="size-4" />
         Toutes les listes
@@ -433,7 +455,10 @@ const ShoppingListDetailPage = () => {
 
       {/* Title + actions */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex-1">
+        <div className="min-w-0 flex-1">
+          <p className="text-forest-600 dark:text-sage-300 mb-4 text-[10px] font-bold tracking-[0.2em] uppercase">
+            Pour ne rien oublier
+          </p>
           {isTitleEditing ? (
             <div className="flex items-center gap-2">
               <input
@@ -445,7 +470,7 @@ const ShoppingListDetailPage = () => {
                   if (e.key === 'Escape') setIsTitleEditing(false)
                 }}
                 autoFocus
-                className="flex-1 rounded-control border border-forest-500 bg-white px-3 py-2 text-xl font-bold text-ink shadow-soft focus:ring-1 focus:ring-forest-500 focus:outline-2 focus:outline-offset-2 focus:outline-forest-600 dark:border-forest-400 dark:bg-white/5 dark:text-white dark:focus:ring-forest-400 dark:focus:outline-forest-400 sm:text-2xl"
+                className="rounded-control border-forest-500 text-ink shadow-soft focus:ring-forest-500 focus:outline-forest-600 dark:border-forest-400 dark:focus:ring-forest-400 dark:focus:outline-forest-400 flex-1 border bg-white px-3 py-2 text-xl font-bold focus:ring-1 focus:outline-2 focus:outline-offset-2 sm:text-2xl dark:bg-white/5 dark:text-white"
               />
               <Button
                 variant="primary"
@@ -467,17 +492,19 @@ const ShoppingListDetailPage = () => {
             </div>
           ) : (
             <div className="flex items-start gap-3">
-              <h1 className="font-display text-2xl font-bold text-ink dark:text-white sm:text-3xl">
+              <h1 className="font-display text-forest dark:text-cream min-w-0 text-4xl leading-tight font-medium tracking-tight break-words sm:text-5xl">
                 {list.title}
               </h1>
-              <button
-                type="button"
-                onClick={startEditTitle}
-                aria-label="Modifier le titre"
-                className="mt-1 rounded-control p-1 text-ink-400 transition-colors hover:bg-sand-100 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 dark:text-ink-300 dark:hover:bg-white/10 dark:hover:text-white dark:focus-visible:outline-forest-400"
-              >
-                <PencilIcon aria-hidden="true" className="size-5" />
-              </button>
+              {isOwner && (
+                <button
+                  type="button"
+                  onClick={startEditTitle}
+                  aria-label="Modifier le titre"
+                  className="rounded-control text-ink-400 hover:bg-sand-100 hover:text-ink focus-visible:outline-forest-600 dark:text-ink-300 dark:focus-visible:outline-forest-400 mt-1 flex size-11 shrink-0 items-center justify-center transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 dark:hover:bg-white/10 dark:hover:text-white"
+                >
+                  <PencilIcon aria-hidden="true" className="size-5" />
+                </button>
+              )}
             </div>
           )}
 
@@ -486,7 +513,7 @@ const ShoppingListDetailPage = () => {
             <Badge variant={isOwner ? 'forest' : 'neutral'}>
               {isOwner ? ROLE_LABELS.owner : ROLE_LABELS.editor}
             </Badge>
-            <span className="text-xs text-ink-500 dark:text-ink-300">
+            <span className="text-ink-500 dark:text-ink-300 text-xs">
               {members.length} membre{members.length !== 1 ? 's' : ''}
             </span>
           </div>
@@ -506,7 +533,7 @@ const ShoppingListDetailPage = () => {
             <button
               type="button"
               onClick={() => setIsDeleteListOpen(true)}
-              className="inline-flex items-center justify-center gap-1.5 rounded-control border border-error-200 bg-white px-3 py-2 text-sm font-semibold text-error transition-colors hover:bg-error-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error-600 dark:border-error-500/20 dark:bg-white/5 dark:text-error-400 dark:hover:bg-error-500/10 dark:focus-visible:outline-error-500"
+              className="rounded-control border-error-200 text-error hover:bg-error-50 focus-visible:outline-error-600 dark:border-error-500/20 dark:text-error-400 dark:hover:bg-error-500/10 dark:focus-visible:outline-error-500 inline-flex items-center justify-center gap-1.5 border bg-white px-3 py-2 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 dark:bg-white/5"
             >
               <TrashIcon aria-hidden="true" className="size-4" />
               Supprimer
@@ -517,17 +544,30 @@ const ShoppingListDetailPage = () => {
 
       {/* Progress */}
       {items.length > 0 && (
-        <div className="mb-6">
+        <div className="rounded-card bg-sage-50 mb-8 px-5 py-4 dark:bg-white/5">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <span className="text-forest-600 dark:text-sage-300 text-[10px] font-bold tracking-[0.16em] uppercase">
+              Votre progression
+            </span>
+            <span className="text-forest dark:text-sage-300 text-sm font-semibold tabular-nums">
+              {completionPercent} %
+            </span>
+          </div>
           <ProgressBar value={completionPercent} />
-          <p className="mt-1.5 text-xs text-ink-500 dark:text-ink-300">
-            {checkedItems.length} sur {items.length} article{items.length !== 1 ? 's' : ''} terminé{checkedItems.length !== 1 ? 's' : ''}
+          <p className="text-ink-500 dark:text-ink-300 mt-2 text-xs">
+            {checkedItems.length} sur {items.length} article
+            {items.length !== 1 ? 's' : ''} terminé
+            {checkedItems.length !== 1 ? 's' : ''}
           </p>
         </div>
       )}
 
       {/* Add item */}
       <section aria-labelledby="add-item-heading" className="mb-6">
-        <h2 id="add-item-heading" className="sr-only">
+        <h2
+          id="add-item-heading"
+          className="font-display text-ink mb-4 text-2xl font-medium dark:text-white"
+        >
           Ajouter un article
         </h2>
         <AddItemRow listId={list.id} />
@@ -537,11 +577,11 @@ const ShoppingListDetailPage = () => {
       <section aria-labelledby="items-heading" className="mb-8">
         <h2
           id="items-heading"
-          className="mb-4 font-display text-xl font-bold text-ink dark:text-white"
+          className="font-display text-ink mb-4 text-2xl font-medium dark:text-white"
         >
           Articles
           {items.length > 0 && (
-            <span className="ml-2 text-sm font-normal text-ink-400 dark:text-ink-300">
+            <span className="text-ink-400 dark:text-ink-300 ml-2 text-sm font-normal">
               {checkedItems.length}/{items.length}
             </span>
           )}
@@ -573,7 +613,7 @@ const ShoppingListDetailPage = () => {
             {/* Checked items */}
             {checkedItems.length > 0 && (
               <div>
-                <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500">
+                <h3 className="text-ink-400 dark:text-ink-500 mb-2 text-xs font-semibold tracking-wider uppercase">
                   Terminés
                 </h3>
                 <ul className="space-y-2" role="list">
@@ -602,18 +642,15 @@ const ShoppingListDetailPage = () => {
         }}
         title="Partager la liste"
         footer={
-          <Button
-            variant="secondary"
-            onClick={() => setIsShareOpen(false)}
-          >
+          <Button variant="secondary" onClick={() => setIsShareOpen(false)}>
             Terminé
           </Button>
         }
       >
-        <p className="text-sm/6 text-ink-500 dark:text-ink-300">
-          Ajoutez des membres avec leur identifiant utilisateur.
-          L&apos;ajout par e-mail n&apos;est actuellement pas pris en charge
-          (l&apos;e-mail n&apos;est pas accessible via RLS).
+        <p className="text-ink-500 dark:text-ink-300 text-sm/6">
+          Ajoutez des membres avec leur identifiant utilisateur. L&apos;ajout
+          par e-mail n&apos;est actuellement pas pris en charge (l&apos;e-mail
+          n&apos;est pas accessible via RLS).
         </p>
 
         {/* Add member form */}
@@ -624,7 +661,7 @@ const ShoppingListDetailPage = () => {
             onChange={(e) => setShareUserId(e.target.value)}
             placeholder="Identifiant utilisateur"
             aria-label="Identifiant utilisateur à ajouter comme membre"
-            className="min-w-0 flex-1 rounded-control border border-sand-200 bg-white px-3 py-2 text-sm text-ink shadow-soft placeholder:text-ink-400 focus:border-forest-500 focus:ring-1 focus:ring-forest-500 focus:outline-2 focus:outline-offset-2 focus:outline-forest-600 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-ink-300 dark:focus:border-forest-400 dark:focus:ring-forest-400 dark:focus:outline-forest-400"
+            className="rounded-control border-sand-200 text-ink shadow-soft placeholder:text-ink-400 focus:border-forest-500 focus:ring-forest-500 focus:outline-forest-600 dark:placeholder:text-ink-300 dark:focus:border-forest-400 dark:focus:ring-forest-400 dark:focus:outline-forest-400 min-w-0 flex-1 border bg-white px-3 py-2 text-sm focus:ring-1 focus:outline-2 focus:outline-offset-2 dark:border-white/10 dark:bg-white/5 dark:text-white"
           />
           <Button
             variant="primary"
@@ -638,7 +675,7 @@ const ShoppingListDetailPage = () => {
         </div>
 
         {addMemberMutation.isError && (
-          <p className="mt-2 text-sm text-error dark:text-error-400">
+          <p className="text-error dark:text-error-400 mt-2 text-sm">
             Échec de l&apos;ajout du membre. Vérifiez l&apos;identifiant
             utilisateur et réessayez.
           </p>
@@ -646,10 +683,13 @@ const ShoppingListDetailPage = () => {
 
         {/* Current members */}
         <div className="mt-6">
-          <h3 className="text-sm font-medium text-ink-700 dark:text-ink-200">
+          <h3 className="text-ink-700 dark:text-ink-200 text-sm font-medium">
             Membres actuels
           </h3>
-          <ul className="mt-2 divide-y divide-sand-200 dark:divide-white/10" role="list">
+          <ul
+            className="divide-sand-200 mt-2 divide-y dark:divide-white/10"
+            role="list"
+          >
             {members.map((member) => {
               const memberName = getMemberDisplayName(member)
               return (
@@ -665,15 +705,15 @@ const ShoppingListDetailPage = () => {
                         className="size-8 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="flex size-8 items-center justify-center rounded-full bg-sand-100 text-xs font-medium text-ink-600 dark:bg-white/10 dark:text-ink-300">
+                      <div className="bg-sand-100 text-ink-600 dark:text-ink-300 flex size-8 items-center justify-center rounded-full text-xs font-medium dark:bg-white/10">
                         {memberName.slice(0, 2).toUpperCase()}
                       </div>
                     )}
                     <div>
-                      <p className="text-sm font-medium text-ink dark:text-white">
+                      <p className="text-ink text-sm font-medium dark:text-white">
                         {member.profile?.display_name || `${memberName}…`}
                       </p>
-                      <p className="text-xs text-ink-400 dark:text-ink-300">
+                      <p className="text-ink-400 dark:text-ink-300 text-xs">
                         {ROLE_LABELS[member.role]}
                       </p>
                     </div>
@@ -684,7 +724,7 @@ const ShoppingListDetailPage = () => {
                       onClick={() => handleRemoveMember(member)}
                       disabled={removeMemberMutation.isPending}
                       aria-label={`Retirer le membre ${memberName}`}
-                      className="rounded-control p-1 text-ink-400 transition-colors hover:bg-error-50 hover:text-error focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-ink-300 dark:hover:bg-error-500/10 dark:hover:text-error-400 dark:focus-visible:outline-error-500"
+                      className="rounded-control text-ink-400 hover:bg-error-50 hover:text-error focus-visible:outline-error-600 dark:text-ink-300 dark:hover:bg-error-500/10 dark:hover:text-error-400 dark:focus-visible:outline-error-500 p-1 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       <XMarkIcon aria-hidden="true" className="size-4" />
                     </button>
@@ -772,14 +812,16 @@ const ShoppingListDetailPage = () => {
               isLoading={deleteItemMutation.isPending}
               disabled={deleteItemMutation.isPending}
             >
-              {deleteItemMutation.isPending ? 'Suppression…' : 'Supprimer l\'article'}
+              {deleteItemMutation.isPending
+                ? 'Suppression…'
+                : "Supprimer l'article"}
             </Button>
           </>
         }
       >
-        <p className="text-sm/6 text-ink-500 dark:text-ink-300">
-          Voulez-vous vraiment supprimer « {deletingItem?.name} » ?
-          Cette action est irréversible.
+        <p className="text-ink-500 dark:text-ink-300 text-sm/6">
+          Voulez-vous vraiment supprimer « {deletingItem?.name} » ? Cette action
+          est irréversible.
         </p>
       </Modal>
 
@@ -803,15 +845,16 @@ const ShoppingListDetailPage = () => {
               isLoading={deleteListMutation.isPending}
               disabled={deleteListMutation.isPending}
             >
-              {deleteListMutation.isPending ? 'Suppression…' : 'Supprimer la liste'}
+              {deleteListMutation.isPending
+                ? 'Suppression…'
+                : 'Supprimer la liste'}
             </Button>
           </>
         }
       >
-        <p className="text-sm/6 text-ink-500 dark:text-ink-300">
-          Voulez-vous vraiment supprimer « {list.title} » ? Tous les
-          articles et membres seront supprimés. Cette action est
-          irréversible.
+        <p className="text-ink-500 dark:text-ink-300 text-sm/6">
+          Voulez-vous vraiment supprimer « {list.title} » ? Tous les articles et
+          membres seront supprimés. Cette action est irréversible.
         </p>
       </Modal>
     </div>

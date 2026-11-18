@@ -4,7 +4,11 @@ import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import ShoppingListDetailPage from '../ShoppingListDetailPage'
-import { mockSupabase, mockSupabaseRealtime, createChain } from '../../../../test/supabaseMock'
+import {
+  mockSupabase,
+  mockSupabaseRealtime,
+  createChain,
+} from '../../../../test/supabaseMock'
 import type { ShoppingListWithRelations } from '../../types'
 
 // ---------------------------------------------------------------------------
@@ -202,7 +206,9 @@ describe('ShoppingListDetailPage', () => {
     await user.type(screen.getByLabelText('Quantité'), '12')
     await user.type(screen.getByLabelText('Unité'), 'pcs')
 
-    await user.click(screen.getByRole('button', { name: /ajouter un article/i }))
+    await user.click(
+      screen.getByRole('button', { name: /ajouter un article/i }),
+    )
 
     await waitFor(() => {
       expect(chain('shopping_list_items').insert).toHaveBeenCalledWith(
@@ -231,9 +237,7 @@ describe('ShoppingListDetailPage', () => {
 
     await screen.findByRole('heading', { name: /weekly groceries/i })
 
-    await user.click(
-      screen.getByRole('button', { name: /cocher « milk »/i }),
-    )
+    await user.click(screen.getByRole('button', { name: /cocher « milk »/i }))
 
     await waitFor(() => {
       expect(chain('shopping_list_items').update).toHaveBeenCalledWith({
@@ -291,13 +295,17 @@ describe('ShoppingListDetailPage', () => {
 
     await screen.findByRole('heading', { name: /weekly groceries/i })
 
-    await user.click(screen.getByRole('button', { name: /supprimer « milk »/i }))
+    await user.click(
+      screen.getByRole('button', { name: /supprimer « milk »/i }),
+    )
 
     expect(
       screen.getByRole('heading', { name: /supprimer l'article/i }),
     ).toBeInTheDocument()
 
-    await user.click(screen.getByRole('button', { name: /supprimer l'article/i }))
+    await user.click(
+      screen.getByRole('button', { name: /supprimer l'article/i }),
+    )
 
     await waitFor(() => {
       expect(chain('shopping_list_items').delete).toHaveBeenCalled()
@@ -316,7 +324,9 @@ describe('ShoppingListDetailPage', () => {
     expect(screen.getByText('Propriétaire')).toBeInTheDocument()
 
     // Share button
-    expect(screen.getByRole('button', { name: /partager/i })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /partager/i }),
+    ).toBeInTheDocument()
 
     // Delete button
     expect(
@@ -341,8 +351,14 @@ describe('ShoppingListDetailPage', () => {
     // Editor badge
     expect(screen.getByText('Éditeur')).toBeInTheDocument()
 
+    expect(
+      screen.queryByRole('button', { name: /modifier le titre/i }),
+    ).not.toBeInTheDocument()
+
     // No share button
-    expect(screen.queryByRole('button', { name: /partager/i })).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: /partager/i }),
+    ).not.toBeInTheDocument()
 
     // No delete list button
     expect(

@@ -142,3 +142,9 @@
     font-size: 16px;
   }
 }
+
+@media (pointer: coarse) {
+  .shopping-item-form input {
+    font-size: 16px;
+  }
+}
